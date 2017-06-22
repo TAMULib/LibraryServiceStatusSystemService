@@ -5,10 +5,10 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>edu.tamu</groupId>
-	<artifactId>tamu-webservice-seed</artifactId>
-	<version>0.1</version>
-	<name>TAMU-Webservice-Seed</name>
-	<description>An example webservice using the TAMU-Webservice-Core.</description>
+	<artifactId>status-system</artifactId>
+	<version>0.0.1</version>
+	<name>Library-Service-Status-System</name>
+	<description>A System for monitoring and reporting the status of Library Services</description>
 
 	<parent>
 		<groupId>edu.tamu.weaverframework</groupId>

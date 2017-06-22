@@ -1,5 +1,5 @@
 /* 
- * TamuWebserviceSeedWebAppConfig.java 
+ * LibraryServiceStatusSystemWebAppConfig.java 
  * 
  * Version: 
  *     $Id$ 
@@ -29,7 +29,7 @@ import edu.tamu.framework.config.CoreWebAppConfig;
 @ConfigurationProperties(prefix = "app.controller")
 @EnableJpaRepositories(basePackages = { "edu.tamu.app.model.repo" })
 @EntityScan(basePackages = { "edu.tamu.app.model" })
-public class TamuWebserviceSeedWebAppConfig extends CoreWebAppConfig {
+public class LibraryServiceStatusSystemWebAppConfig extends CoreWebAppConfig {
 
     /**
      * Rest interceptor bean.

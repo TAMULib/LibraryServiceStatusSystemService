@@ -1,5 +1,3 @@
-# Weaver-Webservice-Seed
-An open source Webservice Seed App using Weaver Webservice Core Framework.
+# Library Service Status System
 
-<a href="http://tamulib.github.io/Weaver-Webservice-Seed/docs/html/index.html">Weaver Webservice Seed Doxygen Documentation</a>
-
+A Spring Boot service that allows management and notification of Library System Status.

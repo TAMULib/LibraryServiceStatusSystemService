@@ -11,9 +11,11 @@ package edu.tamu.app.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -54,6 +56,9 @@ public class User extends AbstractCoreUser {
 
     @Column(nullable = true)
     private String lastName;
+    
+    @OneToMany
+    private List<Note> notes;
 
     /**
      * Constructor for the application user
@@ -61,6 +66,7 @@ public class User extends AbstractCoreUser {
      */
     public User() {
         super();
+        setNotes(new ArrayList<Note>());
     }
 
     /**
@@ -71,7 +77,8 @@ public class User extends AbstractCoreUser {
      * 
      */
     public User(String uin) {
-        super(uin);
+        this();
+        setUin(uin);
     }
 
     /**
@@ -185,6 +192,16 @@ public class User extends AbstractCoreUser {
         this.lastName = lastName;
     }
     
+    
+    
+    public List<Note> getNotes() {
+        return notes;
+    }
+
+    public void setNotes(List<Note> notes) {
+        this.notes = notes;
+    }
+
     @Override
     @JsonIgnore
     public boolean isAccountNonExpired() {

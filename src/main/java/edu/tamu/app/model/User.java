@@ -31,7 +31,7 @@ import edu.tamu.framework.model.IRole;
  * 
  */
 @Entity
-public class AppUser extends AbstractCoreUser {
+public class User extends AbstractCoreUser {
     
     private static final long serialVersionUID = -4974106399870286015L;
     
@@ -59,7 +59,7 @@ public class AppUser extends AbstractCoreUser {
      * Constructor for the application user
      * 
      */
-    public AppUser() {
+    public User() {
         super();
     }
 
@@ -70,7 +70,7 @@ public class AppUser extends AbstractCoreUser {
      *            String
      * 
      */
-    public AppUser(String uin) {
+    public User(String uin) {
         super(uin);
     }
 
@@ -81,7 +81,7 @@ public class AppUser extends AbstractCoreUser {
      *            Long
      * 
      */
-    public AppUser(String email, String firstName, String lastName, String role) {
+    public User(String email, String firstName, String lastName, String role) {
         super();
         setEmail(email);
         setFirstName(firstName);

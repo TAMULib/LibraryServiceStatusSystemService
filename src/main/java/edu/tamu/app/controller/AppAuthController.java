@@ -32,8 +32,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
-import edu.tamu.app.model.AppUser;
-import edu.tamu.app.model.repo.AppUserRepo;
+import edu.tamu.app.model.User;
+import edu.tamu.app.model.repo.UserRepo;
 import edu.tamu.framework.aspect.annotation.ApiData;
 import edu.tamu.framework.aspect.annotation.ApiMapping;
 import edu.tamu.framework.aspect.annotation.ApiParameters;
@@ -52,7 +52,7 @@ import edu.tamu.framework.validation.ValidationResults;
 public class AppAuthController extends CoreAuthController {
 
     @Autowired
-    private AppUserRepo userRepo;
+    private UserRepo userRepo;
 
     @Value("${app.authority.admins}")
     private String[] admins;
@@ -142,7 +142,7 @@ public class AppAuthController extends CoreAuthController {
             return new ApiResponse(ERROR, "Token has expired! Please begin registration again.");
         }
 
-        AppUser user = userRepo.create(email, firstName, lastName, "ROLE_USER");
+        User user = userRepo.create(email, firstName, lastName, "ROLE_USER");
         user.setPassword(authUtility.encodePassword(password));
 
         user.setRole(CoreRole.ROLE_USER);
@@ -170,7 +170,7 @@ public class AppAuthController extends CoreAuthController {
         String email = dataMap.get("email");
         String password = dataMap.get("password");
 
-        AppUser user = userRepo.findByEmail(email);
+        User user = userRepo.findByEmail(email);
 
         if (user == null) {
             logger.debug("No user found with email " + email + "!");

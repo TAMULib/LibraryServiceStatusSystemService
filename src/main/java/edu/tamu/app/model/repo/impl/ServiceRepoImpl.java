@@ -14,6 +14,6 @@ public class ServiceRepoImpl implements ServiceRepoCustom {
     
     @Override
     public Service create(String name, Status status) {
-        return new Service(name, status);
+        return serviceRepo.save(new Service(name, status));
     }
 }

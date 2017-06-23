@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
+import javax.validation.constraints.Size;
 
 import edu.tamu.app.enums.Status;
 import edu.tamu.framework.model.BaseEntity;
@@ -16,6 +17,7 @@ import edu.tamu.framework.model.BaseEntity;
 @Entity
 public class Service extends BaseEntity {
 
+    @Size(min = 1)
     @Column(nullable = false)
     private String name;
     

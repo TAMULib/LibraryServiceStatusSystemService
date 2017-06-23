@@ -15,5 +15,4 @@ public class NotificationRepoImpl implements NotificationRepoCustom {
     public Notification create(String name, String body) {
         return notificationRepo.save(new Notification(name, body));
     }
-
 }

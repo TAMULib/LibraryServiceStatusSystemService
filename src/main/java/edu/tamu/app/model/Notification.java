@@ -2,15 +2,18 @@ package edu.tamu.app.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.validation.constraints.Size;
 
 import edu.tamu.framework.model.BaseEntity;
 
 @Entity
 public class Notification extends BaseEntity {
 
+    @Size(min = 1)
     @Column(nullable = false)
     private String name;
     
+    @Size(min = 1)
     @Column(nullable = false)
     private String body;
     
@@ -37,6 +40,4 @@ public class Notification extends BaseEntity {
     public void setBody(String body) {
         this.body = body;
     }
-    
-    
 }

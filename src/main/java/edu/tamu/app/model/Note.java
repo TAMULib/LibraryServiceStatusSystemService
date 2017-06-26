@@ -1,6 +1,8 @@
 package edu.tamu.app.model;
 
+import static javax.persistence.CascadeType.MERGE;
 import static javax.persistence.CascadeType.REFRESH;
+import static javax.persistence.FetchType.EAGER;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -8,10 +10,17 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Size;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import edu.tamu.app.enums.NoteType;
 import edu.tamu.framework.model.BaseEntity;
@@ -19,10 +28,12 @@ import edu.tamu.framework.model.BaseEntity;
 @Entity
 public class Note extends BaseEntity {
 
+    @Size(min = 1)
     @Column(nullable = false)
     private String title;
 
-    @ManyToMany(cascade = REFRESH)
+    @Fetch(FetchMode.SELECT)
+    @ManyToMany(cascade = { REFRESH, MERGE}, fetch = EAGER)
     private List<Service> services;
     
     private NoteType noteType;
@@ -36,9 +47,10 @@ public class Note extends BaseEntity {
     private Calendar scheduledPostingEnd;
     
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @UpdateTimestamp
     private Calendar lastModified;
     
+    @JoinColumn(nullable = false)
     @ManyToOne(cascade = REFRESH)
     private AppUser author;
     
@@ -46,9 +58,10 @@ public class Note extends BaseEntity {
         setServices(new ArrayList<Service>());
     }
     
-    public Note(String name) {
+    public Note(String name, AppUser author) {
         this();
         setTitle(name);
+        setAuthor(author);
     }
     
     public String getTitle() {

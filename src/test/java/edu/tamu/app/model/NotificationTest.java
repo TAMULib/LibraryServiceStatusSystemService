@@ -57,7 +57,7 @@ public class NotificationTest {
     }
 
     @Test
-    public void testUpdateNotification() {
+    public void testUpdate() {
        Notification notification = notificationRepo.create(TEST_NOTIFICATION_NAME, TEST_NOTIFICATION_BODY);
        notification.setName(TEST_ALTERNATE_NOTIFICATION_NAME);
        notification.setBody(TEST_ALTERNATE_NOTIFICATION_BODY);
@@ -68,7 +68,7 @@ public class NotificationTest {
     }
 
     @Test
-    public void testDeleteNotification() {
+    public void testDelete() {
         long initialCount = notificationRepo.count();
         Notification notification = notificationRepo.create(TEST_NOTIFICATION_NAME, TEST_NOTIFICATION_BODY);
         assertEquals("Notification not created", initialCount + 1, notificationRepo.count());

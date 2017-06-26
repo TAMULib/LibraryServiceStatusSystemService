@@ -7,6 +7,8 @@ import java.util.List;
 
 import javax.validation.ConstraintViolationException;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import edu.tamu.app.WebServerInit;
 import edu.tamu.app.enums.Status;
+import edu.tamu.app.model.repo.AppUserRepo;
 import edu.tamu.app.model.repo.NoteRepo;
 import edu.tamu.app.model.repo.ServiceRepo;
 
@@ -34,12 +37,21 @@ public class ServiceTest {
     protected static final String TEST_ALTERNATIVE_SERVICE_NAME = "Different Service Name";
     protected static final Status TEST_ALTERNATIVE_SERVICE_STATUS = Status.DOWN;
     protected static final List<String> TEST_ALTERNATIVE_SERVICE_ALIASES = Arrays.asList("Alias 4", "Alias 5", "Alias 6");
+    protected AppUser testUser;
 
     @Autowired
     ServiceRepo serviceRepo;
     
     @Autowired
     NoteRepo noteRepo;
+    
+    @Autowired
+    AppUserRepo appUserRepo;
+    
+    @Before
+    public void setUp() {
+        testUser = appUserRepo.create("123456789");
+    }
     
     @Test
     public void testCreate() {
@@ -105,20 +117,34 @@ public class ServiceTest {
     
     @Test
     public void testUpdateNotes() {
-        Note note1 = noteRepo.create(TEST_NOTE_TITLE1);
-        note1 = noteRepo.save(note1);
-        Note note2 = noteRepo.create(TEST_NOTE_TITLE2);
-        note2 = noteRepo.save(note2);
+        Note note1 = noteRepo.create(TEST_NOTE_TITLE1, testUser);
+        Note note2 = noteRepo.create(TEST_NOTE_TITLE2, testUser);
         List<Note> noteList1 = Arrays.asList(note1);
         List<Note> noteList2 = Arrays.asList(note1, note2);
         Service service = serviceRepo.create(TEST_SERVICE_NAME, TEST_SERVICE_STATUS);
         service.setNotes(noteList1);
         service = refreshService(service);
-        assertEquals("Service notes do not contain the right number of notes", 1, service.getNotes().size());
+        assertEquals("Service notes did not contain the right number of notes", 1, service.getNotes().size());
         assertEquals("Service notes not set", true, service.getNotes().contains(note1));
         service.setNotes(noteList2);
         service = refreshService(service);
-        assertEquals("Service notes do not contain the right number of notes", 2, service.getNotes().size());
+        assertEquals("Service notes did not contain the right number of notes", 2, service.getNotes().size());
         assertEquals("Service notes not updated", true, service.getNotes().contains(note2));
+    }
+    
+    @Test
+    public void testDelete() {
+        long initialCount = serviceRepo.count();
+        Service service = serviceRepo.create(TEST_SERVICE_NAME, TEST_ALTERNATIVE_SERVICE_STATUS);
+        assertEquals("The service was not created", initialCount + 1, serviceRepo.count());
+        serviceRepo.delete(service);
+        assertEquals("The service was not deleted", initialCount, serviceRepo.count());
+    }
+    
+    @After
+    public void cleanUp() {
+        serviceRepo.deleteAll();
+        noteRepo.deleteAll();
+        appUserRepo.deleteAll();
     }
 }

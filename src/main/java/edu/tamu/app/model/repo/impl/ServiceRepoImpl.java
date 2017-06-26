@@ -13,7 +13,7 @@ public class ServiceRepoImpl implements ServiceRepoCustom {
     ServiceRepo serviceRepo;
     
     @Override
-    public Service create(String name, Status status) {
-        return serviceRepo.save(new Service(name, status));
+    public Service create(String name, Status status, Boolean isPublic, Boolean onShortList) {
+        return serviceRepo.save(new Service(name, status, isPublic, onShortList));
     }
 }

@@ -19,6 +19,10 @@ import org.hibernate.annotations.FetchMode;
 import edu.tamu.app.enums.Status;
 import edu.tamu.framework.model.BaseEntity;
 
+/**
+ * @author rladdusaw
+ *
+ */
 @Entity
 public class Service extends BaseEntity {
 
@@ -36,6 +40,12 @@ public class Service extends BaseEntity {
     @Column(nullable = true)
     private String serviceUrl;
     
+    @Column(nullable = false)
+    private Boolean isPublic;
+    
+    @Column(nullable = false)
+    private Boolean onShortList;
+    
     @Fetch(FetchMode.SELECT)
     @ManyToMany(cascade = { REFRESH, MERGE }, fetch = EAGER)
     private List<Note> notes;
@@ -45,10 +55,12 @@ public class Service extends BaseEntity {
         setAliases(new ArrayList<String>());
     }
     
-    public Service(String name, Status status) {
+    public Service(String name, Status status, Boolean isPublic, Boolean onShortList) {
         this();
         setName(name);
         setStatus(status);
+        setIsPublic(isPublic);
+        setOnShortList(onShortList);
     }
 
     public String getName() {
@@ -90,7 +102,20 @@ public class Service extends BaseEntity {
     public void setAliases(List<String> aliases) {
         this.aliases = aliases;
     }
-    
-    
-    
+
+    public Boolean getIsPublic() {
+        return isPublic;
+    }
+
+    public void setIsPublic(Boolean isPublic) {
+        this.isPublic = isPublic;
+    }
+
+    public Boolean getOnShortList() {
+        return onShortList;
+    }
+
+    public void setOnShortList(Boolean onShortList) {
+        this.onShortList = onShortList;
+    }
 }

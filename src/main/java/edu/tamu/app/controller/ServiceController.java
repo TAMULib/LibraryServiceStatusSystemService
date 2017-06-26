@@ -10,7 +10,6 @@ import static edu.tamu.framework.enums.BusinessValidationType.UPDATE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.RestController;
-import org.tdl.vireo.model.EmailTemplate;
 
 import edu.tamu.app.model.Service;
 import edu.tamu.app.model.repo.ServiceRepo;

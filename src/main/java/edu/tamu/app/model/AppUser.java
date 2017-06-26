@@ -11,9 +11,11 @@ package edu.tamu.app.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -31,7 +33,7 @@ import edu.tamu.framework.model.IRole;
  * 
  */
 @Entity
-public class User extends AbstractCoreUser {
+public class AppUser extends AbstractCoreUser {
     
     private static final long serialVersionUID = -4974106399870286015L;
     
@@ -54,13 +56,17 @@ public class User extends AbstractCoreUser {
 
     @Column(nullable = true)
     private String lastName;
+    
+    @OneToMany
+    private List<Note> notes;
 
     /**
      * Constructor for the application user
      * 
      */
-    public User() {
+    public AppUser() {
         super();
+        setNotes(new ArrayList<Note>());
     }
 
     /**
@@ -70,8 +76,9 @@ public class User extends AbstractCoreUser {
      *            String
      * 
      */
-    public User(String uin) {
-        super(uin);
+    public AppUser(String uin) {
+        this();
+        setUin(uin);
     }
 
     /**
@@ -81,7 +88,7 @@ public class User extends AbstractCoreUser {
      *            Long
      * 
      */
-    public User(String email, String firstName, String lastName, String role) {
+    public AppUser(String email, String firstName, String lastName, String role) {
         super();
         setEmail(email);
         setFirstName(firstName);
@@ -185,6 +192,16 @@ public class User extends AbstractCoreUser {
         this.lastName = lastName;
     }
     
+    
+    
+    public List<Note> getNotes() {
+        return notes;
+    }
+
+    public void setNotes(List<Note> notes) {
+        this.notes = notes;
+    }
+
     @Override
     @JsonIgnore
     public boolean isAccountNonExpired() {

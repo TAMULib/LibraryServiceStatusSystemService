@@ -22,8 +22,8 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
-import edu.tamu.app.model.User;
-import edu.tamu.app.model.repo.UserRepo;
+import edu.tamu.app.model.AppUser;
+import edu.tamu.app.model.repo.AppUserRepo;
 import edu.tamu.framework.interceptor.CoreRestInterceptor;
 import edu.tamu.framework.model.ApiResponse;
 import edu.tamu.framework.model.Credentials;
@@ -34,10 +34,10 @@ import edu.tamu.framework.model.Credentials;
  *
  */
 @Component
-public class AppRestInterceptor extends CoreRestInterceptor<User> {
+public class AppRestInterceptor extends CoreRestInterceptor<AppUser> {
 
     @Autowired
-    private UserRepo userRepo;
+    private AppUserRepo userRepo;
 
     @Value("${app.authority.admins}")
     private String[] admins;
@@ -67,9 +67,9 @@ public class AppRestInterceptor extends CoreRestInterceptor<User> {
      * {@inheritDoc}
      */
     @Override
-    public User confirmCreateUser(Credentials credentials) {
+    public AppUser confirmCreateUser(Credentials credentials) {
 
-        User user;
+        AppUser user;
         String adminTarget;
 
         if (credentials.getUin().equals("null")) {

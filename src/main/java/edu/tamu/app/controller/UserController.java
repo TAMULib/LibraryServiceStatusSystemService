@@ -15,8 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
-import edu.tamu.app.model.User;
-import edu.tamu.app.model.repo.UserRepo;
+import edu.tamu.app.model.AppUser;
+import edu.tamu.app.model.repo.AppUserRepo;
 import edu.tamu.framework.aspect.annotation.ApiCredentials;
 import edu.tamu.framework.aspect.annotation.ApiMapping;
 import edu.tamu.framework.aspect.annotation.ApiModel;
@@ -33,7 +33,7 @@ import edu.tamu.framework.model.Credentials;
 public class UserController {
 
     @Autowired
-    private UserRepo userRepo;
+    private AppUserRepo userRepo;
     
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
@@ -75,9 +75,9 @@ public class UserController {
      */
     @ApiMapping("/update")
     @Auth(role = "ROLE_MANAGER")
-    public ApiResponse updateUser(@ApiModel User user) throws Exception {        
+    public ApiResponse updateUser(@ApiModel AppUser user) throws Exception {        
         // get the persisted user for its encoded password        
-        User persistedUser = userRepo.findOne(user.getId());
+        AppUser persistedUser = userRepo.findOne(user.getId());
         if(persistedUser != null) {
             user.setPassword(persistedUser.getPassword());
         }

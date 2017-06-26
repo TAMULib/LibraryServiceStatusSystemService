@@ -19,7 +19,7 @@ import edu.tamu.app.model.repo.AppUserRepo;
 @WebAppConfiguration
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { WebServerInit.class })
-public class UserTest {
+public class AppUserTest {
 	
 	@Autowired
 	private AppUserRepo userRepo;

@@ -1,6 +1,8 @@
 package edu.tamu.app.model;
 
+import static javax.persistence.CascadeType.MERGE;
 import static javax.persistence.CascadeType.REFRESH;
+import static javax.persistence.FetchType.EAGER;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +12,9 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.validation.constraints.Size;
+
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import edu.tamu.app.enums.Status;
 import edu.tamu.framework.model.BaseEntity;
@@ -21,7 +26,8 @@ public class Service extends BaseEntity {
     @Column(nullable = false)
     private String name;
     
-    @ElementCollection
+    @Fetch(FetchMode.SELECT)
+    @ElementCollection(fetch = EAGER)
     private List<String> aliases;
     
     @Column(nullable = false)
@@ -30,11 +36,13 @@ public class Service extends BaseEntity {
     @Column(nullable = true)
     private String serviceUrl;
     
-    @ManyToMany(cascade = REFRESH)
+    @Fetch(FetchMode.SELECT)
+    @ManyToMany(cascade = { REFRESH, MERGE }, fetch = EAGER)
     private List<Note> notes;
     
     public Service() {
         setNotes(new ArrayList<Note>());
+        setAliases(new ArrayList<String>());
     }
     
     public Service(String name, Status status) {

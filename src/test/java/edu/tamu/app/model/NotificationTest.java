@@ -57,13 +57,20 @@ public class NotificationTest {
     }
 
     @Test
-    public void testUpdate() {
+    public void testUpdateName() {
        Notification notification = notificationRepo.create(TEST_NOTIFICATION_NAME, TEST_NOTIFICATION_BODY);
        notification.setName(TEST_ALTERNATE_NOTIFICATION_NAME);
-       notification.setBody(TEST_ALTERNATE_NOTIFICATION_BODY);
        notificationRepo.save(notification);
        notification = notificationRepo.findOne(notification.getId());
        assertEquals("Notification name was not changed", TEST_ALTERNATE_NOTIFICATION_NAME, notification.getName());
+    }
+    
+    @Test
+    public void testUpdateBody() {
+       Notification notification = notificationRepo.create(TEST_NOTIFICATION_NAME, TEST_NOTIFICATION_BODY);
+       notification.setBody(TEST_ALTERNATE_NOTIFICATION_BODY);
+       notificationRepo.save(notification);
+       notification = notificationRepo.findOne(notification.getId());
        assertEquals("Notification body was not changed", TEST_ALTERNATE_NOTIFICATION_BODY, notification.getBody());
     }
 

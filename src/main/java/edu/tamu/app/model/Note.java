@@ -40,7 +40,7 @@ public class Note extends BaseEntity {
     private Calendar lastModified;
     
     @ManyToOne(cascade = REFRESH)
-    private User author;
+    private AppUser author;
     
     public Note() {
         setServices(new ArrayList<Service>());
@@ -107,11 +107,11 @@ public class Note extends BaseEntity {
         this.lastModified = lastModified;
     }
 
-    public User getAuthor() {
+    public AppUser getAuthor() {
         return author;
     }
 
-    public void setAuthor(User author) {
+    public void setAuthor(AppUser author) {
         this.author = author;
     }
 }

@@ -12,15 +12,15 @@ package edu.tamu.app.model.repo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import edu.tamu.app.model.User;
-import edu.tamu.app.model.repo.custom.UserRepoCustom;
+import edu.tamu.app.model.AppUser;
+import edu.tamu.app.model.repo.custom.AppUserRepoCustom;
 
 /**
  * Application User repository.
  * 
  */
 @Repository
-public interface UserRepo extends JpaRepository<User, Long>, UserRepoCustom {
+public interface AppUserRepo extends JpaRepository<AppUser, Long>, AppUserRepoCustom {
 
     /**
      * Retrieve user by UIN.
@@ -30,7 +30,7 @@ public interface UserRepo extends JpaRepository<User, Long>, UserRepoCustom {
      * 
      * @return AppUser
      */
-    public User findByUin(String uin);
+    public AppUser findByUin(String uin);
 
     /**
      * Retrieve user by email.
@@ -41,6 +41,6 @@ public interface UserRepo extends JpaRepository<User, Long>, UserRepoCustom {
      * @return AppUser
      * 
      */
-    public User findByEmail(String email);
+    public AppUser findByEmail(String email);
 
 }

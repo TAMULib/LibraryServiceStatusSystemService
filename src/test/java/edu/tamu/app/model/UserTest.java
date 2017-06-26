@@ -14,7 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import edu.tamu.app.WebServerInit;
-import edu.tamu.app.model.repo.UserRepo;
+import edu.tamu.app.model.repo.AppUserRepo;
 
 @WebAppConfiguration
 @RunWith(SpringRunner.class)
@@ -22,7 +22,7 @@ import edu.tamu.app.model.repo.UserRepo;
 public class UserTest {
 	
 	@Autowired
-	private UserRepo userRepo;
+	private AppUserRepo userRepo;
 	
 	@Before
 	public void setUp() {
@@ -33,18 +33,18 @@ public class UserTest {
 	public void testMethod() {
 		
 		// Test create user
-		User testUser1 = userRepo.create("123456789");		
-		User assertUser = userRepo.findByUin("123456789");		
+		AppUser testUser1 = userRepo.create("123456789");		
+		AppUser assertUser = userRepo.findByUin("123456789");		
 		assertEquals("Test User1 was not added.", testUser1.getUin(), assertUser.getUin());
 	
 		// Test disallow duplicate UINs
 		userRepo.create("123456789");		
-		List<User> allUsers = (List<User>) userRepo.findAll();		
+		List<AppUser> allUsers = (List<AppUser>) userRepo.findAll();		
 		assertEquals("Duplicate UIN found.", 1, allUsers.size());
 				
 		// Test delete user
 		userRepo.delete(testUser1);		
-		allUsers = (List<User>) userRepo.findAll();		
+		allUsers = (List<AppUser>) userRepo.findAll();		
 		assertEquals("Test User1 was not removed.", 0, allUsers.size());
 		
 	}

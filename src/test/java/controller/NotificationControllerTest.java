@@ -3,6 +3,7 @@ package controller;
 import static edu.tamu.framework.enums.ApiResponseType.SUCCESS;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -64,6 +65,7 @@ public class NotificationControllerTest {
         when(notificationRepo.findOne(any(Long.class))).thenReturn(TEST_NOTIFICATION1);
         when(notificationRepo.create(any(String.class), any(String.class))).thenReturn(TEST_NOTIFICATION1);
         when(notificationRepo.save(any(Notification.class))).thenReturn(TEST_MODIFIED_NOTIFICATION);
+        doNothing().when(notificationRepo).delete(any(Notification.class));
     }
     
     @Test

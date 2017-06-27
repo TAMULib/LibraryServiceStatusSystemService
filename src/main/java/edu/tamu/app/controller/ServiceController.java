@@ -64,7 +64,7 @@ public class ServiceController {
     public ApiResponse updateService(@ApiValidatedModel Service service) {
         service = serviceRepo.save(service);
         simpMessagingTemplate.convertAndSend("/channel/service", new ApiResponse(SUCCESS, serviceRepo.findOne(service.getId())));
-        return new ApiResponse(SUCCESS);
+        return new ApiResponse(SUCCESS, service);
     }
     
     @ApiMapping("/remove")

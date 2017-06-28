@@ -50,7 +50,7 @@ public class ServiceController {
     }
     
     @ApiMapping("/create")
-    @Auth(role = "SERVICE_MANAGER")
+    @Auth(role = "ROLE_SERVICE_MANAGER")
     @ApiValidation(business = { @ApiValidation.Business(value = CREATE), @ApiValidation.Business(value = EXISTS) })
     public ApiResponse createService(@ApiValidatedModel Service service) {
         service = serviceRepo.create(service.getName(), service.getStatus(), service.getIsPublic(), service.getOnShortList());
@@ -59,7 +59,7 @@ public class ServiceController {
     }
     
     @ApiMapping("/update")
-    @Auth(role = "SERVICE_MANAGER")
+    @Auth(role = "ROLE_SERVICE_MANAGER")
     @ApiValidation(business = { @ApiValidation.Business(value = UPDATE), @ApiValidation.Business(value = NONEXISTS) })
     public ApiResponse updateService(@ApiValidatedModel Service service) {
         service = serviceRepo.save(service);
@@ -68,7 +68,7 @@ public class ServiceController {
     }
     
     @ApiMapping("/remove")
-    @Auth(role = "SERVICE_MANAGER")
+    @Auth(role = "ROLE_SERVICE_MANAGER")
     @ApiValidation(business = { @ApiValidation.Business(value = DELETE), @ApiValidation.Business(value = NONEXISTS) })
     public ApiResponse removeService(@ApiValidatedModel Service service) {
         serviceRepo.delete(service);

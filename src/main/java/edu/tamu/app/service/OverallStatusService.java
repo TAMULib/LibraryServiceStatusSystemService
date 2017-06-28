@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
 import edu.tamu.app.model.OverallStatus;
 import edu.tamu.app.model.Service;
 import edu.tamu.app.model.repo.ServiceRepo;
@@ -24,22 +25,16 @@ public class OverallStatusService {
 	private static final String SUCCESS_MESSAGE = "All services are working.";
 	private static final String ERROR_MESSAGE = "Some services are experiencing problems.";
 	
-	public OverallStatus getOverallStatusFull() {
-		
-		if(overallStatusFull == null) updateStatuses();
-		
+	public OverallStatus getOverallStatusFull() {		
 		return overallStatusFull;
 	}
 	
-	public OverallStatus getOverallStatusPublic() {
-		
-		if(overallStatusPublic == null) updateStatuses();
-		
+	public OverallStatus getOverallStatusPublic() {		
 		return overallStatusPublic;
 	}
 	
 	public void updateStatuses() {
-		
+				
 		List<Service> servicesFull = serviceRepo.findAll();
 		List<Service> servicesPublic = serviceRepo.findByIsPublic(true);
 		
@@ -72,7 +67,6 @@ public class OverallStatusService {
 			this.overallStatusPublic = new OverallStatus(ERROR, ERROR_MESSAGE);
 		}
 
-		
 	}
 	
 }

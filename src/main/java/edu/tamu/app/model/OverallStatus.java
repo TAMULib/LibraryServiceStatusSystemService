@@ -8,8 +8,9 @@ public class OverallStatus {
 	
 	private  OverallMessageType type;
 	
-	public OverallStatus() {
-		
+	public OverallStatus(OverallMessageType type, String message) {
+		setType(type);
+		setMessage(message);
 	}
 
 	public String getMessage() {

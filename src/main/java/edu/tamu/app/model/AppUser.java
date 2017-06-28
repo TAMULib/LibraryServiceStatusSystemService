@@ -15,6 +15,7 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -57,7 +58,7 @@ public class AppUser extends AbstractCoreUser {
     @Column(nullable = true)
     private String lastName;
     
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private List<Note> notes;
 
     /**

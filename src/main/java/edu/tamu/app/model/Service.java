@@ -17,6 +17,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import edu.tamu.app.enums.Status;
+import edu.tamu.app.model.validation.ServiceValidator;
 import edu.tamu.framework.model.BaseEntity;
 
 /**
@@ -27,17 +28,17 @@ import edu.tamu.framework.model.BaseEntity;
 public class Service extends BaseEntity {
 
     @Size(min = 1)
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String name;
     
     @Fetch(FetchMode.SELECT)
     @ElementCollection(fetch = EAGER)
     private List<String> aliases;
     
-    @Column(nullable = false)
+    @Column(nullable = false, unique = false)
     private Status status;
     
-    @Column(nullable = true)
+    @Column(nullable = true, unique = true)
     private String serviceUrl;
     
     @Column(nullable = false)
@@ -51,6 +52,7 @@ public class Service extends BaseEntity {
     private List<Note> notes;
     
     public Service() {
+        setModelValidator(new ServiceValidator());
         setNotes(new ArrayList<Note>());
         setAliases(new ArrayList<String>());
     }

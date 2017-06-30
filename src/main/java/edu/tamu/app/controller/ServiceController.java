@@ -55,7 +55,7 @@ public class ServiceController {
     public ApiResponse createService(@ApiValidatedModel Service service) {
         service = serviceRepo.create(service.getName(), service.getStatus(), service.getIsPublic(), service.getOnShortList());
         simpMessagingTemplate.convertAndSend("/channel/service", new ApiResponse(SUCCESS, serviceRepo.findAll()));
-        return new ApiResponse(SUCCESS);
+        return new ApiResponse(SUCCESS, service);
     }
     
     @ApiMapping("/update")

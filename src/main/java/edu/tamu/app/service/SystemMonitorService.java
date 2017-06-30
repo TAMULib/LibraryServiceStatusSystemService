@@ -39,19 +39,22 @@ public class SystemMonitorService implements MonitorService {
 
 	@Override
 	public void updateAll() {
+		logger.debug("Monitor Service is checking the status of the managed services");
 		//get all monitor-able services from ServiceRepo
 		serviceRepo.findByIsAuto(true).forEach(service -> {
 			try {
 				Status serviceStatus = getServiceStatus(service.getServiceUrl());
 				//update the service status if it's changed
+				logger.debug("The status reported by ["+service.getServiceUrl()+"] of ["+service.getName()+"] is: "+serviceStatus);
 				if (serviceStatus != service.getStatus()) {
+					logger.debug("Updating the status of ["+service.getName()+"] to: "+serviceStatus);
 					service.setStatus(serviceStatus);
 					serviceRepo.save(service);
 				}
 			} catch(MalformedURLException e) {
-				logger.debug("Did not check the status of ["+service.getName()+"] due to a malformed URL");
+				logger.error("Did not check the status of ["+service.getName()+"] due to a malformed URL: "+service.getServiceUrl());
 			} catch(IOException e) {
-				logger.debug("Attempt to check the status of ["+service.getName()+"] failed due to an IOException");
+				logger.error("Attempt to check the status of ["+service.getName()+"] failed due to an IOException");
 			}
 		});
 	}

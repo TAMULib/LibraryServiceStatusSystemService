@@ -60,13 +60,14 @@ public class Service extends BaseEntity {
         setAliases(new ArrayList<String>());
     }
     
-    public Service(String name, Status status, Boolean isAuto, Boolean isPublic, Boolean onShortList) {
+    public Service(String name, Status status, Boolean isAuto, Boolean isPublic, Boolean onShortList, String serviceUrl) {
         this();
         setName(name);
         setStatus(status);
         setIsAuto(isAuto);
         setIsPublic(isPublic);
         setOnShortList(onShortList);
+        setServiceUrl(serviceUrl);
     }
 
     public String getName() {

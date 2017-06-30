@@ -89,11 +89,6 @@ public class Service extends BaseEntity {
         return isAuto;
     }
     
-    public boolean isCurrentlyUp() {
-    	//TODO: Implement this method to return true, false or the resolution of 'auto' 
-    	return true;
-    }
-
     public void setIsAuto(Boolean isAuto) {
         this.isAuto = isAuto;
     }

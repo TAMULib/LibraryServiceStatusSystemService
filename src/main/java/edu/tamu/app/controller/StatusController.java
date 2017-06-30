@@ -2,7 +2,7 @@ package edu.tamu.app.controller;
 
 import edu.tamu.app.model.OverallStatus;
 import edu.tamu.app.service.AppRoleService;
-import edu.tamu.app.service.OverallStatusService;
+import edu.tamu.app.service.MonitorService;
 import edu.tamu.framework.aspect.annotation.ApiCredentials;
 import edu.tamu.framework.aspect.annotation.ApiMapping;
 import edu.tamu.framework.aspect.annotation.Auth;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class StatusController {
 	
 	@Autowired
-	OverallStatusService overallStatusService;
+	MonitorService monitorService;
 	
 	@Autowired
 	AppRoleService appRoleService;
@@ -27,14 +27,14 @@ public class StatusController {
 	@ApiMapping("/overall-full")
 	@Auth(role = "ROLE_STAFF")
 	public ApiResponse overallFull(@ApiCredentials Credentials credentials) {
-		OverallStatus overallStatus = overallStatusService.getOverallStatusFull();		
+		OverallStatus overallStatus = monitorService.getOverallStatus();		
         return new ApiResponse(SUCCESS, overallStatus);
 	}
 	
 	@ApiMapping("/overall-public")
 	@Auth(role = "ROLE_ANONYMOUS")
 	public ApiResponse overallPublic(@ApiCredentials Credentials credentials) {		
-		OverallStatus overallStatus = overallStatusService.getOverallStatusPublic();
+		OverallStatus overallStatus = monitorService.getOverallStatusPublic();
         return new ApiResponse(SUCCESS, overallStatus);
 	}
 	

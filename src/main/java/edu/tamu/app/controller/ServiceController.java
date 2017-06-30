@@ -54,8 +54,8 @@ public class ServiceController {
     @ApiValidation(business = { @ApiValidation.Business(value = CREATE), @ApiValidation.Business(value = EXISTS) })
     public ApiResponse createService(@ApiValidatedModel Service service) {
         service = serviceRepo.create(service.getName(), service.getStatus(), service.getIsPublic(), service.getOnShortList());
-        simpMessagingTemplate.convertAndSend("/channel/service", new ApiResponse(SUCCESS, serviceRepo.findOne(service.getId())));
-        return new ApiResponse(SUCCESS, service);
+        simpMessagingTemplate.convertAndSend("/channel/service", new ApiResponse(SUCCESS, serviceRepo.findAll()));
+        return new ApiResponse(SUCCESS);
     }
     
     @ApiMapping("/update")
@@ -63,7 +63,7 @@ public class ServiceController {
     @ApiValidation(business = { @ApiValidation.Business(value = UPDATE), @ApiValidation.Business(value = NONEXISTS) })
     public ApiResponse updateService(@ApiValidatedModel Service service) {
         service = serviceRepo.save(service);
-        simpMessagingTemplate.convertAndSend("/channel/service", new ApiResponse(SUCCESS, serviceRepo.findOne(service.getId())));
+        simpMessagingTemplate.convertAndSend("/channel/service", new ApiResponse(SUCCESS, serviceRepo.findAll()));
         return new ApiResponse(SUCCESS, service);
     }
     

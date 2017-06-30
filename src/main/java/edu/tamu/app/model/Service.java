@@ -38,7 +38,7 @@ public class Service extends BaseEntity {
     @Column(nullable = false, unique = false)
     private Status status;
     
-    @Column(nullable = true, unique = true)
+    @Column(nullable = true)
     private String serviceUrl;
     
     @Column(nullable = false)

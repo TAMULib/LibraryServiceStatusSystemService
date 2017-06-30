@@ -15,10 +15,13 @@ public class ServiceValidator extends BaseModelValidator {
         String statusProperty = "status";
         this.addInputValidator(new InputValidator(InputValidationType.required, "Service requires an enum status", statusProperty, true));
         
+        String isAutoProperty = "isAuto";
+        this.addInputValidator(new InputValidator(InputValidationType.required, "Service required a Boolean indicating whether it is automatically managed", isAutoProperty, true));
+
         String isPublicProperty = "isPublic";
-        this.addInputValidator(new InputValidator(InputValidationType.required, "Service required an Boolean indicating whether it is public", isPublicProperty, true));
+        this.addInputValidator(new InputValidator(InputValidationType.required, "Service required a Boolean indicating whether it is public", isPublicProperty, true));
         
         String onShortListProperty = "onShortList";
-        this.addInputValidator(new InputValidator(InputValidationType.required, "Service required an Boolean indicating whether it is on the short list", onShortListProperty, true));
+        this.addInputValidator(new InputValidator(InputValidationType.required, "Service required a Boolean indicating whether it is on the short list", onShortListProperty, true));
     }
 }

@@ -1,16 +1,16 @@
 package edu.tamu.app.service;
 
+import static edu.tamu.app.enums.OverallMessageType.ERROR;
+import static edu.tamu.app.enums.OverallMessageType.SUCCESS;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import ch.qos.logback.core.net.SyslogOutputStream;
+import edu.tamu.app.enums.Status;
 import edu.tamu.app.model.OverallStatus;
 import edu.tamu.app.model.Service;
 import edu.tamu.app.model.repo.ServiceRepo;
-
-import static edu.tamu.app.enums.OverallMessageType.SUCCESS;
-import static edu.tamu.app.enums.OverallMessageType.ERROR;
 
 @org.springframework.stereotype.Service
 public class OverallStatusService {
@@ -42,14 +42,14 @@ public class OverallStatusService {
 		boolean publicServicesAreUp = true;
 		
 		for(Service service : servicesFull) {
-			if(!service.isCurrentlyUp()) {
+			if(service.getStatus().equals(Status.DOWN)) {
 				fullServicesAreUp = false;
 				break;
 			}
 		}
 		
 		for(Service service : servicesPublic) {
-			if(!service.isCurrentlyUp()) {
+			if(service.getStatus().equals(Status.DOWN)) {
 				publicServicesAreUp = false;
 				break;
 			}

@@ -80,6 +80,11 @@ public class Service extends BaseEntity {
     public void setStatus(Status status) {
         this.status = status;
     }
+    
+    public boolean isCurrentlyUp() {
+    	//TODO: Implement this method to return true, false or the resolution of 'auto' 
+    	return true;
+    }
 
     public String getServiceUrl() {
         return serviceUrl;

@@ -5,6 +5,6 @@ import edu.tamu.app.model.Service;
 
 public interface ServiceRepoCustom {
     
-    public Service create(String name, Status status, Boolean isAuto, Boolean isPublic, Boolean onShortList);
+    public Service create(String name, Status status, Boolean isAuto, Boolean isPublic, Boolean onShortList, String serviceUrl);
 
 }

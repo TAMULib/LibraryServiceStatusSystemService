@@ -41,7 +41,7 @@ public class Service extends BaseEntity {
     @Column(nullable = false)
     private boolean isAuto;
     
-    @Column(nullable = true, unique = true)
+    @Column(nullable = true)
     private String serviceUrl;
     
     @Column(nullable = false)
@@ -60,13 +60,14 @@ public class Service extends BaseEntity {
         setAliases(new ArrayList<String>());
     }
     
-    public Service(String name, Status status, Boolean isAuto, Boolean isPublic, Boolean onShortList) {
+    public Service(String name, Status status, Boolean isAuto, Boolean isPublic, Boolean onShortList, String serviceUrl) {
         this();
         setName(name);
         setStatus(status);
         setIsAuto(isAuto);
         setIsPublic(isPublic);
         setOnShortList(onShortList);
+        setServiceUrl(serviceUrl);
     }
 
     public String getName() {

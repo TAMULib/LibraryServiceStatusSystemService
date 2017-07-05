@@ -89,7 +89,7 @@ public class Service extends BaseEntity {
     public Boolean getIsAuto() {
         return isAuto;
     }
-
+    
     public void setIsAuto(Boolean isAuto) {
         this.isAuto = isAuto;
     }

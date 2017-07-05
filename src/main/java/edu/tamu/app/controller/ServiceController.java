@@ -56,7 +56,6 @@ public class ServiceController {
         System.out.println(service.getServiceUrl());
         service = serviceRepo.create(service.getName(), service.getStatus(), service.getIsAuto(), service.getIsPublic(), service.getOnShortList(), service.getServiceUrl());
         simpMessagingTemplate.convertAndSend("/channel/service", new ApiResponse(SUCCESS, serviceRepo.findAll()));
-
         return new ApiResponse(SUCCESS, service);
     }
     

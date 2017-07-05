@@ -38,6 +38,9 @@ public class Service extends BaseEntity {
     @Column(nullable = false, unique = false)
     private Status status;
     
+    @Column(nullable = false)
+    private boolean isAuto;
+    
     @Column(nullable = true, unique = true)
     private String serviceUrl;
     
@@ -57,12 +60,14 @@ public class Service extends BaseEntity {
         setAliases(new ArrayList<String>());
     }
     
-    public Service(String name, Status status, Boolean isPublic, Boolean onShortList) {
+    public Service(String name, Status status, Boolean isAuto, Boolean isPublic, Boolean onShortList, String serviceUrl) {
         this();
         setName(name);
         setStatus(status);
+        setIsAuto(isAuto);
         setIsPublic(isPublic);
         setOnShortList(onShortList);
+        setServiceUrl(serviceUrl);
     }
 
     public String getName() {
@@ -81,11 +86,14 @@ public class Service extends BaseEntity {
         this.status = status;
     }
     
-    public boolean isCurrentlyUp() {
-    	//TODO: Implement this method to return true, false or the resolution of 'auto' 
-    	return true;
+    public Boolean getIsAuto() {
+        return isAuto;
     }
-
+    
+    public void setIsAuto(Boolean isAuto) {
+        this.isAuto = isAuto;
+    }
+    
     public String getServiceUrl() {
         return serviceUrl;
     }

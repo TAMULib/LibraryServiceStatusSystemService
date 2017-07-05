@@ -37,6 +37,7 @@ public class NoteTest {
     protected static final String TEST_ALTERNATIVE_SERVICE_NAME = "Different Service Name";
     protected static final String TEST_NOTE_BODY = "Test Note Body";
     protected static final String TEST_ALTERNATIVE_NOTE_BODY = "Alternative Note Body";
+    protected static final Boolean TEST_IS_AUTO = false;
     protected static final Boolean TEST_IS_PUBLIC = true;
     protected static final Boolean TEST_ON_SHORT_LIST = true;
     protected static final Status TEST_SERVICE_STATUS = Status.UP;
@@ -96,8 +97,8 @@ public class NoteTest {
 
     @Test
     public void testUpdateServices() {
-        Service service1 = serviceRepo.create(TEST_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST);
-        Service service2 = serviceRepo.create(TEST_ALTERNATIVE_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST);
+        Service service1 = serviceRepo.create(TEST_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST,null);
+        Service service2 = serviceRepo.create(TEST_ALTERNATIVE_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, null);
         List<Service> serviceList1 = Arrays.asList(service1);
         List<Service> serviceList2 = Arrays.asList(service1, service2);
         Note note = noteRepo.create(TEST_NOTE_TITLE, testUser);

@@ -35,15 +35,16 @@ public class ServiceControllerTest {
     protected static final String TEST_SERVICE2_NAME = "Test Service 2 Name";
     protected static final String TEST_SERVICE3_NAME = "Test Service 3 Name";
     protected static final Status TEST_SERVICE_STATUS = Status.UP;
+    protected static final Boolean TEST_IS_AUTO = false;
     protected static final Boolean TEST_IS_PUBLIC = true;
     protected static final Boolean TEST_IS_NOT_PUBLIC = false;
     protected static final Boolean TEST_ON_SHORT_LIST = true;
     protected static final Boolean TEST_NOT_ON_SHORT_LIST = false;
     
-    protected static Service TEST_SERVICE1 = new Service(TEST_SERVICE1_NAME, TEST_SERVICE_STATUS, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST);
-    protected static Service TEST_SERVICE2 = new Service(TEST_SERVICE2_NAME, TEST_SERVICE_STATUS, TEST_IS_NOT_PUBLIC, TEST_ON_SHORT_LIST);
-    protected static Service TEST_SERVICE3 = new Service(TEST_SERVICE3_NAME, TEST_SERVICE_STATUS, TEST_IS_PUBLIC, TEST_NOT_ON_SHORT_LIST);
-    protected static Service TEST_MODIFIED_SERVICE1 = new Service(TEST_SERVICE1_NAME, TEST_SERVICE_STATUS, TEST_IS_NOT_PUBLIC, TEST_NOT_ON_SHORT_LIST);
+    protected static Service TEST_SERVICE1 = new Service(TEST_SERVICE1_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST,null);
+    protected static Service TEST_SERVICE2 = new Service(TEST_SERVICE2_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_NOT_PUBLIC, TEST_ON_SHORT_LIST,null);
+    protected static Service TEST_SERVICE3 = new Service(TEST_SERVICE3_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_NOT_ON_SHORT_LIST,null);
+    protected static Service TEST_MODIFIED_SERVICE1 = new Service(TEST_SERVICE1_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_NOT_PUBLIC, TEST_NOT_ON_SHORT_LIST,null);
     protected static List<Service> mockServiceList = new ArrayList<Service>(Arrays.asList(new Service[] { TEST_SERVICE1, TEST_SERVICE2,TEST_SERVICE3 }));
     protected static List<Service> mockPublicServiceList = new ArrayList<Service>(Arrays.asList(new Service[] { TEST_SERVICE1, TEST_SERVICE3 }));
     
@@ -64,7 +65,7 @@ public class ServiceControllerTest {
         when(serviceRepo.findAll()).thenReturn(mockServiceList);
         when(serviceRepo.findByIsPublic(true)).thenReturn(mockPublicServiceList);
         when(serviceRepo.findOne(any(Long.class))).thenReturn(TEST_SERVICE1);
-        when(serviceRepo.create(any(String.class), any(Status.class), any(Boolean.class), any(Boolean.class))).thenReturn(TEST_SERVICE1);
+        when(serviceRepo.create(any(String.class), any(Status.class), any(Boolean.class), any(Boolean.class), any(Boolean.class),null)).thenReturn(TEST_SERVICE1);
         when(serviceRepo.save(any(Service.class))).thenReturn(TEST_MODIFIED_SERVICE1);
         doNothing().when(serviceRepo).delete(any(Service.class));
     }

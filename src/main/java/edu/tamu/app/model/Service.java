@@ -41,7 +41,7 @@ public class Service extends BaseEntity {
     @Column(nullable = false)
     private boolean isAuto;
     
-    @Column(nullable = true, unique = true)
+    @Column(nullable = true)
     private String serviceUrl;
     
     @Column(nullable = false)

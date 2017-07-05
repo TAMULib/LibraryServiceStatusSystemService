@@ -7,10 +7,9 @@ import edu.tamu.framework.validation.InputValidator;
 public class ServiceValidator extends BaseModelValidator {
 
     public ServiceValidator() {
-        System.out.println("validating");
         String nameProperty = "name";
         this.addInputValidator(new InputValidator(InputValidationType.required, "Service requires a name", nameProperty, true));
-        this.addInputValidator(new InputValidator(InputValidationType.minlength, "Service name must be at least 1 characters", nameProperty, 1));
+        this.addInputValidator(new InputValidator(InputValidationType.minlength, "Service name must be at least 3 characters", nameProperty, 3));
         
         String statusProperty = "status";
         this.addInputValidator(new InputValidator(InputValidationType.required, "Service requires an enum status", statusProperty, true));

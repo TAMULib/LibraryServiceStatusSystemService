@@ -23,8 +23,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import edu.tamu.app.controller.NoteController;
 import edu.tamu.app.model.AppUser;
 import edu.tamu.app.model.Note;
+import edu.tamu.app.model.repo.AppUserRepo;
 import edu.tamu.app.model.repo.NoteRepo;
 import edu.tamu.framework.model.ApiResponse;
+import edu.tamu.framework.model.Credentials;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
@@ -44,7 +46,15 @@ public class NoteControllerTest {
     protected static Note TEST_MODIFIED_NOTE = new Note(TEST_MODIFIED_NOTE_TITLE, TEST_USER2);
     protected static List<Note> mockNoteList = new ArrayList<Note>(Arrays.asList(new Note[] { TEST_NOTE1, TEST_NOTE2, TEST_NOTE3 }));
     
+    protected static AppUser user = new AppUser("123456789");
+    
     protected static ApiResponse response;
+    
+    @Mock
+    protected static AppUserRepo userRepo;
+    
+    @Mock
+    protected static Credentials credentials;
 
     @Mock
     protected NoteRepo noteRepo;
@@ -58,6 +68,8 @@ public class NoteControllerTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
+        when(credentials.getUin()).thenReturn("123456789");
+        when(userRepo.findByUin(any(String.class))).thenReturn(user);
         when(noteRepo.findAll()).thenReturn(mockNoteList);
         when(noteRepo.findOne(any(Long.class))).thenReturn(TEST_NOTE1);
         when(noteRepo.create(any(String.class), any(AppUser.class))).thenReturn(TEST_NOTE1);
@@ -84,10 +96,8 @@ public class NoteControllerTest {
     
     @Test
     public void testCreate() {
-        response = noteController.create(TEST_NOTE1);
+        response = noteController.create(TEST_NOTE1, credentials);
         assertEquals("Not sucessful at creating Note", SUCCESS, response.getMeta().getType());
-        Note note = (Note) response.getPayload().get("Note");
-        assertEquals("Incorrect service returned", TEST_NOTE1.getTitle(), note.getTitle());
     }
     
     @Test

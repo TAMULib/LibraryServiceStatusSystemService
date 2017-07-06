@@ -1,18 +1,24 @@
 package edu.tamu.app.controller;
 
 import static edu.tamu.framework.enums.ApiResponseType.SUCCESS;
+import static edu.tamu.framework.enums.BusinessValidationType.CREATE;
+import static edu.tamu.framework.enums.BusinessValidationType.EXISTS;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.tamu.app.model.Note;
+import edu.tamu.app.model.repo.AppUserRepo;
 import edu.tamu.app.model.repo.NoteRepo;
+import edu.tamu.framework.aspect.annotation.ApiCredentials;
 import edu.tamu.framework.aspect.annotation.ApiMapping;
 import edu.tamu.framework.aspect.annotation.ApiValidatedModel;
+import edu.tamu.framework.aspect.annotation.ApiValidation;
 import edu.tamu.framework.aspect.annotation.ApiVariable;
 import edu.tamu.framework.aspect.annotation.Auth;
 import edu.tamu.framework.model.ApiResponse;
+import edu.tamu.framework.model.Credentials;
 
 @RestController
 @ApiMapping("/note")
@@ -20,6 +26,9 @@ public class NoteController {
 
     @Autowired
     private NoteRepo noteRepo;
+    
+    @Autowired
+    private AppUserRepo userRepo;
     
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
@@ -38,10 +47,11 @@ public class NoteController {
     
     @ApiMapping("/create")
     @Auth(role="ROLE_SERVICE_MANAGER")
-    public ApiResponse create(@ApiValidatedModel Note note) {
-        note = noteRepo.create(note.getTitle(), note.getAuthor());
-        simpMessagingTemplate.convertAndSend("/channel/note", new ApiResponse(SUCCESS, noteRepo.findOne(note.getId())));
-        return new ApiResponse(SUCCESS, note);
+    @ApiValidation(business = { @ApiValidation.Business(value = CREATE), @ApiValidation.Business(value = EXISTS) })
+    public ApiResponse create(@ApiValidatedModel Note note, @ApiCredentials Credentials credentials) {
+        note = noteRepo.create(note.getTitle(), userRepo.findByUin(credentials.getUin()), note.getNoteType(), note.getBody(), note.getServices());
+        simpMessagingTemplate.convertAndSend("/channel/note", new ApiResponse(SUCCESS, noteRepo.findAll()));
+        return new ApiResponse(SUCCESS);
     }
     
     @ApiMapping("/update")

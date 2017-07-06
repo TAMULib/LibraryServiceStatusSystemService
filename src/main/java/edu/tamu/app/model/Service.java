@@ -27,7 +27,7 @@ import edu.tamu.framework.model.BaseEntity;
 @Entity
 public class Service extends BaseEntity {
 
-    @Size(min = 1)
+    @Size(min = 3)
     @Column(nullable = false, unique = true)
     private String name;
     

@@ -17,18 +17,18 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
 
-import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import edu.tamu.app.enums.NoteType;
+import edu.tamu.app.model.validation.NoteValidator;
 import edu.tamu.framework.model.BaseEntity;
 
 @Entity
 public class Note extends BaseEntity {
 
-    @Size(min = 1)
+    @Size(min = 3)
     @Column(nullable = false)
     private String title;
 
@@ -55,13 +55,21 @@ public class Note extends BaseEntity {
     private AppUser author;
     
     public Note() {
+        setModelValidator(new NoteValidator());
         setServices(new ArrayList<Service>());
     }
     
-    public Note(String name, AppUser author) {
+    public Note(String title, AppUser author) {
         this();
-        setTitle(name);
+        setTitle(title);
         setAuthor(author);
+    }
+    
+    public Note(String title, AppUser author, NoteType noteType, String body, List<Service> services) {
+        this(title, author);
+        setNoteType(noteType);
+        setBody(body);
+        setServices(services);
     }
     
     public String getTitle() {

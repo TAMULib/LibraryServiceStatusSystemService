@@ -58,8 +58,8 @@ public class NoteController {
     @Auth(role="ROLE_SERVICE_MANAGER")
     public ApiResponse update(@ApiValidatedModel Note note) {
         note = noteRepo.save(note);
-        simpMessagingTemplate.convertAndSend("/channel/note", new ApiResponse(SUCCESS, noteRepo.findOne(note.getId())));
-        return new ApiResponse(SUCCESS, note);
+        simpMessagingTemplate.convertAndSend("/channel/note", new ApiResponse(SUCCESS, noteRepo.findAll()));
+        return new ApiResponse(SUCCESS);
     }
     
     @ApiMapping("/remove")

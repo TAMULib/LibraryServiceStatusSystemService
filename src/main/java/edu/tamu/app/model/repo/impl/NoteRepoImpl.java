@@ -33,5 +33,14 @@ public class NoteRepoImpl implements NoteRepoCustom {
         }
         return note;
     }
+    
+    @Override
+    public void delete(Note note) {
+        for (Service service : note.getServices()) {
+            service.removeNote(note);
+            serviceRepo.save(service);
+        }
+        noteRepo.delete(note.getId());
+    }
 
 }

@@ -13,4 +13,6 @@ public interface NoteRepoCustom {
     
     public Note create(String title, AppUser author, NoteType noteType, String body, Set<Service> services);
     
+    public void delete(Note note);
+    
 }

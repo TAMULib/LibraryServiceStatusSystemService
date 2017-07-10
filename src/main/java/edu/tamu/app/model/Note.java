@@ -21,6 +21,10 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import edu.tamu.app.enums.NoteType;
 import edu.tamu.app.model.validation.NoteValidator;
 import edu.tamu.framework.model.BaseEntity;
@@ -34,6 +38,8 @@ public class Note extends BaseEntity {
 
     @Fetch(FetchMode.SELECT)
     @ManyToMany(fetch = EAGER, cascade= {REFRESH, MERGE })
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, scope = Service.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
     private Set<Service> services;
     
     private NoteType noteType;

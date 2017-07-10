@@ -1,7 +1,9 @@
 package edu.tamu.app.model;
 
-import static javax.persistence.CascadeType.REFRESH;
+import static javax.persistence.CascadeType.DETACH;
 import static javax.persistence.CascadeType.PERSIST;
+import static javax.persistence.CascadeType.REFRESH;
+import static javax.persistence.CascadeType.REMOVE;
 import static javax.persistence.FetchType.EAGER;
 
 import java.util.ArrayList;
@@ -12,8 +14,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.validation.constraints.Size;
 
@@ -34,37 +34,35 @@ public class Service extends BaseEntity {
     @Size(min = 3)
     @Column(nullable = false, unique = true)
     private String name;
-    
+
     @Fetch(FetchMode.SELECT)
     @ElementCollection(fetch = EAGER)
     private List<String> aliases;
-    
+
     @Column(nullable = false, unique = false)
     private Status status;
-    
+
     @Column(nullable = false)
     private boolean isAuto;
-    
+
     @Column(nullable = true)
     private String serviceUrl;
-    
+
     @Column(nullable = false)
     private Boolean isPublic;
-    
+
     @Column(nullable = false)
     private Boolean onShortList;
-    
-//    @Fetch(FetchMode.SELECT)
-//    @JoinTable(name="service_notes", joinColumns = @JoinColumn(name="service_id", referencedColumnName="id"), inverseJoinColumns = @JoinColumn(name="note_id", referencedColumnName="id"))
-    @ManyToMany(fetch = EAGER, targetEntity=Note.class, cascade= { REFRESH })
+
+    @ManyToMany(fetch = EAGER, cascade = { REFRESH, DETACH, PERSIST, REMOVE })
     private Set<Note> notes;
-    
+
     public Service() {
         setModelValidator(new ServiceValidator());
         setNotes(new HashSet<Note>());
         setAliases(new ArrayList<String>());
     }
-    
+
     public Service(String name, Status status, Boolean isAuto, Boolean isPublic, Boolean onShortList, String serviceUrl) {
         this();
         setName(name);
@@ -90,15 +88,15 @@ public class Service extends BaseEntity {
     public void setStatus(Status status) {
         this.status = status;
     }
-    
+
     public Boolean getIsAuto() {
         return isAuto;
     }
-    
+
     public void setIsAuto(Boolean isAuto) {
         this.isAuto = isAuto;
     }
-    
+
     public String getServiceUrl() {
         return serviceUrl;
     }
@@ -114,11 +112,11 @@ public class Service extends BaseEntity {
     public void setNotes(Set<Note> notes) {
         this.notes = notes;
     }
-    
+
     public void addNote(Note note) {
         this.notes.add(note);
     }
-    
+
     public void removeNote(Note note) {
         this.notes.remove(note);
     }

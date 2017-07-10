@@ -11,9 +11,10 @@ public class ServiceRepoImpl implements ServiceRepoCustom {
 
     @Autowired
     private ServiceRepo serviceRepo;
-    
+
     @Override
     public Service create(String name, Status status, Boolean isAuto, Boolean isPublic, Boolean onShortList, String serviceUrl) {
         return serviceRepo.save(new Service(name, status, isAuto, isPublic, onShortList, serviceUrl));
     }
+
 }

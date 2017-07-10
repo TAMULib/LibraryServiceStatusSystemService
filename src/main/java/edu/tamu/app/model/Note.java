@@ -4,9 +4,9 @@ import static javax.persistence.CascadeType.MERGE;
 import static javax.persistence.CascadeType.REFRESH;
 import static javax.persistence.FetchType.EAGER;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -33,8 +33,8 @@ public class Note extends BaseEntity {
     private String title;
 
     @Fetch(FetchMode.SELECT)
-    @ManyToMany(cascade = { REFRESH, MERGE}, fetch = EAGER)
-    private List<Service> services;
+    @ManyToMany(fetch = EAGER, cascade= {REFRESH, MERGE })
+    private Set<Service> services;
     
     private NoteType noteType;
 
@@ -56,7 +56,7 @@ public class Note extends BaseEntity {
     
     public Note() {
         setModelValidator(new NoteValidator());
-        setServices(new ArrayList<Service>());
+        setServices(new HashSet<Service>());
     }
     
     public Note(String title, AppUser author) {
@@ -65,7 +65,7 @@ public class Note extends BaseEntity {
         setAuthor(author);
     }
     
-    public Note(String title, AppUser author, NoteType noteType, String body, List<Service> services) {
+    public Note(String title, AppUser author, NoteType noteType, String body, Set<Service> services) {
         this(title, author);
         setNoteType(noteType);
         setBody(body);
@@ -80,12 +80,16 @@ public class Note extends BaseEntity {
         this.title = title;
     }
     
-    public List<Service> getServices() {
+    public Set<Service> getServices() {
         return services;
     }
     
-    public void setServices(List<Service> services) {
+    public void setServices(Set<Service> services) {
         this.services = services;
+    }
+    
+    public void removeService(Service service) {
+        this.services.remove(service);
     }
     
     public NoteType getNoteType() {

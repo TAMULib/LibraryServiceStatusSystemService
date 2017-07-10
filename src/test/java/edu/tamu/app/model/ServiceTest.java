@@ -118,22 +118,22 @@ public class ServiceTest {
         assertEquals("Service status url was not changed", TEST_SERVICE_URL, service.getServiceUrl());
     }
     
-    @Test
-    public void testUpdateNotes() {
-        Note note1 = noteRepo.create(TEST_NOTE_TITLE1, testUser);
-        Note note2 = noteRepo.create(TEST_NOTE_TITLE2, testUser);
-        List<Note> noteList1 = Arrays.asList(note1);
-        List<Note> noteList2 = Arrays.asList(note1, note2);
-        Service service = serviceRepo.create(TEST_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, null);
-        service.setNotes(noteList1);
-        service = refreshService(service);
-        assertEquals("Service notes did not contain the right number of notes", 1, service.getNotes().size());
-        assertEquals("Service notes not set", true, service.getNotes().contains(note1));
-        service.setNotes(noteList2);
-        service = refreshService(service);
-        assertEquals("Service notes did not contain the right number of notes", 2, service.getNotes().size());
-        assertEquals("Service notes not updated", true, service.getNotes().contains(note2));
-    }
+//    @Test
+//    public void testUpdateNotes() {
+//        Note note1 = noteRepo.create(TEST_NOTE_TITLE1, testUser);
+//        Note note2 = noteRepo.create(TEST_NOTE_TITLE2, testUser);
+//        List<Note> noteList1 = Arrays.asList(note1);
+//        List<Note> noteList2 = Arrays.asList(note1, note2);
+//        Service service = serviceRepo.create(TEST_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, null);
+//        service.setNotes(noteList1);
+//        service = refreshService(service);
+//        assertEquals("Service notes did not contain the right number of notes", 1, service.getNotes().size());
+//        assertEquals("Service notes not set", true, service.getNotes().contains(note1));
+//        service.setNotes(noteList2);
+//        service = refreshService(service);
+//        assertEquals("Service notes did not contain the right number of notes", 2, service.getNotes().size());
+//        assertEquals("Service notes not updated", true, service.getNotes().contains(note2));
+//    }
     
     @Test
     public void testDelete() {

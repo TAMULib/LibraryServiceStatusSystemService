@@ -1,15 +1,19 @@
 package edu.tamu.app.model;
 
-import static javax.persistence.CascadeType.MERGE;
 import static javax.persistence.CascadeType.REFRESH;
+import static javax.persistence.CascadeType.PERSIST;
 import static javax.persistence.FetchType.EAGER;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.validation.constraints.Size;
 
@@ -50,13 +54,14 @@ public class Service extends BaseEntity {
     @Column(nullable = false)
     private Boolean onShortList;
     
-    @Fetch(FetchMode.SELECT)
-    @ManyToMany(cascade = { REFRESH, MERGE }, fetch = EAGER)
-    private List<Note> notes;
+//    @Fetch(FetchMode.SELECT)
+//    @JoinTable(name="service_notes", joinColumns = @JoinColumn(name="service_id", referencedColumnName="id"), inverseJoinColumns = @JoinColumn(name="note_id", referencedColumnName="id"))
+    @ManyToMany(fetch = EAGER, targetEntity=Note.class, cascade= { REFRESH })
+    private Set<Note> notes;
     
     public Service() {
         setModelValidator(new ServiceValidator());
-        setNotes(new ArrayList<Note>());
+        setNotes(new HashSet<Note>());
         setAliases(new ArrayList<String>());
     }
     
@@ -102,12 +107,20 @@ public class Service extends BaseEntity {
         this.serviceUrl = serviceUrl;
     }
 
-    public List<Note> getNotes() {
+    public Set<Note> getNotes() {
         return notes;
     }
 
-    public void setNotes(List<Note> notes) {
+    public void setNotes(Set<Note> notes) {
         this.notes = notes;
+    }
+    
+    public void addNote(Note note) {
+        this.notes.add(note);
+    }
+    
+    public void removeNote(Note note) {
+        this.notes.remove(note);
     }
 
     public List<String> getAliases() {

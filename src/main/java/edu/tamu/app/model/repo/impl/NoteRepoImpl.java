@@ -1,6 +1,6 @@
 package edu.tamu.app.model.repo.impl;
 
-import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -21,7 +21,7 @@ public class NoteRepoImpl implements NoteRepoCustom {
         return noteRepo.save(new Note(title, author));
     }
     
-    public Note create(String title, AppUser author, NoteType noteType, String body, List<Service> services) {
+    public Note create(String title, AppUser author, NoteType noteType, String body, Set<Service> services) {
         return  noteRepo.save(new Note(title, author, noteType, body, services));
     }
 

@@ -34,9 +34,9 @@ public class NoteRepoImpl implements NoteRepoCustom {
         note = noteRepo.save(note);
         for (Service service : note.getServices()) {
             service.addNote(note);
-            serviceRepo.save(service);
+            service = serviceRepo.save(service);
+            simpMessagingTemplate.convertAndSend("/channel/service/" + service.getId(), new ApiResponse(SUCCESS, service));
         }
-        simpMessagingTemplate.convertAndSend("/channel/service", new ApiResponse(SUCCESS, serviceRepo.findAll()));
         return note;
     }
 
@@ -44,9 +44,9 @@ public class NoteRepoImpl implements NoteRepoCustom {
     public void delete(Note note) {
         for (Service service : note.getServices()) {
             service.removeNote(note);
-            serviceRepo.save(service);
-        }
-        simpMessagingTemplate.convertAndSend("/channel/service", new ApiResponse(SUCCESS, serviceRepo.findAll()));
+            service = serviceRepo.save(service);
+            simpMessagingTemplate.convertAndSend("/channel/service/" + service.getId(), new ApiResponse(SUCCESS, service));
+        }        
         noteRepo.delete(note.getId());
     }
 

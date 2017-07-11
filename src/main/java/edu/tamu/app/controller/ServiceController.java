@@ -63,7 +63,7 @@ public class ServiceController {
     @ApiValidation(business = { @ApiValidation.Business(value = UPDATE), @ApiValidation.Business(value = NONEXISTS) })
     public ApiResponse updateService(@ApiValidatedModel Service service) {
         service = serviceRepo.save(service);
-        simpMessagingTemplate.convertAndSend("/channel/service", new ApiResponse(SUCCESS, serviceRepo.findAll()));
+        simpMessagingTemplate.convertAndSend("/channel/service/" + service.getId(), new ApiResponse(SUCCESS, service));
         return new ApiResponse(SUCCESS, service);
     }
     

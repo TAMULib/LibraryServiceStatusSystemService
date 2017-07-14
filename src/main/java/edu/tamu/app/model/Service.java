@@ -1,11 +1,15 @@
 package edu.tamu.app.model;
 
-import static javax.persistence.CascadeType.MERGE;
+import static javax.persistence.CascadeType.DETACH;
+import static javax.persistence.CascadeType.PERSIST;
 import static javax.persistence.CascadeType.REFRESH;
+import static javax.persistence.CascadeType.REMOVE;
 import static javax.persistence.FetchType.EAGER;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -27,39 +31,38 @@ import edu.tamu.framework.model.BaseEntity;
 @Entity
 public class Service extends BaseEntity {
 
-    @Size(min = 1)
+    @Size(min = 3)
     @Column(nullable = false, unique = true)
     private String name;
-    
+
     @Fetch(FetchMode.SELECT)
     @ElementCollection(fetch = EAGER)
     private List<String> aliases;
-    
+
     @Column(nullable = false, unique = false)
     private Status status;
-    
+
     @Column(nullable = false)
     private boolean isAuto;
-    
+
     @Column(nullable = true)
     private String serviceUrl;
-    
+
     @Column(nullable = false)
     private Boolean isPublic;
-    
+
     @Column(nullable = false)
     private Boolean onShortList;
-    
-    @Fetch(FetchMode.SELECT)
-    @ManyToMany(cascade = { REFRESH, MERGE }, fetch = EAGER)
-    private List<Note> notes;
-    
+
+    @ManyToMany(fetch = EAGER, cascade = { REFRESH, DETACH, PERSIST, REMOVE })
+    private Set<Note> notes;
+
     public Service() {
         setModelValidator(new ServiceValidator());
-        setNotes(new ArrayList<Note>());
+        setNotes(new HashSet<Note>());
         setAliases(new ArrayList<String>());
     }
-    
+
     public Service(String name, Status status, Boolean isAuto, Boolean isPublic, Boolean onShortList, String serviceUrl) {
         this();
         setName(name);
@@ -85,15 +88,15 @@ public class Service extends BaseEntity {
     public void setStatus(Status status) {
         this.status = status;
     }
-    
+
     public Boolean getIsAuto() {
         return isAuto;
     }
-    
+
     public void setIsAuto(Boolean isAuto) {
         this.isAuto = isAuto;
     }
-    
+
     public String getServiceUrl() {
         return serviceUrl;
     }
@@ -102,12 +105,20 @@ public class Service extends BaseEntity {
         this.serviceUrl = serviceUrl;
     }
 
-    public List<Note> getNotes() {
+    public Set<Note> getNotes() {
         return notes;
     }
 
-    public void setNotes(List<Note> notes) {
+    public void setNotes(Set<Note> notes) {
         this.notes = notes;
+    }
+
+    public void addNote(Note note) {
+        this.notes.add(note);
+    }
+
+    public void removeNote(Note note) {
+        this.notes.remove(note);
     }
 
     public List<String> getAliases() {

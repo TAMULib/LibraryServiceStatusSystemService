@@ -4,9 +4,9 @@ import static javax.persistence.CascadeType.MERGE;
 import static javax.persistence.CascadeType.REFRESH;
 import static javax.persistence.FetchType.EAGER;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,53 +17,68 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
 
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import edu.tamu.app.enums.NoteType;
+import edu.tamu.app.model.validation.NoteValidator;
 import edu.tamu.framework.model.BaseEntity;
 
 @Entity
 public class Note extends BaseEntity {
 
-    @Size(min = 1)
+    @Size(min = 3)
     @Column(nullable = false)
     private String title;
 
-    @Fetch(FetchMode.SELECT)
-    @ManyToMany(cascade = { REFRESH, MERGE}, fetch = EAGER)
-    private List<Service> services;
-    
+    @ManyToMany(fetch = EAGER, cascade = { REFRESH, MERGE })
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, scope = Service.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
+    private Set<Service> services;
+
     private NoteType noteType;
 
     private String body;
 
     @Temporal(TemporalType.DATE)
     private Calendar scheduledPostingStart;
-    
+
     @Temporal(TemporalType.DATE)
     private Calendar scheduledPostingEnd;
-    
+
     @Temporal(TemporalType.TIMESTAMP)
     @UpdateTimestamp
     private Calendar lastModified;
-    
+
     @JoinColumn(nullable = false)
     @ManyToOne(cascade = REFRESH)
     private AppUser author;
-    
+
     public Note() {
-        setServices(new ArrayList<Service>());
+        setModelValidator(new NoteValidator());
+        setServices(new HashSet<Service>());
     }
-    
-    public Note(String name, AppUser author) {
+
+    public Note(String title, AppUser author) {
         this();
-        setTitle(name);
+        setTitle(title);
         setAuthor(author);
     }
-    
+
+    public Note(String title, AppUser author, NoteType noteType, String body) {
+        this(title, author);
+        setNoteType(noteType);
+        setBody(body);
+    }
+
+    public Note(String title, AppUser author, NoteType noteType, String body, Set<Service> services) {
+        this(title, author, noteType, body);
+        setServices(services);
+    }
+
     public String getTitle() {
         return title;
     }
@@ -71,15 +86,19 @@ public class Note extends BaseEntity {
     public void setTitle(String title) {
         this.title = title;
     }
-    
-    public List<Service> getServices() {
+
+    public Set<Service> getServices() {
         return services;
     }
-    
-    public void setServices(List<Service> services) {
+
+    public void setServices(Set<Service> services) {
         this.services = services;
     }
-    
+
+    public void removeService(Service service) {
+        this.services.remove(service);
+    }
+
     public NoteType getNoteType() {
         return noteType;
     }

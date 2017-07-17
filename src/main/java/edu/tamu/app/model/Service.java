@@ -1,7 +1,5 @@
 package edu.tamu.app.model;
 
-import static javax.persistence.CascadeType.DETACH;
-import static javax.persistence.CascadeType.PERSIST;
 import static javax.persistence.CascadeType.REFRESH;
 import static javax.persistence.CascadeType.REMOVE;
 import static javax.persistence.FetchType.EAGER;
@@ -14,11 +12,15 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import edu.tamu.app.enums.Status;
 import edu.tamu.app.model.validation.ServiceValidator;
@@ -54,7 +56,9 @@ public class Service extends BaseEntity {
     @Column(nullable = false)
     private Boolean onShortList;
 
-    @ManyToMany(fetch = EAGER, cascade = { REFRESH, DETACH, PERSIST, REMOVE })
+    @OneToMany(fetch = EAGER, cascade = { REFRESH, REMOVE }, mappedBy = "service")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, scope = Note.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
     private Set<Note> notes;
 
     public Service() {

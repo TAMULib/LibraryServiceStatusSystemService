@@ -5,23 +5,16 @@ import static javax.persistence.CascadeType.REFRESH;
 import static javax.persistence.FetchType.EAGER;
 
 import java.util.Calendar;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.UpdateTimestamp;
-
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import edu.tamu.app.enums.NoteType;
 import edu.tamu.app.model.validation.NoteValidator;
@@ -34,10 +27,8 @@ public class Note extends BaseEntity {
     @Column(nullable = false)
     private String title;
 
-    @ManyToMany(fetch = EAGER, cascade = { REFRESH, MERGE })
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, scope = Service.class, property = "id")
-    @JsonIdentityReference(alwaysAsId = true)
-    private Set<Service> services;
+    @ManyToOne(fetch = EAGER, cascade = MERGE)
+    private Service service;
 
     private NoteType noteType;
 
@@ -59,7 +50,7 @@ public class Note extends BaseEntity {
 
     public Note() {
         setModelValidator(new NoteValidator());
-        setServices(new HashSet<Service>());
+        setService(new Service());
     }
 
     public Note(String title, AppUser author) {
@@ -74,9 +65,9 @@ public class Note extends BaseEntity {
         setBody(body);
     }
 
-    public Note(String title, AppUser author, NoteType noteType, String body, Set<Service> services) {
+    public Note(String title, AppUser author, NoteType noteType, String body, Service service) {
         this(title, author, noteType, body);
-        setServices(services);
+        setService(service);
     }
 
     public String getTitle() {
@@ -87,16 +78,12 @@ public class Note extends BaseEntity {
         this.title = title;
     }
 
-    public Set<Service> getServices() {
-        return services;
+    public Service getService() {
+        return service;
     }
 
-    public void setServices(Set<Service> services) {
-        this.services = services;
-    }
-
-    public void removeService(Service service) {
-        this.services.remove(service);
+    public void setService(Service service) {
+        this.service = service;
     }
 
     public NoteType getNoteType() {

@@ -62,7 +62,7 @@ public class UserController {
      * @throws Exception
      */
     @ApiMapping("/all")
-    @Auth(role = "ROLE_MANAGER")
+    @Auth(role = "ROLE_WEB_MANAGER")
     public ApiResponse allUsers() throws Exception {
         return new ApiResponse(SUCCESS,  userRepo.findAll());
     }
@@ -74,7 +74,7 @@ public class UserController {
      * @throws Exception
      */
     @ApiMapping("/update")
-    @Auth(role = "ROLE_MANAGER")
+    @Auth(role = "ROLE_WEB_MANAGER")
     public ApiResponse updateUser(@ApiModel AppUser user) throws Exception {        
         // get the persisted user for its encoded password        
         AppUser persistedUser = userRepo.findOne(user.getId());

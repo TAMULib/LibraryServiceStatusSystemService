@@ -10,10 +10,11 @@ import edu.tamu.app.model.repo.custom.ServiceRepoCustom;
 public class ServiceRepoImpl implements ServiceRepoCustom {
 
     @Autowired
-    ServiceRepo serviceRepo;
-    
+    private ServiceRepo serviceRepo;
+
     @Override
-    public Service create(String name, Status status) {
-        return serviceRepo.save(new Service(name, status));
+    public Service create(String name, Status status, Boolean isAuto, Boolean isPublic, Boolean onShortList, String serviceUrl) {
+        return serviceRepo.save(new Service(name, status, isAuto, isPublic, onShortList, serviceUrl));
     }
+
 }

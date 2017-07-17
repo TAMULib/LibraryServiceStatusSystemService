@@ -4,66 +4,72 @@ import static javax.persistence.CascadeType.MERGE;
 import static javax.persistence.CascadeType.REFRESH;
 import static javax.persistence.FetchType.EAGER;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
 
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import edu.tamu.app.enums.NoteType;
+import edu.tamu.app.model.validation.NoteValidator;
 import edu.tamu.framework.model.BaseEntity;
 
 @Entity
 public class Note extends BaseEntity {
 
-    @Size(min = 1)
+    @Size(min = 3)
     @Column(nullable = false)
     private String title;
 
-    @Fetch(FetchMode.SELECT)
-    @ManyToMany(cascade = { REFRESH, MERGE}, fetch = EAGER)
-    private List<Service> services;
-    
+    @ManyToOne(fetch = EAGER, cascade = MERGE)
+    private Service service;
+
     private NoteType noteType;
 
     private String body;
 
     @Temporal(TemporalType.DATE)
     private Calendar scheduledPostingStart;
-    
+
     @Temporal(TemporalType.DATE)
     private Calendar scheduledPostingEnd;
-    
+
     @Temporal(TemporalType.TIMESTAMP)
     @UpdateTimestamp
     private Calendar lastModified;
-    
+
     @JoinColumn(nullable = false)
     @ManyToOne(cascade = REFRESH)
     private AppUser author;
-    
+
     public Note() {
-        setServices(new ArrayList<Service>());
+        setModelValidator(new NoteValidator());
+        setService(new Service());
     }
-    
-    public Note(String name, AppUser author) {
+
+    public Note(String title, AppUser author) {
         this();
-        setTitle(name);
+        setTitle(title);
         setAuthor(author);
     }
-    
+
+    public Note(String title, AppUser author, NoteType noteType, String body) {
+        this(title, author);
+        setNoteType(noteType);
+        setBody(body);
+    }
+
+    public Note(String title, AppUser author, NoteType noteType, String body, Service service) {
+        this(title, author, noteType, body);
+        setService(service);
+    }
+
     public String getTitle() {
         return title;
     }
@@ -71,15 +77,15 @@ public class Note extends BaseEntity {
     public void setTitle(String title) {
         this.title = title;
     }
-    
-    public List<Service> getServices() {
-        return services;
+
+    public Service getService() {
+        return service;
     }
-    
-    public void setServices(List<Service> services) {
-        this.services = services;
+
+    public void setService(Service service) {
+        this.service = service;
     }
-    
+
     public NoteType getNoteType() {
         return noteType;
     }

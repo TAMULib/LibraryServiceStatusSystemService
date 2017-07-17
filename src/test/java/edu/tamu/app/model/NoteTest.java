@@ -46,6 +46,8 @@ public class NoteTest {
     protected static final NoteType TEST_NOTE_TYPE = NoteType.ISSUE;
     protected static final NoteType TEST_ALTERNATIVE_NOTE_TYPE = NoteType.MAINTENANCE;
     protected static final Calendar TEST_DATE = Calendar.getInstance();
+    protected Service service1;
+    protected Service service2; 
 
     protected static final Credentials TEST_CREDENTIALS = new Credentials();
     {
@@ -68,32 +70,34 @@ public class NoteTest {
     @Before
     public void setUp() {
         testUser = appUserRepo.create(TEST_CREDENTIALS.getUin());
-        testNote = new Note(TEST_NOTE_TITLE, testUser, TEST_NOTE_TYPE, TEST_NOTE_BODY);
+        service1 = serviceRepo.create(TEST_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, null);
+        service2 = serviceRepo.create(TEST_ALTERNATIVE_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, null);
+        testNote = noteRepo.create(new Note(TEST_NOTE_TITLE, testUser, TEST_NOTE_TYPE, TEST_NOTE_BODY, service1), TEST_CREDENTIALS);
     }
 
     @Test
     public void testCreate() {
         long initialCount = noteRepo.count();
-        noteRepo.create(testNote, TEST_CREDENTIALS);
+        noteRepo.create(new Note(TEST_ALTERNATIVE_NOTE_TITLE, testUser, TEST_NOTE_TYPE, TEST_ALTERNATIVE_NOTE_BODY, service2), TEST_CREDENTIALS);
         assertEquals("The number of notes did not increase by one", initialCount + 1, noteRepo.count());
     }
 
     @Test(expected = DataIntegrityViolationException.class)
     public void testTitleNotNull() {
         testNote.setTitle(null);
-        noteRepo.create(testNote, TEST_CREDENTIALS);
+        noteRepo.create(new Note(null, testUser, TEST_NOTE_TYPE, TEST_ALTERNATIVE_NOTE_BODY, service2), TEST_CREDENTIALS);
     }
 
     @Test(expected = DataIntegrityViolationException.class)
     public void testAuthorNotNull() {
         TEST_CREDENTIALS.setUin("987654321");
-        noteRepo.create(testNote, TEST_CREDENTIALS);
+        noteRepo.create(new Note(TEST_ALTERNATIVE_NOTE_TITLE, null, TEST_NOTE_TYPE, TEST_ALTERNATIVE_NOTE_BODY, service2), TEST_CREDENTIALS);
     }
 
     @Test(expected = ConstraintViolationException.class)
     public void testTitleNotEmpty() {
         testNote.setTitle("");
-        noteRepo.create(testNote, TEST_CREDENTIALS);
+        noteRepo.create(new Note("", testUser, TEST_NOTE_TYPE, TEST_ALTERNATIVE_NOTE_BODY, service2), TEST_CREDENTIALS);
     }
 
     @Test
@@ -106,19 +110,14 @@ public class NoteTest {
 
     @Test
     public void testUpdateServices() {
-        Service service1 = serviceRepo.create(TEST_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, null);
-        Service service2 = serviceRepo.create(TEST_ALTERNATIVE_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, null);
-        Set<Service> serviceList1 = new HashSet<Service>(Arrays.asList(service1));
-        Set<Service> serviceList2 = new HashSet<Service>(Arrays.asList(service1, service2));
+        
         Note note = noteRepo.create(testNote, TEST_CREDENTIALS);
-        note.setServices(serviceList1);
+        note.setService(service1);
         note = noteRepo.save(note);
-        assertEquals("Note services did not contain the right number of services", 1, note.getServices().size());
-        assertEquals("Note services not set", true, note.getServices().contains(service1));
-        note.setServices(serviceList2);
+        assertEquals("Service was not set", service1, note.getService());
+        note.setService(service2);
         note = noteRepo.save(note);
-        assertEquals("Note services did not contain the right number of services", 2, note.getServices().size());
-        assertEquals("Note services not updated", true, note.getServices().contains(service2));
+        assertEquals("Service was not updated correctly", service2, note.getService());
     }
 
     @Test
@@ -187,7 +186,7 @@ public class NoteTest {
     @Test
     public void testDelete() {
         long initalCount = noteRepo.count();
-        Note note = noteRepo.create(testNote, TEST_CREDENTIALS);
+        Note note = noteRepo.create(new Note(TEST_ALTERNATIVE_NOTE_TITLE, testUser, TEST_NOTE_TYPE, TEST_ALTERNATIVE_NOTE_BODY, service2), TEST_CREDENTIALS);
         assertEquals("Note not created", initalCount + 1, noteRepo.count());
         noteRepo.delete(note);
         assertEquals("Note not deleted", initalCount, noteRepo.count());

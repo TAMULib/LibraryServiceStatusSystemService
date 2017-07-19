@@ -31,7 +31,7 @@ public class ServiceController {
     private ServiceRepo serviceRepo;
 
     @ApiMapping("/all")
-    @Auth(role="ROLE_STAFF")
+    @Auth(role="ROLE_ANONYMOUS")
     public ApiResponse getAllServices() {
         return new ApiResponse(SUCCESS, serviceRepo.findAll());
     }

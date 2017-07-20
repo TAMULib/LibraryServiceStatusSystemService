@@ -4,7 +4,6 @@ import static javax.persistence.CascadeType.REFRESH;
 import static javax.persistence.CascadeType.REMOVE;
 import static javax.persistence.FetchType.EAGER;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -15,8 +14,6 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.Fetch;
@@ -60,7 +57,7 @@ public class Service extends BaseEntity {
     @Column(nullable = false)
     private Boolean onShortList;
     
-//    @Lob
+    @Lob
     @Column(nullable = true)
     private String description;
 

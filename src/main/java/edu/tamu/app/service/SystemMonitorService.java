@@ -18,7 +18,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.tamu.app.enums.Status;
 import edu.tamu.app.model.OverallStatus;
-import edu.tamu.app.model.repo.AppUserRepo;
 import edu.tamu.app.model.repo.ServiceRepo;
 import edu.tamu.framework.util.HttpUtility;
 
@@ -32,9 +31,6 @@ public class SystemMonitorService implements MonitorService {
 	
 	@Autowired
 	ObjectMapper objectMapper;
-	
-	@Autowired
-	AppUserRepo userRepo;
 	
 	private static final String SUCCESS_MESSAGE = "All services are working.";
 	private static final String ERROR_MESSAGE = "Some services are experiencing problems.";

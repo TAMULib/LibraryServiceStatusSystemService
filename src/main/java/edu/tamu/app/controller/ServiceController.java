@@ -83,7 +83,6 @@ public class ServiceController {
     }
     
     private void sendStatusUpdate(Service service, Credentials credentials) {
-        System.out.println("Uhhhh ya!");
         AppUser user = userRepo.findByUin(credentials.getUin());
         if (user.getRole() == ROLE_ANONYMOUS || user.getRole() == ROLE_USER) {
             simpMessagingTemplate.convertAndSend("/channel/status/overall-public", new ApiResponse(SUCCESS, systemMonitorService.getOverallStatusPublic()));

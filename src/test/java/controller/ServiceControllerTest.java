@@ -23,9 +23,14 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import edu.tamu.app.controller.ServiceController;
 import edu.tamu.app.enums.Status;
+import edu.tamu.app.model.AppUser;
+import edu.tamu.app.model.OverallStatus;
 import edu.tamu.app.model.Service;
+import edu.tamu.app.model.repo.AppUserRepo;
 import edu.tamu.app.model.repo.ServiceRepo;
+import edu.tamu.app.service.SystemMonitorService;
 import edu.tamu.framework.model.ApiResponse;
+import edu.tamu.framework.model.Credentials;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
@@ -50,6 +55,8 @@ public class ServiceControllerTest {
     
     protected static ApiResponse response;
     
+    protected static AppUser user = new AppUser("123456789");
+    
     @Mock
     protected ServiceRepo serviceRepo;
     
@@ -59,9 +66,21 @@ public class ServiceControllerTest {
     @InjectMocks
     protected ServiceController serviceController;
     
+    @Mock
+    protected static Credentials credentials;
+    
+    @Mock
+    protected AppUserRepo userRepo;
+    
+    @Mock
+    protected SystemMonitorService systemMonitorService;
+    
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
+        when(credentials.getUin()).thenReturn("123456789");
+        when(userRepo.findByUin(any(String.class))).thenReturn(user);
+        when(systemMonitorService.getOverallStatus()).thenReturn(new OverallStatus(edu.tamu.app.enums.OverallMessageType.SUCCESS, "Success"));
         when(serviceRepo.findAll()).thenReturn(mockServiceList);
         when(serviceRepo.findByIsPublic(true)).thenReturn(mockPublicServiceList);
         when(serviceRepo.findOne(any(Long.class))).thenReturn(TEST_SERVICE1);
@@ -109,7 +128,7 @@ public class ServiceControllerTest {
     
     @Test
     public void testCreate() {
-        response = serviceController.createService(TEST_SERVICE1);
+        response = serviceController.createService(TEST_SERVICE1, credentials);
         assertEquals("Not sucessful at creating Service", SUCCESS, response.getMeta().getType());
         Service service = (Service) response.getPayload().get("Service");
         assertEquals("Incorrect service returned", TEST_SERVICE1.getName(), service.getName());
@@ -117,7 +136,7 @@ public class ServiceControllerTest {
     
     @Test
     public void testUpdate() {
-        response = serviceController.updateService(TEST_MODIFIED_SERVICE1);
+        response = serviceController.updateService(TEST_MODIFIED_SERVICE1, credentials);
         assertEquals("Not successful at updating service", SUCCESS, response.getMeta().getType());
         Service service = (Service) response.getPayload().get("Service");
         assertEquals("Service name was not properly updated", TEST_MODIFIED_SERVICE1.getName(), service.getName());

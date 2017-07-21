@@ -12,6 +12,7 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.Size;
 
@@ -55,6 +56,10 @@ public class Service extends BaseEntity {
 
     @Column(nullable = false)
     private Boolean onShortList;
+    
+    @Lob
+    @Column(nullable = true)
+    private String description;
 
     @OneToMany(fetch = EAGER, cascade = { REFRESH, REMOVE }, mappedBy = "service")
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, scope = Note.class, property = "id")
@@ -67,7 +72,7 @@ public class Service extends BaseEntity {
         setAliases(new ArrayList<String>());
     }
 
-    public Service(String name, Status status, Boolean isAuto, Boolean isPublic, Boolean onShortList, String serviceUrl) {
+    public Service(String name, Status status, Boolean isAuto, Boolean isPublic, Boolean onShortList, String serviceUrl, String description) {
         this();
         setName(name);
         setStatus(status);
@@ -75,6 +80,7 @@ public class Service extends BaseEntity {
         setIsPublic(isPublic);
         setOnShortList(onShortList);
         setServiceUrl(serviceUrl);
+        setDescription(description);
     }
 
     public String getName() {
@@ -147,5 +153,13 @@ public class Service extends BaseEntity {
 
     public void setOnShortList(Boolean onShortList) {
         this.onShortList = onShortList;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

@@ -39,7 +39,7 @@ public class ServiceController {
     
     @Autowired
     private SystemMonitorService systemMonitorService;
-    
+
     @Autowired
     private AppUserRepo userRepo;
 
@@ -66,7 +66,7 @@ public class ServiceController {
     @Auth(role = "ROLE_SERVICE_MANAGER")
     @ApiValidation(business = { @ApiValidation.Business(value = CREATE), @ApiValidation.Business(value = EXISTS) })
     public ApiResponse createService(@ApiValidatedModel Service service, @ApiCredentials Credentials credentials) {
-        service = serviceRepo.create(service.getName(), service.getStatus(), service.getIsAuto(), service.getIsPublic(), service.getOnShortList(), service.getServiceUrl());
+        service = serviceRepo.create(service.getName(), service.getStatus(), service.getIsAuto(), service.getIsPublic(), service.getOnShortList(), service.getServiceUrl(), service.getDescription());
         simpMessagingTemplate.convertAndSend("/channel/service", new ApiResponse(SUCCESS, serviceRepo.findAll()));
         sendStatusUpdate(service, credentials);
         return new ApiResponse(SUCCESS, service);

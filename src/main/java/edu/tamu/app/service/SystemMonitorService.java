@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.tamu.app.enums.Status;
 import edu.tamu.app.model.OverallStatus;
+import edu.tamu.app.model.repo.AppUserRepo;
 import edu.tamu.app.model.repo.ServiceRepo;
 import edu.tamu.framework.util.HttpUtility;
 
@@ -31,6 +32,9 @@ public class SystemMonitorService implements MonitorService {
 	
 	@Autowired
 	ObjectMapper objectMapper;
+	
+	@Autowired
+	AppUserRepo userRepo;
 	
 	private static final String SUCCESS_MESSAGE = "All services are working.";
 	private static final String ERROR_MESSAGE = "Some services are experiencing problems.";
@@ -62,8 +66,10 @@ public class SystemMonitorService implements MonitorService {
 	public OverallStatus getOverallStatus() {
 		Long downCount = serviceRepo.countByStatus(Status.DOWN);
 		if (downCount == 0) {
+		    System.out.println("All up");
 			return new OverallStatus(SUCCESS, SUCCESS_MESSAGE);
 		}
+		System.out.println("error");
 		return new OverallStatus(ERROR, ERROR_MESSAGE);
 	}
 	
@@ -79,5 +85,4 @@ public class SystemMonitorService implements MonitorService {
 		List<Map<String,String>> mappedStatusResponse  = objectMapper.readValue(rawStatusResponse, new TypeReference<List<Map<String, String>>>(){});
 		return Status.valueOf(mappedStatusResponse.get(0).get("service").toUpperCase());
 	}
-
 }

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import edu.tamu.app.model.Service;
 import edu.tamu.app.model.repo.ServiceRepo;
+import edu.tamu.app.service.SystemMonitorService;
 import edu.tamu.framework.aspect.annotation.ApiMapping;
 import edu.tamu.framework.aspect.annotation.ApiValidatedModel;
 import edu.tamu.framework.aspect.annotation.ApiValidation;
@@ -29,6 +30,9 @@ public class ServiceController {
 
     @Autowired
     private ServiceRepo serviceRepo;
+    
+    @Autowired
+    private SystemMonitorService systemMonitorService;
 
     @ApiMapping("/all")
     @Auth(role="ROLE_ANONYMOUS")
@@ -53,8 +57,9 @@ public class ServiceController {
     @Auth(role = "ROLE_SERVICE_MANAGER")
     @ApiValidation(business = { @ApiValidation.Business(value = CREATE), @ApiValidation.Business(value = EXISTS) })
     public ApiResponse createService(@ApiValidatedModel Service service) {
-        service = serviceRepo.create(service.getName(), service.getStatus(), service.getIsAuto(), service.getIsPublic(), service.getOnShortList(), service.getServiceUrl());
+        service = serviceRepo.create(service.getName(), service.getStatus(), service.getIsAuto(), service.getIsPublic(), service.getOnShortList(), service.getServiceUrl(), service.getDescription());
         simpMessagingTemplate.convertAndSend("/channel/service", new ApiResponse(SUCCESS, serviceRepo.findAll()));
+        systemMonitorService.updateAll();
         return new ApiResponse(SUCCESS, service);
     }
     
@@ -64,6 +69,7 @@ public class ServiceController {
     public ApiResponse updateService(@ApiValidatedModel Service service) {
         service = serviceRepo.save(service);
         simpMessagingTemplate.convertAndSend("/channel/service/" + service.getId(), new ApiResponse(SUCCESS, service));
+        systemMonitorService.updateAll();
         return new ApiResponse(SUCCESS, service);
     }
     

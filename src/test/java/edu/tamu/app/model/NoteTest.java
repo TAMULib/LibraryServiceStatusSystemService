@@ -34,6 +34,8 @@ import edu.tamu.framework.model.Credentials;
 public class NoteTest {
 
     protected static final String TEST_NOTE_TITLE = "Note Title";
+    protected static final String TEST_SERVICE_URL = "https://library.tamu.edu";
+    protected static final String TEST_DESCRIPTION = "Test Service Description";
     protected static final String TEST_ALTERNATIVE_NOTE_TITLE = "Alternative Note Title";
     protected static final String TEST_SERVICE_NAME = "Test Service Name";
     protected static final String TEST_ALTERNATIVE_SERVICE_NAME = "Different Service Name";
@@ -70,8 +72,8 @@ public class NoteTest {
     @Before
     public void setUp() {
         testUser = appUserRepo.create(TEST_CREDENTIALS.getUin());
-        service1 = serviceRepo.create(TEST_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, null);
-        service2 = serviceRepo.create(TEST_ALTERNATIVE_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, null);
+        service1 = serviceRepo.create(TEST_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, TEST_SERVICE_URL, TEST_DESCRIPTION);
+        service2 = serviceRepo.create(TEST_ALTERNATIVE_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, TEST_SERVICE_URL, TEST_DESCRIPTION);
         testNote = noteRepo.create(new Note(TEST_NOTE_TITLE, testUser, TEST_NOTE_TYPE, TEST_NOTE_BODY, service1), TEST_CREDENTIALS);
     }
 

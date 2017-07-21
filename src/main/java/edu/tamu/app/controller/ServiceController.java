@@ -86,9 +86,9 @@ public class ServiceController {
         System.out.println("Uhhhh ya!");
         AppUser user = userRepo.findByUin(credentials.getUin());
         if (user.getRole() == ROLE_ANONYMOUS || user.getRole() == ROLE_USER) {
-            simpMessagingTemplate.convertAndSend("/private/queue/status/overall-public", new ApiResponse(SUCCESS, systemMonitorService.getOverallStatusPublic()));
+            simpMessagingTemplate.convertAndSend("/channel/status/overall-public", new ApiResponse(SUCCESS, systemMonitorService.getOverallStatusPublic()));
         } else {
-            simpMessagingTemplate.convertAndSend("/private/queue/status/overall-full", new ApiResponse(SUCCESS, systemMonitorService.getOverallStatus()));
+            simpMessagingTemplate.convertAndSend("/channel/status/overall-full", new ApiResponse(SUCCESS, systemMonitorService.getOverallStatus()));
         }
     }
     

@@ -66,10 +66,8 @@ public class SystemMonitorService implements MonitorService {
 	public OverallStatus getOverallStatus() {
 		Long downCount = serviceRepo.countByStatus(Status.DOWN);
 		if (downCount == 0) {
-		    System.out.println("All up");
 			return new OverallStatus(SUCCESS, SUCCESS_MESSAGE);
 		}
-		System.out.println("error");
 		return new OverallStatus(ERROR, ERROR_MESSAGE);
 	}
 	

@@ -13,7 +13,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 import edu.tamu.app.model.Note;
 
-public class NoteSpecification implements Specification<Note> {
+public class NoteSpecification<E> implements Specification<E> {
     
     private Map<String, String[]> filters;
     
@@ -22,14 +22,25 @@ public class NoteSpecification implements Specification<Note> {
     }
 
     @Override
-    public Predicate toPredicate(Root<Note> root, CriteriaQuery<?> query, CriteriaBuilder cb){
+    public Predicate toPredicate(Root<E> root, CriteriaQuery<?> query, CriteriaBuilder cb){
         
-        List<Predicate> timePredicate = new ArrayList<Predicate>();
-        
-        
-        
-        return null;
-    }
-
-    
+        List<Predicate> datePredicates = new ArrayList<Predicate>();
+//        System.out.println("entry set is: " + filters);
+//        for (Map.Entry<String, String[]> entry : filters.entrySet()) {
+//            String key = entry.getKey();
+//            String[] values = entry.getValue();
+//            
+//            switch (key) {
+//                case "date":
+//                    for (String value : values) {
+//                        datePredicates.add(cb.like(cb.lower(root.get(key).as(String.class)), value.toLowerCase()));
+//                        break;
+//                    }
+//                default:
+//                    break;
+//            }
+//        }
+       
+        return cb.and(datePredicates.toArray(new Predicate[datePredicates.size()]));
+    }   
 }

@@ -6,7 +6,5 @@ import edu.tamu.framework.model.Credentials;
 public interface NoteRepoCustom {
 
     public Note create(Note note, Credentials credentials);
-    
-//    public void delete(Note note);
 
 }

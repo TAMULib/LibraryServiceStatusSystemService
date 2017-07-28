@@ -32,10 +32,17 @@ public class NoteRepoImpl implements NoteRepoCustom {
     public Note create(Note note, Credentials credentials) {
         note.setAuthor(userRepo.findByUin(credentials.getUin()));
         note = noteRepo.save(note);
-        Service service = note.getService();
+        Service service = serviceRepo.findOne(note.getService().getId());
+        System.out.println(service.getNotes().size());
+        
         service.addNote(note);
-        serviceRepo.saveAndFlush(service);
-        simpMessagingTemplate.convertAndSend("/channel/service/" + note.getService().getId(), new ApiResponse(SUCCESS, note.getService()));
+        
+        service = serviceRepo.save(service);
+        
+        System.out.println(service.getNotes().size());
+        
+        simpMessagingTemplate.convertAndSend("/channel/service/" + note.getService().getId(), new ApiResponse(SUCCESS, service));
+        
         return note;
     }
 }

@@ -1,13 +1,13 @@
 package edu.tamu.app.model;
 
+import static javax.persistence.CascadeType.DETACH;
+import static javax.persistence.CascadeType.PERSIST;
 import static javax.persistence.CascadeType.REFRESH;
 import static javax.persistence.CascadeType.REMOVE;
 import static javax.persistence.FetchType.EAGER;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -56,19 +56,20 @@ public class Service extends BaseEntity {
 
     @Column(nullable = false)
     private Boolean onShortList;
-    
+
     @Lob
     @Column(nullable = true)
     private String description;
 
-    @OneToMany(fetch = EAGER, cascade = { REFRESH, REMOVE }, mappedBy = "service")
+    @OneToMany(fetch = EAGER, cascade = { DETACH, REMOVE, PERSIST, REFRESH }, mappedBy = "service")
+    @Fetch(FetchMode.SELECT)
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, scope = Note.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
-    private Set<Note> notes;
+    private List<Note> notes;
 
     public Service() {
         setModelValidator(new ServiceValidator());
-        setNotes(new HashSet<Note>());
+        setNotes(new ArrayList<Note>());
         setAliases(new ArrayList<String>());
     }
 
@@ -115,16 +116,20 @@ public class Service extends BaseEntity {
         this.serviceUrl = serviceUrl;
     }
 
-    public Set<Note> getNotes() {
+    public List<Note> getNotes() {
         return notes;
     }
 
-    public void setNotes(Set<Note> notes) {
+    public void setNotes(List<Note> notes) {
         this.notes = notes;
     }
 
     public void addNote(Note note) {
-        this.notes.add(note);
+        System.out.println("addNote size before: " + this.notes.size());
+        if (!this.notes.contains(note)) {
+            this.notes.add(note);
+        }
+        System.out.println("addNote size after: " + this.notes.size());
     }
 
     public void removeNote(Note note) {

@@ -125,11 +125,9 @@ public class Service extends BaseEntity {
     }
 
     public void addNote(Note note) {
-        System.out.println("addNote size before: " + this.notes.size());
         if (!this.notes.contains(note)) {
             this.notes.add(note);
         }
-        System.out.println("addNote size after: " + this.notes.size());
     }
 
     public void removeNote(Note note) {

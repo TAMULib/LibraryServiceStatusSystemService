@@ -63,7 +63,6 @@ public class NoteController {
     @ApiValidation(business = { @ApiValidation.Business(value = CREATE), @ApiValidation.Business(value = EXISTS) })
     public ApiResponse create(@ApiValidatedModel Note note, @ApiCredentials Credentials credentials) {
         note = noteRepo.create(note, credentials);
-        System.out.println("Note value: " + note);
         ApiResponse response = new ApiResponse(SUCCESS, note);
         simpMessagingTemplate.convertAndSend("/channel/note/new", response);
         return response;

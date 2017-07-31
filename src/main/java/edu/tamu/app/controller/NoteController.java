@@ -64,8 +64,9 @@ public class NoteController {
     public ApiResponse create(@ApiValidatedModel Note note, @ApiCredentials Credentials credentials) {
         note = noteRepo.create(note, credentials);
         System.out.println("Note value: " + note);
-//        simpMessagingTemplate.convertAndSend("/channel/service/" + note.getService().getId(), new ApiResponse(SUCCESS, serviceRepo.getOne(note.getService().getId())));
-        return new ApiResponse(SUCCESS, note);
+        ApiResponse response = new ApiResponse(SUCCESS, note);
+        simpMessagingTemplate.convertAndSend("/channel/note/new", response);
+        return response;
     }
 
     @ApiMapping("/update")
@@ -96,9 +97,7 @@ public class NoteController {
         }
         
         Map<String, String[]> filters = new HashMap<String, String[]>();
-        System.out.println("dataNode: " + dataNode.get("filters").get("title"));
         filters.put("title", arrayNodeToStringArray((ArrayNode) dataNode.get("filters").get("title")));
-        
         FilteredPageRequest filteredPageRequest = new FilteredPageRequest(dataNode.get("page").get("number").asInt(), dataNode.get("page").get("size").asInt(), sortDirection, dataNode.get("direction").get("properties").asText(), filters);
         Page<Note> notes = noteRepo.findAll(filteredPageRequest);
         return new ApiResponse(SUCCESS, notes);

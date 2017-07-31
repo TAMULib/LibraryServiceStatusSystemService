@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -20,6 +21,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import edu.tamu.app.model.Note;
 import edu.tamu.app.model.repo.NoteRepo;
+import edu.tamu.app.model.repo.ServiceRepo;
 import edu.tamu.app.model.request.FilteredPageRequest;
 import edu.tamu.framework.aspect.annotation.ApiCredentials;
 import edu.tamu.framework.aspect.annotation.ApiData;
@@ -37,6 +39,9 @@ public class NoteController {
 
     @Autowired
     private NoteRepo noteRepo;
+    
+    @Autowired
+    private ServiceRepo serviceRepo;
 
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
@@ -58,8 +63,9 @@ public class NoteController {
     @ApiValidation(business = { @ApiValidation.Business(value = CREATE), @ApiValidation.Business(value = EXISTS) })
     public ApiResponse create(@ApiValidatedModel Note note, @ApiCredentials Credentials credentials) {
         note = noteRepo.create(note, credentials);
-        simpMessagingTemplate.convertAndSend("/channel/note", new ApiResponse(SUCCESS, noteRepo.findAll()));
-        return new ApiResponse(SUCCESS, note);
+        ApiResponse response = new ApiResponse(SUCCESS, note);
+        simpMessagingTemplate.convertAndSend("/channel/note/new", response);
+        return response;
     }
 
     @ApiMapping("/update")
@@ -70,12 +76,13 @@ public class NoteController {
         return new ApiResponse(SUCCESS, note);
     }
 
+    @Transactional
     @ApiMapping("/remove")
     @Auth(role = "ROLE_SERVICE_MANAGER")
     public ApiResponse remove(@ApiValidatedModel Note note) {
         noteRepo.delete(note);
         simpMessagingTemplate.convertAndSend("/channel/note", new ApiResponse(SUCCESS, noteRepo.findAll()));
-        return new ApiResponse(SUCCESS);
+        return new ApiResponse(SUCCESS, serviceRepo.getOne(note.getService().getId()));
     }
     
     @ApiMapping("/page")
@@ -89,9 +96,7 @@ public class NoteController {
         }
         
         Map<String, String[]> filters = new HashMap<String, String[]>();
-        System.out.println("dataNode: " + dataNode.get("filters").get("title"));
         filters.put("title", arrayNodeToStringArray((ArrayNode) dataNode.get("filters").get("title")));
-        
         FilteredPageRequest filteredPageRequest = new FilteredPageRequest(dataNode.get("page").get("number").asInt(), dataNode.get("page").get("size").asInt(), sortDirection, dataNode.get("direction").get("properties").asText(), filters);
         Page<Note> notes = noteRepo.findAll(filteredPageRequest);
         return new ApiResponse(SUCCESS, notes);

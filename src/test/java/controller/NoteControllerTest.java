@@ -21,10 +21,14 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import edu.tamu.app.controller.NoteController;
+import edu.tamu.app.enums.NoteType;
+import edu.tamu.app.enums.Status;
 import edu.tamu.app.model.AppUser;
 import edu.tamu.app.model.Note;
+import edu.tamu.app.model.Service;
 import edu.tamu.app.model.repo.AppUserRepo;
 import edu.tamu.app.model.repo.NoteRepo;
+import edu.tamu.app.model.repo.ServiceRepo;
 import edu.tamu.framework.model.ApiResponse;
 import edu.tamu.framework.model.Credentials;
 
@@ -39,11 +43,13 @@ public class NoteControllerTest {
     protected static final String TEST_NOTE_TITLE2 = "Test Note Title 2";
     protected static final String TEST_NOTE_TITLE3 = "Test Note Title 3";
     protected static final String TEST_MODIFIED_NOTE_TITLE = "Modified Note Title";
+    protected static final String TEST_SERVICE_NAME = "Test Service";
 
+    protected static Service TEST_SERVICE = new Service(TEST_SERVICE_NAME, Status.UP, false, true, true, "", "");
     protected static Note TEST_NOTE1 = new Note(TEST_NOTE_TITLE1, TEST_USER1);
     protected static Note TEST_NOTE2 = new Note(TEST_NOTE_TITLE2, TEST_USER1);
     protected static Note TEST_NOTE3 = new Note(TEST_NOTE_TITLE3, TEST_USER1);
-    protected static Note TEST_MODIFIED_NOTE = new Note(TEST_MODIFIED_NOTE_TITLE, TEST_USER2);
+    protected static Note TEST_MODIFIED_NOTE = new Note(TEST_MODIFIED_NOTE_TITLE, TEST_USER2, NoteType.ISSUE, "", TEST_SERVICE);
     protected static List<Note> mockNoteList = new ArrayList<Note>(Arrays.asList(new Note[] { TEST_NOTE1, TEST_NOTE2, TEST_NOTE3 }));
 
     protected static AppUser user = new AppUser("123456789");
@@ -51,13 +57,16 @@ public class NoteControllerTest {
     protected static ApiResponse response;
 
     @Mock
-    protected static AppUserRepo userRepo;
-
-    @Mock
     protected static Credentials credentials;
 
     @Mock
+    protected static AppUserRepo userRepo;
+    
+    @Mock
     protected NoteRepo noteRepo;
+    
+    @Mock
+    protected ServiceRepo serviceRepo;
 
     @Mock
     protected SimpMessagingTemplate simpMessagingTemplate;
@@ -74,6 +83,8 @@ public class NoteControllerTest {
         when(noteRepo.findOne(any(Long.class))).thenReturn(TEST_NOTE1);
         when(noteRepo.create(any(Note.class), any(Credentials.class))).thenReturn(TEST_NOTE1);
         when(noteRepo.save(any(Note.class))).thenReturn(TEST_MODIFIED_NOTE);
+        when(serviceRepo.getOne(any(Long.class))).thenReturn(TEST_SERVICE);
+        doNothing().when(noteRepo).delete(any(Note.class));
         doNothing().when(noteRepo).delete(any(Note.class));
     }
 

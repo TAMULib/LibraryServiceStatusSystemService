@@ -72,8 +72,9 @@ public class NoteController {
     @Auth(role = "ROLE_SERVICE_MANAGER")
     public ApiResponse update(@ApiValidatedModel Note note) {
         note = noteRepo.save(note);
-        simpMessagingTemplate.convertAndSend("/channel/note", new ApiResponse(SUCCESS, noteRepo.findAll()));
-        return new ApiResponse(SUCCESS, note);
+        ApiResponse response = new ApiResponse(SUCCESS, noteRepo.getOne(note.getId())); 
+        simpMessagingTemplate.convertAndSend("/channel/note/" + note.getId(), response);
+        return response;
     }
 
     @Transactional
@@ -81,8 +82,8 @@ public class NoteController {
     @Auth(role = "ROLE_SERVICE_MANAGER")
     public ApiResponse remove(@ApiValidatedModel Note note) {
         noteRepo.delete(note);
-        simpMessagingTemplate.convertAndSend("/channel/note", new ApiResponse(SUCCESS, noteRepo.findAll()));
-        return new ApiResponse(SUCCESS, serviceRepo.getOne(note.getService().getId()));
+        simpMessagingTemplate.convertAndSend("/channel/service" + note.getService().getId(), new ApiResponse(SUCCESS, serviceRepo.getOne(note.getService().getId())));
+        return new ApiResponse(SUCCESS);
     }
     
     @ApiMapping("/page")

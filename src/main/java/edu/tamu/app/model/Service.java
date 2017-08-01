@@ -61,7 +61,7 @@ public class Service extends BaseEntity {
     @Column(nullable = true)
     private String description;
 
-    @OneToMany(fetch = EAGER, cascade = { DETACH, REMOVE, PERSIST, REFRESH }, mappedBy = "service")
+    @OneToMany(fetch = EAGER, cascade = { REMOVE, REFRESH }, mappedBy = "service")
     @Fetch(FetchMode.SELECT)
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, scope = Note.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)

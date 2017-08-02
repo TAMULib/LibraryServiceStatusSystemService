@@ -39,7 +39,7 @@ public class NoteController {
 
     @Autowired
     private NoteRepo noteRepo;
-    
+
     @Autowired
     private ServiceRepo serviceRepo;
 
@@ -72,7 +72,7 @@ public class NoteController {
     @Auth(role = "ROLE_SERVICE_MANAGER")
     public ApiResponse update(@ApiValidatedModel Note note) {
         note = noteRepo.save(note);
-        ApiResponse response = new ApiResponse(SUCCESS, noteRepo.getOne(note.getId())); 
+        ApiResponse response = new ApiResponse(SUCCESS, noteRepo.getOne(note.getId()));
         simpMessagingTemplate.convertAndSend("/channel/note/" + note.getId(), response);
         return response;
     }
@@ -85,9 +85,9 @@ public class NoteController {
         simpMessagingTemplate.convertAndSend("/channel/service" + note.getService().getId(), new ApiResponse(SUCCESS, serviceRepo.getOne(note.getService().getId())));
         return new ApiResponse(SUCCESS);
     }
-    
+
     @ApiMapping("/page")
-    @Auth(role="ROLE_ANONYMOUS")
+    @Auth(role = "ROLE_ANONYMOUS")
     public ApiResponse page(@ApiData JsonNode dataNode) {
         Direction sortDirection;
         if (dataNode.get("direction").get("direction").asText().equals("ASC")) {
@@ -95,14 +95,14 @@ public class NoteController {
         } else {
             sortDirection = Sort.Direction.DESC;
         }
-        
+
         Map<String, String[]> filters = new HashMap<String, String[]>();
         filters.put("title", arrayNodeToStringArray((ArrayNode) dataNode.get("filters").get("title")));
         FilteredPageRequest filteredPageRequest = new FilteredPageRequest(dataNode.get("page").get("number").asInt(), dataNode.get("page").get("size").asInt(), sortDirection, dataNode.get("direction").get("properties").asText(), filters);
         Page<Note> notes = noteRepo.findAll(filteredPageRequest);
         return new ApiResponse(SUCCESS, notes);
     }
-    
+
     private String[] arrayNodeToStringArray(ArrayNode arrayNode) {
         String[] array = new String[arrayNode.size()];
         Iterator<JsonNode> arrayIterator = arrayNode.elements();

@@ -61,10 +61,10 @@ public class NoteControllerTest {
 
     @Mock
     protected static AppUserRepo userRepo;
-    
+
     @Mock
     protected NoteRepo noteRepo;
-    
+
     @Mock
     protected ServiceRepo serviceRepo;
 
@@ -82,19 +82,10 @@ public class NoteControllerTest {
         when(noteRepo.findAll()).thenReturn(mockNoteList);
         when(noteRepo.findOne(any(Long.class))).thenReturn(TEST_NOTE1);
         when(noteRepo.create(any(Note.class), any(Credentials.class))).thenReturn(TEST_NOTE1);
-        when(noteRepo.save(any(Note.class))).thenReturn(TEST_MODIFIED_NOTE);
+        when(noteRepo.update(any(Note.class))).thenReturn(TEST_MODIFIED_NOTE);
         when(serviceRepo.getOne(any(Long.class))).thenReturn(TEST_SERVICE);
         doNothing().when(noteRepo).delete(any(Note.class));
         doNothing().when(noteRepo).delete(any(Note.class));
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testAllNotes() {
-        response = noteController.getAllNotes();
-        assertEquals("Not successful at getting all Notes", SUCCESS, response.getMeta().getType());
-        List<Note> list = (List<Note>) response.getPayload().get("ArrayList<Note>");
-        assertEquals("The list of services had the worng number of services", mockNoteList.size(), list.size());
     }
 
     @Test

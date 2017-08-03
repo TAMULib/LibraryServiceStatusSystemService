@@ -91,6 +91,7 @@ public class AppUser extends AbstractCoreUser {
      */
     public AppUser(String email, String firstName, String lastName, String role) {
         super();
+        setUin(email);
         setEmail(email);
         setFirstName(firstName);
         setLastName(lastName);

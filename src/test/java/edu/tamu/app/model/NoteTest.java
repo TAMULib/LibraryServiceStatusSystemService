@@ -3,12 +3,7 @@ package edu.tamu.app.model;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.validation.ConstraintViolationException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -49,7 +44,7 @@ public class NoteTest {
     protected static final NoteType TEST_ALTERNATIVE_NOTE_TYPE = NoteType.MAINTENANCE;
     protected static final Calendar TEST_DATE = Calendar.getInstance();
     protected Service service1;
-    protected Service service2; 
+    protected Service service2;
 
     protected static final Credentials TEST_CREDENTIALS = new Credentials();
     {
@@ -96,12 +91,6 @@ public class NoteTest {
         noteRepo.create(new Note(TEST_ALTERNATIVE_NOTE_TITLE, null, TEST_NOTE_TYPE, TEST_ALTERNATIVE_NOTE_BODY, service2), TEST_CREDENTIALS);
     }
 
-    @Test(expected = ConstraintViolationException.class)
-    public void testTitleNotEmpty() {
-        testNote.setTitle("");
-        noteRepo.create(new Note("", testUser, TEST_NOTE_TYPE, TEST_ALTERNATIVE_NOTE_BODY, service2), TEST_CREDENTIALS);
-    }
-
     @Test
     public void testUpdateTitle() {
         Note note = noteRepo.create(testNote, TEST_CREDENTIALS);
@@ -112,7 +101,7 @@ public class NoteTest {
 
     @Test
     public void testUpdateServices() {
-        
+
         Note note = noteRepo.create(testNote, TEST_CREDENTIALS);
         note.setService(service1);
         note = noteRepo.save(note);
@@ -171,7 +160,7 @@ public class NoteTest {
     public void testTimestampSetOnUpdate() throws InterruptedException {
         Note note = noteRepo.create(testNote, TEST_CREDENTIALS);
         note = noteRepo.findOne(note.getId());
-        Calendar createTime = note.getLastModified();
+        // Calendar createTime = note.getLastModified();
         note.setBody(TEST_NOTE_BODY);
 
         Thread.sleep(1000);

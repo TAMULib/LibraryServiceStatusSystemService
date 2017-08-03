@@ -7,4 +7,8 @@ public interface NoteRepoCustom {
 
     public Note create(Note note, Credentials credentials);
 
+    public Note update(Note note);
+
+    public void delete(Note note);
+
 }

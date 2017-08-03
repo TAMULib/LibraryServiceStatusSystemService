@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,12 +19,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import edu.tamu.app.model.Note;
+import edu.tamu.app.model.Service;
 import edu.tamu.app.model.repo.NoteRepo;
-import edu.tamu.app.model.repo.ServiceRepo;
 import edu.tamu.app.model.request.FilteredPageRequest;
 import edu.tamu.framework.aspect.annotation.ApiCredentials;
 import edu.tamu.framework.aspect.annotation.ApiData;
 import edu.tamu.framework.aspect.annotation.ApiMapping;
+import edu.tamu.framework.aspect.annotation.ApiModel;
 import edu.tamu.framework.aspect.annotation.ApiValidatedModel;
 import edu.tamu.framework.aspect.annotation.ApiValidation;
 import edu.tamu.framework.aspect.annotation.ApiVariable;
@@ -40,19 +40,19 @@ public class NoteController {
     @Autowired
     private NoteRepo noteRepo;
 
-    @Autowired
-    private ServiceRepo serviceRepo;
-
-    @Autowired
-    private SimpMessagingTemplate simpMessagingTemplate;
-
     @ApiMapping("/all")
     @Auth(role = "ROLE_ANONYMOUS")
     public ApiResponse getAllNotes() {
         return new ApiResponse(SUCCESS, noteRepo.findAll());
     }
 
-    @ApiMapping("/get/{id}")
+    @ApiMapping("/by-service")
+    @Auth(role = "ROLE_ANONYMOUS")
+    public ApiResponse getAllNotesByService(@ApiModel Service service) {
+        return new ApiResponse(SUCCESS, noteRepo.findAllByService(service));
+    }
+
+    @ApiMapping("/{id}")
     @Auth(role = "ROLE_ANONYMOUS")
     public ApiResponse getNote(@ApiVariable Long id) {
         return new ApiResponse(SUCCESS, noteRepo.findOne(id));
@@ -63,18 +63,13 @@ public class NoteController {
     @ApiValidation(business = { @ApiValidation.Business(value = CREATE), @ApiValidation.Business(value = EXISTS) })
     public ApiResponse create(@ApiValidatedModel Note note, @ApiCredentials Credentials credentials) {
         note = noteRepo.create(note, credentials);
-        ApiResponse response = new ApiResponse(SUCCESS, note);
-        simpMessagingTemplate.convertAndSend("/channel/note/new", response);
-        return response;
+        return new ApiResponse(SUCCESS, note);
     }
 
     @ApiMapping("/update")
     @Auth(role = "ROLE_SERVICE_MANAGER")
     public ApiResponse update(@ApiValidatedModel Note note) {
-        note = noteRepo.save(note);
-        ApiResponse response = new ApiResponse(SUCCESS, note);
-        simpMessagingTemplate.convertAndSend("/channel/note/" + note.getId(), response);
-        return response;
+        return new ApiResponse(SUCCESS, noteRepo.update(note));
     }
 
     @Transactional
@@ -82,7 +77,6 @@ public class NoteController {
     @Auth(role = "ROLE_SERVICE_MANAGER")
     public ApiResponse remove(@ApiValidatedModel Note note) {
         noteRepo.delete(note);
-        simpMessagingTemplate.convertAndSend("/channel/service" + note.getService().getId(), new ApiResponse(SUCCESS, serviceRepo.getOne(note.getService().getId())));
         return new ApiResponse(SUCCESS);
     }
 

@@ -2,7 +2,6 @@ package edu.tamu.app.model.repo.custom;
 
 import edu.tamu.app.enums.Status;
 import edu.tamu.app.model.Service;
-import edu.tamu.framework.model.Credentials;
 
 public interface ServiceRepoCustom {
 
@@ -11,7 +10,5 @@ public interface ServiceRepoCustom {
     public Service update(Service service);
 
     public void delete(Service service);
-
-    public void sendStatusUpdate(Service service, Credentials credentials);
 
 }

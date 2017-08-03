@@ -51,7 +51,6 @@ public class ServiceController {
     @ApiValidation(business = { @ApiValidation.Business(value = CREATE), @ApiValidation.Business(value = EXISTS) })
     public ApiResponse createService(@ApiValidatedModel Service service, @ApiCredentials Credentials credentials) {
         service = serviceRepo.create(service.getName(), service.getStatus(), service.getIsAuto(), service.getIsPublic(), service.getOnShortList(), service.getServiceUrl(), service.getDescription());
-        serviceRepo.sendStatusUpdate(service, credentials);
         return new ApiResponse(SUCCESS, service);
     }
 
@@ -60,7 +59,6 @@ public class ServiceController {
     @ApiValidation(business = { @ApiValidation.Business(value = UPDATE), @ApiValidation.Business(value = NONEXISTS) })
     public ApiResponse updateService(@ApiValidatedModel Service service, @ApiCredentials Credentials credentials) {
         service = serviceRepo.update(service);
-        serviceRepo.sendStatusUpdate(service, credentials);
         return new ApiResponse(SUCCESS, service);
     }
 

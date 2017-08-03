@@ -89,7 +89,6 @@ public class NoteController {
         } else {
             sortDirection = Sort.Direction.DESC;
         }
-
         Map<String, String[]> filters = new HashMap<String, String[]>();
         filters.put("title", arrayNodeToStringArray((ArrayNode) dataNode.get("filters").get("title")));
         FilteredPageRequest filteredPageRequest = new FilteredPageRequest(dataNode.get("page").get("number").asInt(), dataNode.get("page").get("size").asInt(), sortDirection, dataNode.get("direction").get("properties").asText(), filters);

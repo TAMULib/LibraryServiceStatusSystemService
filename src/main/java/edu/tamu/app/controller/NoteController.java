@@ -72,7 +72,7 @@ public class NoteController {
     @Auth(role = "ROLE_SERVICE_MANAGER")
     public ApiResponse update(@ApiValidatedModel Note note) {
         note = noteRepo.save(note);
-        ApiResponse response = new ApiResponse(SUCCESS, noteRepo.getOne(note.getId()));
+        ApiResponse response = new ApiResponse(SUCCESS, note);
         simpMessagingTemplate.convertAndSend("/channel/note/" + note.getId(), response);
         return response;
     }

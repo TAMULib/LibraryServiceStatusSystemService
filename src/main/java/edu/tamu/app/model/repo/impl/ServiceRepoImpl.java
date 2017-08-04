@@ -38,7 +38,7 @@ public class ServiceRepoImpl implements ServiceRepoCustom {
     @Override
     public Service update(Service service) {
         service = serviceRepo.save(service);
-        simpMessagingTemplate.convertAndSend("/channel/service/" + service.getId(), new ApiResponse(SUCCESS, service));
+        simpMessagingTemplate.convertAndSend("/channel/service/update", new ApiResponse(SUCCESS, service));
         sendStatusUpdate();
         return service;
     }

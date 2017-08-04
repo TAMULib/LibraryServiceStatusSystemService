@@ -1,5 +1,6 @@
 package edu.tamu.app.model;
 
+import static javax.persistence.CascadeType.MERGE;
 import static javax.persistence.CascadeType.REFRESH;
 import static javax.persistence.FetchType.EAGER;
 
@@ -41,7 +42,7 @@ public class Note extends BaseEntity {
     @UpdateTimestamp
     private Calendar lastModified;
 
-    @ManyToOne(fetch = EAGER)
+    @ManyToOne(fetch = EAGER, cascade = MERGE)
     private Service service;
 
     @ManyToOne(cascade = REFRESH, optional = false)

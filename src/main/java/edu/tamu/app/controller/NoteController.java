@@ -4,19 +4,13 @@ import static edu.tamu.framework.enums.ApiResponseType.SUCCESS;
 import static edu.tamu.framework.enums.BusinessValidationType.CREATE;
 import static edu.tamu.framework.enums.BusinessValidationType.EXISTS;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.tamu.app.model.Note;
 import edu.tamu.app.model.Service;
@@ -39,6 +33,9 @@ public class NoteController {
 
     @Autowired
     private NoteRepo noteRepo;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @ApiMapping("/all")
     @Auth(role = "ROLE_ANONYMOUS")
@@ -82,27 +79,14 @@ public class NoteController {
 
     @ApiMapping("/page")
     @Auth(role = "ROLE_ANONYMOUS")
-    public ApiResponse page(@ApiData JsonNode dataNode) {
-        Direction sortDirection;
-        if (dataNode.get("direction").get("direction").asText().equals("ASC")) {
-            sortDirection = Sort.Direction.ASC;
-        } else {
-            sortDirection = Sort.Direction.DESC;
+    public ApiResponse page(@ApiData FilteredPageRequest filteredPageRequest) {
+        try {
+            System.out.println("\n" + objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(filteredPageRequest) + "\n");
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
         }
-        Map<String, String[]> filters = new HashMap<String, String[]>();
-        filters.put("title", arrayNodeToStringArray((ArrayNode) dataNode.get("filters").get("title")));
-        FilteredPageRequest filteredPageRequest = new FilteredPageRequest(dataNode.get("page").get("number").asInt(), dataNode.get("page").get("size").asInt(), sortDirection, dataNode.get("direction").get("properties").asText(), filters);
-        Page<Note> notes = noteRepo.findAll(filteredPageRequest);
+        Page<Note> notes = noteRepo.findAll(filteredPageRequest.toPageRequest());
         return new ApiResponse(SUCCESS, notes);
     }
 
-    private String[] arrayNodeToStringArray(ArrayNode arrayNode) {
-        String[] array = new String[arrayNode.size()];
-        Iterator<JsonNode> arrayIterator = arrayNode.elements();
-        int i = 0;
-        while (arrayIterator.hasNext()) {
-            array[i++] = arrayIterator.next().asText();
-        }
-        return array;
-    }
 }

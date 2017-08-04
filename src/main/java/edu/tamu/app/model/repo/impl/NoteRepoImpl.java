@@ -34,7 +34,7 @@ public class NoteRepoImpl implements NoteRepoCustom {
     @Override
     public Note update(Note note) {
         note = noteRepo.save(note);
-        simpMessagingTemplate.convertAndSend("/channel/note/" + note.getId(), new ApiResponse(SUCCESS, note));
+        simpMessagingTemplate.convertAndSend("/channel/note/update", new ApiResponse(SUCCESS, note));
         return note;
     }
 

@@ -5,12 +5,8 @@ import static edu.tamu.framework.enums.BusinessValidationType.CREATE;
 import static edu.tamu.framework.enums.BusinessValidationType.EXISTS;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.tamu.app.model.Note;
 import edu.tamu.app.model.Service;
@@ -33,9 +29,6 @@ public class NoteController {
 
     @Autowired
     private NoteRepo noteRepo;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @ApiMapping("/all")
     @Auth(role = "ROLE_ANONYMOUS")

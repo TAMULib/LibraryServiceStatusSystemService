@@ -23,7 +23,7 @@ public class FilteredPageRequest {
     }
 
     public PageRequest toPageRequest() {
-        return new PageRequest(pageNumber, pageSize, new Sort(Sort.Direction.fromString(direction), properties));
+        return new PageRequest(pageNumber - 1, pageSize, new Sort(Sort.Direction.fromString(direction), properties));
     }
 
     public int getPageNumber() {

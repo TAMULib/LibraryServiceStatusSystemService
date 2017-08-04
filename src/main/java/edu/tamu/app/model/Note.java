@@ -8,12 +8,11 @@ import java.util.Calendar;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -24,16 +23,13 @@ import edu.tamu.framework.model.BaseEntity;
 @Entity
 public class Note extends BaseEntity {
 
-    @Size(min = 3)
     @Column(nullable = false)
     private String title;
 
-    @ManyToOne(fetch = EAGER, cascade = MERGE)
-    private Service service;
-
+    @Enumerated(EnumType.STRING)
     private NoteType noteType;
 
-    @Lob
+    @Column(columnDefinition = "text", nullable = true)
     private String body;
 
     @Temporal(TemporalType.DATE)
@@ -46,8 +42,10 @@ public class Note extends BaseEntity {
     @UpdateTimestamp
     private Calendar lastModified;
 
-    @JoinColumn(nullable = false)
-    @ManyToOne(cascade = REFRESH)
+    @ManyToOne(fetch = EAGER, cascade = MERGE)
+    private Service service;
+
+    @ManyToOne(cascade = REFRESH, optional = false)
     private AppUser author;
 
     public Note() {

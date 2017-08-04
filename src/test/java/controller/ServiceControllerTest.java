@@ -85,7 +85,7 @@ public class ServiceControllerTest {
         when(serviceRepo.findByIsPublic(true)).thenReturn(mockPublicServiceList);
         when(serviceRepo.findOne(any(Long.class))).thenReturn(TEST_SERVICE1);
         when(serviceRepo.create(any(String.class), any(Status.class), any(Boolean.class), any(Boolean.class), any(Boolean.class), any(String.class), any(String.class))).thenReturn(TEST_SERVICE1);
-        when(serviceRepo.save(any(Service.class))).thenReturn(TEST_MODIFIED_SERVICE1);
+        when(serviceRepo.update(any(Service.class))).thenReturn(TEST_MODIFIED_SERVICE1);
         doNothing().when(serviceRepo).delete(any(Service.class));
     }
     

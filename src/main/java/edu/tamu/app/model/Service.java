@@ -1,9 +1,5 @@
 package edu.tamu.app.model;
 
-import static javax.persistence.CascadeType.DETACH;
-import static javax.persistence.CascadeType.PERSIST;
-import static javax.persistence.CascadeType.REFRESH;
-import static javax.persistence.CascadeType.REMOVE;
 import static javax.persistence.FetchType.EAGER;
 
 import java.util.ArrayList;
@@ -12,16 +8,9 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.Lob;
-import javax.persistence.OneToMany;
-import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import edu.tamu.app.enums.Status;
 import edu.tamu.app.model.validation.ServiceValidator;
@@ -34,15 +23,14 @@ import edu.tamu.framework.model.BaseEntity;
 @Entity
 public class Service extends BaseEntity {
 
-    @Size(min = 3)
     @Column(nullable = false, unique = true)
     private String name;
 
-    @Fetch(FetchMode.SELECT)
     @ElementCollection(fetch = EAGER)
+    @Fetch(FetchMode.SELECT)
     private List<String> aliases;
 
-    @Column(nullable = false, unique = false)
+    @Column(nullable = false)
     private Status status;
 
     @Column(nullable = false)
@@ -57,19 +45,11 @@ public class Service extends BaseEntity {
     @Column(nullable = false)
     private Boolean onShortList;
 
-    @Lob
-    @Column(nullable = true)
+    @Column(columnDefinition = "text", nullable = true)
     private String description;
-
-    @OneToMany(fetch = EAGER, cascade = { REMOVE, REFRESH }, mappedBy = "service")
-    @Fetch(FetchMode.SELECT)
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, scope = Note.class, property = "id")
-    @JsonIdentityReference(alwaysAsId = true)
-    private List<Note> notes;
 
     public Service() {
         setModelValidator(new ServiceValidator());
-        setNotes(new ArrayList<Note>());
         setAliases(new ArrayList<String>());
     }
 
@@ -114,24 +94,6 @@ public class Service extends BaseEntity {
 
     public void setServiceUrl(String serviceUrl) {
         this.serviceUrl = serviceUrl;
-    }
-
-    public List<Note> getNotes() {
-        return notes;
-    }
-
-    public void setNotes(List<Note> notes) {
-        this.notes = notes;
-    }
-
-    public void addNote(Note note) {
-        if (!this.notes.contains(note)) {
-            this.notes.add(note);
-        }
-    }
-
-    public void removeNote(Note note) {
-        this.notes.remove(note);
     }
 
     public List<String> getAliases() {

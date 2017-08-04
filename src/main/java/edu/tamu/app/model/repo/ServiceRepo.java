@@ -18,4 +18,6 @@ public interface ServiceRepo extends JpaRepository<Service, Long>, ServiceRepoCu
 
     public Long countByStatusAndIsPublic(Status status, Boolean isPublic);
 
+    public void delete(Service service);
+
 }

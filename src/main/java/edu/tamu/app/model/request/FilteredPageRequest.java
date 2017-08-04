@@ -1,22 +1,61 @@
 package edu.tamu.app.model.request;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
-public class FilteredPageRequest extends PageRequest {
+public class FilteredPageRequest {
 
-    private static final long serialVersionUID = -190530029013941566L;
+    private int pageNumber;
+
+    private int pageSize;
+
+    private String direction;
+
+    private List<String> properties;
+
     private Map<String, String[]> filters;
-    
+
     public FilteredPageRequest() {
-        super(0, 2);
+
     }
-    
-    public FilteredPageRequest(int page, int size, Sort.Direction direction, String properties, Map<String, String[]> filters) {
-        super(page, size, direction, properties);
-        setFilters(filters);
+
+    public PageRequest toPageRequest() {
+        return new PageRequest(pageNumber, pageSize, new Sort(Sort.Direction.fromString(direction), properties));
+    }
+
+    public int getPageNumber() {
+        return pageNumber;
+    }
+
+    public void setPageNumber(int pageNumber) {
+        this.pageNumber = pageNumber;
+    }
+
+    public int getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(int pageSize) {
+        this.pageSize = pageSize;
+    }
+
+    public String getDirection() {
+        return direction;
+    }
+
+    public void setDirection(String direction) {
+        this.direction = direction;
+    }
+
+    public List<String> getProperties() {
+        return properties;
+    }
+
+    public void setProperties(List<String> properties) {
+        this.properties = properties;
     }
 
     public Map<String, String[]> getFilters() {
@@ -26,4 +65,5 @@ public class FilteredPageRequest extends PageRequest {
     public void setFilters(Map<String, String[]> filters) {
         this.filters = filters;
     }
+
 }

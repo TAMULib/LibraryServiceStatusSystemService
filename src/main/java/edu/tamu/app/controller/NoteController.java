@@ -80,13 +80,7 @@ public class NoteController {
     @ApiMapping("/page")
     @Auth(role = "ROLE_ANONYMOUS")
     public ApiResponse page(@ApiData FilteredPageRequest filteredPageRequest) {
-        try {
-            System.out.println("\n" + objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(filteredPageRequest) + "\n");
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        Page<Note> notes = noteRepo.findAll(filteredPageRequest.toPageRequest());
-        return new ApiResponse(SUCCESS, notes);
+        return new ApiResponse(SUCCESS, noteRepo.findAll(filteredPageRequest.toPageRequest()));
     }
 
 }

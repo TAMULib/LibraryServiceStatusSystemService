@@ -32,6 +32,9 @@ public class Note extends BaseEntity {
     @Column(columnDefinition = "text", nullable = true)
     private String body;
 
+    @Column(nullable = false)
+    private boolean pinned;
+
     @Temporal(TemporalType.DATE)
     private Calendar scheduledPostingStart;
 
@@ -49,6 +52,7 @@ public class Note extends BaseEntity {
     private AppUser author;
 
     public Note() {
+        setPinned(false);
         setModelValidator(new NoteValidator());
         setService(new Service());
     }
@@ -100,6 +104,14 @@ public class Note extends BaseEntity {
 
     public void setBody(String body) {
         this.body = body;
+    }
+
+    public boolean isPinned() {
+        return pinned;
+    }
+
+    public void setPinned(boolean pinned) {
+        this.pinned = pinned;
     }
 
     public Calendar getScheduledPostingStart() {

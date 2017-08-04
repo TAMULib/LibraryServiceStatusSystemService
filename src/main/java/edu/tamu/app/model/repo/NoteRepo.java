@@ -20,6 +20,8 @@ public interface NoteRepo extends JpaRepository<Note, Long>, NoteRepoCustom, Jpa
 
     public List<Note> findAllByService(Service service);
 
+    public List<Note> findAllByServiceAndPinnedTrue(Service service);
+
     public void delete(Note note);
 
 }

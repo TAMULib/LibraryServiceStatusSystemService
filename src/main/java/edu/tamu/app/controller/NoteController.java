@@ -30,16 +30,14 @@ public class NoteController {
     @Autowired
     private NoteRepo noteRepo;
 
-    @ApiMapping("/all")
+    @ApiMapping("/by-service/{pinned}")
     @Auth(role = "ROLE_ANONYMOUS")
-    public ApiResponse getAllNotes() {
-        return new ApiResponse(SUCCESS, noteRepo.findAll());
-    }
-
-    @ApiMapping("/by-service")
-    @Auth(role = "ROLE_ANONYMOUS")
-    public ApiResponse getAllNotesByService(@ApiModel Service service) {
-        return new ApiResponse(SUCCESS, noteRepo.findAllByService(service));
+    public ApiResponse getAllNotesByService(@ApiModel Service service, @ApiVariable String pinned) {
+        if (Boolean.valueOf(pinned)) {
+            return new ApiResponse(SUCCESS, noteRepo.findAllByServiceAndPinnedTrue(service));
+        } else {
+            return new ApiResponse(SUCCESS, noteRepo.findAllByService(service));
+        }
     }
 
     @ApiMapping("/{id}")

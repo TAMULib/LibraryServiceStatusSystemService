@@ -36,7 +36,7 @@ public class NotificationController {
         return new ApiResponse(SUCCESS, notificationRepo.findAll());
     }
     
-    @ApiMapping("/get/{id}")
+    @ApiMapping("/{id}")
     @Auth(role="ROLE_STAFF")
     public ApiResponse getNotification(@ApiVariable Long id) {
         return new ApiResponse(SUCCESS, notificationRepo.findOne(id));
@@ -47,7 +47,6 @@ public class NotificationController {
     @ApiValidation(business = { @ApiValidation.Business(value = CREATE), @ApiValidation.Business(value = EXISTS) })
     public ApiResponse create(@ApiValidatedModel Notification notification) {
         notification = notificationRepo.create(notification.getName(), notification.getBody(), notification.getIsActive(), notification.getLocations());
-        simpMessagingTemplate.convertAndSend("/channel/notification/", new ApiResponse(SUCCESS, notification));
         return new ApiResponse(SUCCESS, notification);
     }
     

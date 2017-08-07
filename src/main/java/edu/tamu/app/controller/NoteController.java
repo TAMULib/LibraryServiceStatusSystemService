@@ -9,13 +9,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.tamu.app.model.Note;
-import edu.tamu.app.model.Service;
 import edu.tamu.app.model.repo.NoteRepo;
 import edu.tamu.app.model.request.FilteredPageRequest;
 import edu.tamu.framework.aspect.annotation.ApiCredentials;
 import edu.tamu.framework.aspect.annotation.ApiData;
 import edu.tamu.framework.aspect.annotation.ApiMapping;
-import edu.tamu.framework.aspect.annotation.ApiModel;
 import edu.tamu.framework.aspect.annotation.ApiValidatedModel;
 import edu.tamu.framework.aspect.annotation.ApiValidation;
 import edu.tamu.framework.aspect.annotation.ApiVariable;
@@ -30,14 +28,10 @@ public class NoteController {
     @Autowired
     private NoteRepo noteRepo;
 
-    @ApiMapping("/by-service/{pinned}")
+    @ApiMapping("/query")
     @Auth(role = "ROLE_ANONYMOUS")
-    public ApiResponse getAllNotesByService(@ApiModel Service service, @ApiVariable String pinned) {
-        if (Boolean.valueOf(pinned)) {
-            return new ApiResponse(SUCCESS, noteRepo.findAllByServiceAndPinnedTrue(service));
-        } else {
-            return new ApiResponse(SUCCESS, noteRepo.findAllByService(service));
-        }
+    public ApiResponse getAllNotesByService(@ApiData FilteredPageRequest filteredPageRequest) {
+        return new ApiResponse(SUCCESS, noteRepo.findAll(filteredPageRequest.getSpecification(), filteredPageRequest.getPageRequest()));
     }
 
     @ApiMapping("/{id}")
@@ -71,7 +65,7 @@ public class NoteController {
     @ApiMapping("/page")
     @Auth(role = "ROLE_ANONYMOUS")
     public ApiResponse page(@ApiData FilteredPageRequest filteredPageRequest) {
-        return new ApiResponse(SUCCESS, noteRepo.findAll(filteredPageRequest.toPageRequest()));
+        return new ApiResponse(SUCCESS, noteRepo.findAll(filteredPageRequest.getPageRequest()));
     }
 
 }

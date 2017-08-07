@@ -16,7 +16,7 @@ import edu.tamu.framework.model.ApiResponse;
 public class NotificationRepoImpl implements NotificationRepoCustom {
 
     @Autowired
-    NotificationRepo notificationRepo;
+    private NotificationRepo notificationRepo;
     
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
@@ -26,5 +26,18 @@ public class NotificationRepoImpl implements NotificationRepoCustom {
         Notification notification = notificationRepo.save(new Notification(name, body, isActive, locations));
         simpMessagingTemplate.convertAndSend("/channel/notification/create", new ApiResponse(SUCCESS, notification));
         return notification;
+    }
+    
+    @Override
+    public Notification update(Notification notification) {
+        notification = notificationRepo.save(notification);
+        simpMessagingTemplate.convertAndSend("/channel/notification/update", new ApiResponse(SUCCESS, notification));
+        return notification;
+    }
+    
+    @Override
+    public void delete(Notification notification) {
+        notificationRepo.delete(notification.getId());
+        simpMessagingTemplate.convertAndSend("/channel/notification/delete", new ApiResponse(SUCCESS, notification.getId()));
     }
 }

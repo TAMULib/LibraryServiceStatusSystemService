@@ -8,7 +8,6 @@ import static edu.tamu.framework.enums.BusinessValidationType.NONEXISTS;
 import static edu.tamu.framework.enums.BusinessValidationType.UPDATE;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.tamu.app.model.Notification;
@@ -26,9 +25,6 @@ public class NotificationController {
 
     @Autowired
     private NotificationRepo notificationRepo;
-    
-    @Autowired
-    private SimpMessagingTemplate simpMessagingTemplate;
     
     @ApiMapping("/all")
     @Auth(role="ROLE_STAFF")
@@ -54,8 +50,7 @@ public class NotificationController {
     @Auth(role="ROLE_WEB_MANAGER")
     @ApiValidation(business = { @ApiValidation.Business(value = UPDATE), @ApiValidation.Business(value = NONEXISTS) })
     public ApiResponse update(@ApiValidatedModel Notification notification) {
-        notification = notificationRepo.save(notification);
-        simpMessagingTemplate.convertAndSend("/channel/notification/", new ApiResponse(SUCCESS, notification));
+        notification = notificationRepo.update(notification);
         return new ApiResponse(SUCCESS, notification);
     }
     
@@ -64,7 +59,6 @@ public class NotificationController {
     @ApiValidation(business = { @ApiValidation.Business(value = DELETE), @ApiValidation.Business(value = NONEXISTS) })
     public ApiResponse remove(@ApiValidatedModel Notification notification) {
         notificationRepo.delete(notification);
-        simpMessagingTemplate.convertAndSend("/channel/notification/", new ApiResponse(SUCCESS, notificationRepo.findAll()));
         return new ApiResponse(SUCCESS);
     }
 }

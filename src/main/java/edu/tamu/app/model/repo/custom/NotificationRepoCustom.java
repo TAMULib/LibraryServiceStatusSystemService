@@ -9,4 +9,8 @@ public interface NotificationRepoCustom {
 
     public Notification create(String name, String body, boolean isActive, List<NotificationLocation> locations);
     
+    public Notification update(Notification notification);
+    
+    public void delete(Notification notification);
+    
 }

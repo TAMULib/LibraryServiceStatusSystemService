@@ -3,6 +3,7 @@ package controller;
 import static edu.tamu.framework.enums.ApiResponseType.SUCCESS;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
@@ -22,6 +23,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import edu.tamu.app.controller.NotificationController;
+import edu.tamu.app.enums.NotificationLocation;
 import edu.tamu.app.model.Notification;
 import edu.tamu.app.model.repo.NotificationRepo;
 import edu.tamu.framework.model.ApiResponse;
@@ -38,11 +40,13 @@ public class NotificationControllerTest {
     protected static final String TEST_NOTIFICATION2_BODY = "Test Notification Body 2";
     protected static final String TEST_NOTIFICATION3_BODY = "Test Notification Body 3";
     protected static final String TEST_MODIFIED_NOTIFICATION_BODY = "Test Modified Notification Body";
+    protected static final boolean TEST_IS_ACTIVE = true;
+    protected static final List<NotificationLocation> TEST_LOCATIONS = Arrays.asList(new NotificationLocation[] {NotificationLocation.CUSHING});
     
-    protected static Notification TEST_NOTIFICATION1 = new Notification(TEST_NOTIFICATION1_NAME, TEST_NOTIFICATION1_BODY);
-    protected static Notification TEST_NOTIFICATION2= new Notification(TEST_NOTIFICATION2_NAME,TEST_NOTIFICATION2_BODY); 
-    protected static Notification TEST_NOTIFICATION3 = new Notification(TEST_NOTIFICATION3_NAME, TEST_NOTIFICATION3_BODY);
-    protected static Notification TEST_MODIFIED_NOTIFICATION = new Notification(TEST_MODIFIED_NOTIFICATION_NAME, TEST_NOTIFICATION2_BODY);
+    protected static Notification TEST_NOTIFICATION1 = new Notification(TEST_NOTIFICATION1_NAME, TEST_NOTIFICATION1_BODY, TEST_IS_ACTIVE, TEST_LOCATIONS);
+    protected static Notification TEST_NOTIFICATION2= new Notification(TEST_NOTIFICATION2_NAME,TEST_NOTIFICATION2_BODY, TEST_IS_ACTIVE, TEST_LOCATIONS); 
+    protected static Notification TEST_NOTIFICATION3 = new Notification(TEST_NOTIFICATION3_NAME, TEST_NOTIFICATION3_BODY, TEST_IS_ACTIVE, TEST_LOCATIONS);
+    protected static Notification TEST_MODIFIED_NOTIFICATION = new Notification(TEST_MODIFIED_NOTIFICATION_NAME, TEST_NOTIFICATION2_BODY, TEST_IS_ACTIVE, TEST_LOCATIONS);
     
     protected static List<Notification> mockNotificationList = new ArrayList<Notification>(Arrays.asList(new Notification[] { TEST_NOTIFICATION1, TEST_NOTIFICATION2, TEST_NOTIFICATION3 }));
 
@@ -63,7 +67,7 @@ public class NotificationControllerTest {
         
         when(notificationRepo.findAll()).thenReturn(mockNotificationList);
         when(notificationRepo.findOne(any(Long.class))).thenReturn(TEST_NOTIFICATION1);
-        when(notificationRepo.create(any(String.class), any(String.class))).thenReturn(TEST_NOTIFICATION1);
+        when(notificationRepo.create(any(String.class), any(String.class), any(boolean.class), anyListOf(NotificationLocation.class))).thenReturn(TEST_NOTIFICATION1);
         when(notificationRepo.save(any(Notification.class))).thenReturn(TEST_MODIFIED_NOTIFICATION);
         doNothing().when(notificationRepo).delete(any(Notification.class));
     }

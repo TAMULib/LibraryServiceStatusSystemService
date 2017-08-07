@@ -5,8 +5,6 @@ import static org.junit.Assert.assertEquals;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.validation.ConstraintViolationException;
-
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -65,7 +63,7 @@ public class NotificationTest {
     public void testUpdateBody() {
        Notification notification = notificationRepo.create(TEST_NOTIFICATION_NAME, TEST_NOTIFICATION_BODY, TEST_IS_ACTIVE, TEST_LOCATIONS);
        notification.setBody(TEST_ALTERNATE_NOTIFICATION_BODY);
-       notificationRepo.save(notification);
+       notificationRepo.update(notification);
        notification = notificationRepo.findOne(notification.getId());
        assertEquals("Notification body was not changed", TEST_ALTERNATE_NOTIFICATION_BODY, notification.getBody());
     }

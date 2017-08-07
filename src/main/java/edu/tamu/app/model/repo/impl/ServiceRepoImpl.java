@@ -45,7 +45,7 @@ public class ServiceRepoImpl implements ServiceRepoCustom {
 
     @Override
     public void delete(Service service) {
-        noteRepo.findAllByService(service).parallelStream().forEach(note -> {
+        noteRepo.findAllByServiceId(service.getId()).parallelStream().forEach(note -> {
             noteRepo.delete(note);
         });
         serviceRepo.delete(service.getId());

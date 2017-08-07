@@ -6,6 +6,11 @@ import java.util.Map;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import edu.tamu.app.model.Note;
+import edu.tamu.app.model.repo.specification.NoteSpecification;
+
 public class FilteredPageRequest {
 
     private int pageNumber;
@@ -22,8 +27,14 @@ public class FilteredPageRequest {
 
     }
 
-    public PageRequest toPageRequest() {
-        return new PageRequest(pageNumber, pageSize, new Sort(Sort.Direction.fromString(direction), properties));
+    @JsonIgnore
+    public NoteSpecification<Note> getSpecification() {
+        return new NoteSpecification<Note>(filters);
+    }
+
+    @JsonIgnore
+    public PageRequest getPageRequest() {
+        return new PageRequest(pageNumber - 1, pageSize, new Sort(Sort.Direction.fromString(direction), properties));
     }
 
     public int getPageNumber() {

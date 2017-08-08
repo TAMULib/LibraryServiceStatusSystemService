@@ -82,4 +82,5 @@ public class SystemMonitorService implements MonitorService {
         List<Map<String, String>> mappedStatusResponse = objectMapper.readValue(rawStatusResponse, new TypeReference<List<Map<String, String>>>() {});
         return Status.valueOf(mappedStatusResponse.get(0).get("service").toUpperCase());
     }
+
 }

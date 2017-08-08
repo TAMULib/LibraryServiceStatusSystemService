@@ -4,6 +4,7 @@ import static javax.persistence.FetchType.EAGER;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -14,14 +15,9 @@ import org.hibernate.annotations.FetchMode;
 
 import edu.tamu.app.enums.Status;
 import edu.tamu.app.model.validation.ServiceValidator;
-import edu.tamu.framework.model.BaseEntity;
 
-/**
- * @author rladdusaw
- *
- */
 @Entity
-public class Service extends BaseEntity {
+public class Service extends AbstractScheduler {
 
     @Column(nullable = false, unique = true)
     private String name;
@@ -34,10 +30,7 @@ public class Service extends BaseEntity {
     private Status status;
 
     @Column(nullable = false)
-    private boolean isAuto;
-
-    @Column(nullable = true)
-    private String serviceUrl;
+    private Boolean isAuto;
 
     @Column(nullable = false)
     private Boolean isPublic;
@@ -45,10 +38,14 @@ public class Service extends BaseEntity {
     @Column(nullable = false)
     private Boolean onShortList;
 
+    @Column(nullable = true)
+    private String serviceUrl;
+
     @Column(columnDefinition = "text", nullable = true)
     private String description;
 
     public Service() {
+        super();
         setModelValidator(new ServiceValidator());
         setAliases(new ArrayList<String>());
     }
@@ -70,6 +67,14 @@ public class Service extends BaseEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<String> getAliases() {
+        return aliases;
+    }
+
+    public void setAliases(List<String> aliases) {
+        this.aliases = aliases;
     }
 
     public Status getStatus() {
@@ -96,14 +101,6 @@ public class Service extends BaseEntity {
         this.serviceUrl = serviceUrl;
     }
 
-    public List<String> getAliases() {
-        return aliases;
-    }
-
-    public void setAliases(List<String> aliases) {
-        this.aliases = aliases;
-    }
-
     public Boolean getIsPublic() {
         return isPublic;
     }
@@ -126,5 +123,20 @@ public class Service extends BaseEntity {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public String getType() {
+        return "service";
+    }
+
+    @Override
+    public void scheduleStart(Map<String, String> scheduleData) {
+        setStatus(Status.valueOf(scheduleData.get("nextStatus")));
+    }
+
+    @Override
+    public void scheduleEnd(Map<String, String> scheduleData) {
+        setStatus(Status.valueOf(scheduleData.get("previousStatus")));
     }
 }

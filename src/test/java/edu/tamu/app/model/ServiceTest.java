@@ -58,23 +58,23 @@ public class ServiceTest {
     @Test
     public void testCreate() {
         long initalCount = serviceRepo.count();
-        serviceRepo.create(TEST_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, TEST_SERVICE_URL, TEST_DESCRIPTION);
+        serviceRepo.create(new Service(TEST_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, TEST_SERVICE_URL, TEST_DESCRIPTION));
         assertEquals("The number of Services did not increase by one", initalCount + 1, serviceRepo.count());
     }
 
     @Test(expected = DataIntegrityViolationException.class)
     public void testNameNotNull() {
-        serviceRepo.create(null, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, TEST_SERVICE_URL, TEST_DESCRIPTION);
+        serviceRepo.create(new Service(null, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, TEST_SERVICE_URL, TEST_DESCRIPTION));
     }
 
     @Test(expected = DataIntegrityViolationException.class)
     public void testStatusNotNull() {
-        serviceRepo.create(TEST_SERVICE_NAME, null, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, TEST_SERVICE_URL, TEST_DESCRIPTION);
+        serviceRepo.create(new Service(TEST_SERVICE_NAME, null, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, TEST_SERVICE_URL, TEST_DESCRIPTION));
     }
 
     @Test
     public void testUpdateName() {
-        Service service = serviceRepo.create(TEST_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, TEST_SERVICE_URL, TEST_DESCRIPTION);
+        Service service = serviceRepo.create(new Service(TEST_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, TEST_SERVICE_URL, TEST_DESCRIPTION));
         service.setName(TEST_ALTERNATIVE_SERVICE_NAME);
         service = refreshService(service);
         assertEquals("Service name was not changed", TEST_ALTERNATIVE_SERVICE_NAME, service.getName());
@@ -87,7 +87,7 @@ public class ServiceTest {
 
     @Test
     public void testUpdateAliases() {
-        Service service = serviceRepo.create(TEST_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, TEST_SERVICE_URL, TEST_DESCRIPTION);
+        Service service = serviceRepo.create(new Service(TEST_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, TEST_SERVICE_URL, TEST_DESCRIPTION));
         service.setAliases(TEST_SERVICE_ALIASES);
         service = refreshService(service);
         assertEquals("Service aliases not set", true, service.getAliases().contains("Alias 1"));
@@ -98,7 +98,7 @@ public class ServiceTest {
 
     @Test
     public void testUpdateStatus() {
-        Service service = serviceRepo.create(TEST_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, TEST_SERVICE_URL, TEST_DESCRIPTION);
+        Service service = serviceRepo.create(new Service(TEST_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, TEST_SERVICE_URL, TEST_DESCRIPTION));
         service.setStatus(TEST_ALTERNATIVE_SERVICE_STATUS);
         service = refreshService(service);
         assertEquals("Service status was not changed", TEST_ALTERNATIVE_SERVICE_STATUS, service.getStatus());
@@ -106,33 +106,16 @@ public class ServiceTest {
 
     @Test
     public void testUpdateServiceUrl() {
-        Service service = serviceRepo.create(TEST_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, TEST_SERVICE_URL, TEST_DESCRIPTION);
+        Service service = serviceRepo.create(new Service(TEST_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, TEST_SERVICE_URL, TEST_DESCRIPTION));
         service.setServiceUrl(TEST_SERVICE_URL);
         service = refreshService(service);
         assertEquals("Service status url was not changed", TEST_SERVICE_URL, service.getServiceUrl());
     }
 
-    // @Test
-    // public void testUpdateNotes() {
-    // Note note1 = noteRepo.create(TEST_NOTE_TITLE1, testUser);
-    // Note note2 = noteRepo.create(TEST_NOTE_TITLE2, testUser);
-    // List<Note> noteList1 = Arrays.asList(note1);
-    // List<Note> noteList2 = Arrays.asList(note1, note2);
-    // Service service = serviceRepo.create(TEST_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, null);
-    // service.setNotes(noteList1);
-    // service = refreshService(service);
-    // assertEquals("Service notes did not contain the right number of notes", 1, service.getNotes().size());
-    // assertEquals("Service notes not set", true, service.getNotes().contains(note1));
-    // service.setNotes(noteList2);
-    // service = refreshService(service);
-    // assertEquals("Service notes did not contain the right number of notes", 2, service.getNotes().size());
-    // assertEquals("Service notes not updated", true, service.getNotes().contains(note2));
-    // }
-
     @Test
     public void testDelete() {
         long initialCount = serviceRepo.count();
-        Service service = serviceRepo.create(TEST_SERVICE_NAME, TEST_ALTERNATIVE_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, TEST_SERVICE_URL, TEST_DESCRIPTION);
+        Service service = serviceRepo.create(new Service(TEST_SERVICE_NAME, TEST_ALTERNATIVE_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, TEST_SERVICE_URL, TEST_DESCRIPTION));
         assertEquals("The service was not created", initialCount + 1, serviceRepo.count());
         serviceRepo.delete(service);
         assertEquals("The service was not deleted", initialCount, serviceRepo.count());

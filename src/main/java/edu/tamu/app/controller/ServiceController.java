@@ -50,7 +50,7 @@ public class ServiceController {
     @Auth(role = "ROLE_SERVICE_MANAGER")
     @ApiValidation(business = { @ApiValidation.Business(value = CREATE), @ApiValidation.Business(value = EXISTS) })
     public ApiResponse createService(@ApiValidatedModel Service service, @ApiCredentials Credentials credentials) {
-        service = serviceRepo.create(service.getName(), service.getStatus(), service.getIsAuto(), service.getIsPublic(), service.getOnShortList(), service.getServiceUrl(), service.getDescription());
+        service = serviceRepo.create(service);
         return new ApiResponse(SUCCESS, service);
     }
 

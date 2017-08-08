@@ -1,12 +1,3 @@
-/* 
- * AppUser.java 
- * 
- * Version: 
- *     $Id$ 
- * 
- * Revisions: 
- *     $Log$ 
- */
 package edu.tamu.app.model;
 
 import java.util.ArrayList;
@@ -18,6 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
@@ -35,9 +28,9 @@ import edu.tamu.framework.model.IRole;
  */
 @Entity
 public class AppUser extends AbstractCoreUser {
-    
+
     private static final long serialVersionUID = -4974106399870286015L;
-    
+
     @Column(name = "role")
     private AppRole role;
 
@@ -57,8 +50,9 @@ public class AppUser extends AbstractCoreUser {
 
     @Column(nullable = true)
     private String lastName;
-    
+
     @OneToMany(fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SELECT)
     private List<Note> notes;
 
     /**
@@ -97,7 +91,7 @@ public class AppUser extends AbstractCoreUser {
         setLastName(lastName);
         setRole(AppRole.valueOf(role));
     }
-    
+
     /**
      * @return the role
      */
@@ -107,7 +101,8 @@ public class AppUser extends AbstractCoreUser {
     }
 
     /**
-     * @param role the role to set
+     * @param role
+     *            the role to set
      */
     @JsonSerialize(as = AppRole.class)
     public void setRole(IRole role) {
@@ -193,9 +188,7 @@ public class AppUser extends AbstractCoreUser {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
-    
-    
-    
+
     public List<Note> getNotes() {
         return notes;
     }
@@ -209,31 +202,31 @@ public class AppUser extends AbstractCoreUser {
     public boolean isAccountNonExpired() {
         return false;
     }
-    
+
     @Override
     @JsonIgnore
     public boolean isAccountNonLocked() {
         return false;
     }
-    
+
     @Override
     @JsonIgnore
     public boolean isCredentialsNonExpired() {
         return false;
     }
-    
+
     @Override
     @JsonIgnore
     public String getUsername() {
         return getUin();
     }
-    
+
     @Override
     @JsonIgnore
     public boolean isEnabled() {
         return true;
     }
-    
+
     @Override
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {

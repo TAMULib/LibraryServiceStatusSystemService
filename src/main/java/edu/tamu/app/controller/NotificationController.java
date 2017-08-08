@@ -7,9 +7,15 @@ import static edu.tamu.framework.enums.BusinessValidationType.EXISTS;
 import static edu.tamu.framework.enums.BusinessValidationType.NONEXISTS;
 import static edu.tamu.framework.enums.BusinessValidationType.UPDATE;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.tools.ant.taskdefs.condition.Not;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import edu.tamu.app.enums.NotificationLocation;
 import edu.tamu.app.model.Notification;
 import edu.tamu.app.model.repo.NotificationRepo;
 import edu.tamu.framework.aspect.annotation.ApiMapping;
@@ -61,4 +67,23 @@ public class NotificationController {
         notificationRepo.delete(notification);
         return new ApiResponse(SUCCESS);
     }
+    
+    @ApiMapping("/active")
+    @Auth(role="ROLE_ANONYMOUS")
+    public ApiResponse getActiveNotifications(@RequestParam(value = "location", defaultValue = "ALL") String locationString) {
+        String notificationString = "";
+        List<Notification> notificationList;
+        if (locationString.equals("ALL")) {
+            notificationList = notificationRepo.findByIsActive(true);
+        } else {
+            notificationList = notificationRepo.findByIsActiveAndLocations(true, NotificationLocation.valueOf(locationString));
+            
+        }
+        for (Notification notification : notificationList) {
+            notificationString += "<p>" + notification.getBody() + "</p>";
+        }
+        
+        return new ApiResponse(SUCCESS, "", notificationString);
+    }
+    
 }

@@ -7,11 +7,10 @@ import static edu.tamu.framework.enums.BusinessValidationType.EXISTS;
 import static edu.tamu.framework.enums.BusinessValidationType.NONEXISTS;
 import static edu.tamu.framework.enums.BusinessValidationType.UPDATE;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tools.ant.taskdefs.condition.Not;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,6 +22,7 @@ import edu.tamu.framework.aspect.annotation.ApiValidatedModel;
 import edu.tamu.framework.aspect.annotation.ApiValidation;
 import edu.tamu.framework.aspect.annotation.ApiVariable;
 import edu.tamu.framework.aspect.annotation.Auth;
+import edu.tamu.framework.aspect.annotation.SkipAop;
 import edu.tamu.framework.model.ApiResponse;
 
 @RestController
@@ -68,9 +68,9 @@ public class NotificationController {
         return new ApiResponse(SUCCESS);
     }
     
-    @ApiMapping("/active")
-    @Auth(role="ROLE_ANONYMOUS")
-    public ApiResponse getActiveNotifications(@RequestParam(value = "location", defaultValue = "ALL") String locationString) {
+    @SkipAop
+    @RequestMapping("/notification/active")
+    public String getActiveNotifications(@RequestParam(value = "location", defaultValue = "ALL") String locationString) {
         String notificationString = "";
         List<Notification> notificationList;
         if (locationString.equals("ALL")) {
@@ -83,7 +83,7 @@ public class NotificationController {
             notificationString += "<p>" + notification.getBody() + "</p>";
         }
         
-        return new ApiResponse(SUCCESS, "", notificationString);
+        return notificationString;
     }
     
 }

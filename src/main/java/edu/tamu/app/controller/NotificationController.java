@@ -7,9 +7,15 @@ import static edu.tamu.framework.enums.BusinessValidationType.EXISTS;
 import static edu.tamu.framework.enums.BusinessValidationType.NONEXISTS;
 import static edu.tamu.framework.enums.BusinessValidationType.UPDATE;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import edu.tamu.app.enums.NotificationLocation;
 import edu.tamu.app.model.Notification;
 import edu.tamu.app.model.repo.NotificationRepo;
 import edu.tamu.framework.aspect.annotation.ApiMapping;
@@ -17,6 +23,7 @@ import edu.tamu.framework.aspect.annotation.ApiValidatedModel;
 import edu.tamu.framework.aspect.annotation.ApiValidation;
 import edu.tamu.framework.aspect.annotation.ApiVariable;
 import edu.tamu.framework.aspect.annotation.Auth;
+import edu.tamu.framework.aspect.annotation.SkipAop;
 import edu.tamu.framework.model.ApiResponse;
 
 @RestController
@@ -61,4 +68,27 @@ public class NotificationController {
         notificationRepo.delete(notification);
         return new ApiResponse(SUCCESS);
     }
+
+    @SkipAop
+    @RequestMapping("/notification/active")
+    public String getActiveNotifications(@RequestParam(value = "location", defaultValue = "ALL") String locationString) {
+        String notificationString = "";
+        List<Notification> notificationList;
+        if (locationString.equals("ALL")) {
+            notificationList = notificationRepo.findByActive(true);
+        } else {
+            try {
+                NotificationLocation location = NotificationLocation.valueOf(locationString);
+                notificationList = notificationRepo.findByActiveAndLocations(true, location);
+            } catch (IllegalArgumentException e) {
+                notificationList = new ArrayList<Notification>();
+            }
+        }
+        for (Notification notification : notificationList) {
+            notificationString += "<p>" + notification.getBody() + "</p>";
+        }
+
+        return notificationString;
+    }
+
 }

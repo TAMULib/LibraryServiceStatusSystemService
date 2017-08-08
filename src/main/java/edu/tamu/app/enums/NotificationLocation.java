@@ -2,8 +2,10 @@ package edu.tamu.app.enums;
 
 public enum NotificationLocation {
 
-    EVANS,
+    MAIN,
     CUSHING,
     MSL,
-    WCL
+    WCL,
+    PSEL,
+    QATAR
 }

@@ -13,8 +13,6 @@ import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.Fetch;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import edu.tamu.framework.model.BaseEntity;
 
 import static javax.persistence.InheritanceType.JOINED;
@@ -24,9 +22,8 @@ import static org.hibernate.annotations.FetchMode.SELECT;
 @Inheritance(strategy = JOINED)
 public abstract class AbstractScheduler extends BaseEntity implements Scheduler {
 
-    @OneToMany(fetch = EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = EAGER, cascade = { CascadeType.ALL }, orphanRemoval = true)
     @Fetch(value = SELECT)
-    @JsonIgnoreProperties("scheduler")
     private List<Schedule> schedules;
 
     @Column(nullable = false)

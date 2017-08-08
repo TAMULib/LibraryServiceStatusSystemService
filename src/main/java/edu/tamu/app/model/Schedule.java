@@ -28,7 +28,7 @@ public class Schedule extends BaseEntity {
     @Column(nullable = false)
     private Long scheduledPostingEnd;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JsonIgnoreProperties("schedules")
     private AbstractScheduler scheduler;
 
@@ -36,10 +36,11 @@ public class Schedule extends BaseEntity {
     @MapKeyColumn(name = "key")
     @Column(name = "value")
     @CollectionTable(name = "schedule_data", joinColumns = @JoinColumn(name = "schedule_id"))
-    private Map<String, String> scheduleData = new HashMap<String, String>();
+    private Map<String, String> scheduleData;
 
     public Schedule() {
         super();
+        setScheduleData(new HashMap<String, String>());
     }
 
     public Schedule(Long start, Long end) {

@@ -7,6 +7,7 @@ import static edu.tamu.framework.enums.BusinessValidationType.EXISTS;
 import static edu.tamu.framework.enums.BusinessValidationType.NONEXISTS;
 import static edu.tamu.framework.enums.BusinessValidationType.UPDATE;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,8 +77,12 @@ public class NotificationController {
         if (locationString.equals("ALL")) {
             notificationList = notificationRepo.findByIsActive(true);
         } else {
-            notificationList = notificationRepo.findByIsActiveAndLocations(true, NotificationLocation.valueOf(locationString));
-            
+            try {
+                NotificationLocation location = NotificationLocation.valueOf(locationString);
+                notificationList = notificationRepo.findByIsActiveAndLocations(true, location);
+            } catch (IllegalArgumentException e) {
+                notificationList = new ArrayList<Notification>();
+            }
         }
         for (Notification notification : notificationList) {
             notificationString += "<p>" + notification.getBody() + "</p>";

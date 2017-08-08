@@ -40,12 +40,15 @@ public class NotificationControllerTest {
     protected static final String TEST_NOTIFICATION2_BODY = "Test Notification Body 2";
     protected static final String TEST_NOTIFICATION3_BODY = "Test Notification Body 3";
     protected static final String TEST_MODIFIED_NOTIFICATION_BODY = "Test Modified Notification Body";
+    protected static final String TEST_QUERY_PARAM = "CUSHING";
+    protected static final String TEST_NOTIFICATION_TEXT = "<p>Test Notification Body 1</p><p>Test Notification Body 2</p><p>Test Notification Body 3</p>";
     protected static final boolean TEST_IS_ACTIVE = true;
+    protected static final boolean TEST_ALTERNATIVE_IS_ACTIVE = false;
     protected static final List<NotificationLocation> TEST_LOCATIONS = Arrays.asList(new NotificationLocation[] {NotificationLocation.CUSHING});
     
     protected static Notification TEST_NOTIFICATION1 = new Notification(TEST_NOTIFICATION1_NAME, TEST_NOTIFICATION1_BODY, TEST_IS_ACTIVE, TEST_LOCATIONS);
     protected static Notification TEST_NOTIFICATION2= new Notification(TEST_NOTIFICATION2_NAME,TEST_NOTIFICATION2_BODY, TEST_IS_ACTIVE, TEST_LOCATIONS); 
-    protected static Notification TEST_NOTIFICATION3 = new Notification(TEST_NOTIFICATION3_NAME, TEST_NOTIFICATION3_BODY, TEST_IS_ACTIVE, TEST_LOCATIONS);
+    protected static Notification TEST_NOTIFICATION3 = new Notification(TEST_NOTIFICATION3_NAME, TEST_NOTIFICATION3_BODY, TEST_ALTERNATIVE_IS_ACTIVE, TEST_LOCATIONS);
     protected static Notification TEST_MODIFIED_NOTIFICATION = new Notification(TEST_MODIFIED_NOTIFICATION_NAME, TEST_NOTIFICATION2_BODY, TEST_IS_ACTIVE, TEST_LOCATIONS);
     
     protected static List<Notification> mockNotificationList = new ArrayList<Notification>(Arrays.asList(new Notification[] { TEST_NOTIFICATION1, TEST_NOTIFICATION2, TEST_NOTIFICATION3 }));
@@ -69,6 +72,7 @@ public class NotificationControllerTest {
         when(notificationRepo.findOne(any(Long.class))).thenReturn(TEST_NOTIFICATION1);
         when(notificationRepo.create(any(String.class), any(String.class), any(boolean.class), anyListOf(NotificationLocation.class))).thenReturn(TEST_NOTIFICATION1);
         when(notificationRepo.update(any(Notification.class))).thenReturn(TEST_MODIFIED_NOTIFICATION);
+        when(notificationRepo.findByIsActiveAndLocations(any(boolean.class),  any(NotificationLocation.class))).thenReturn(mockNotificationList);
         doNothing().when(notificationRepo).delete(any(Notification.class));
     }
     
@@ -110,6 +114,12 @@ public class NotificationControllerTest {
     public void testRemove() {
         response = notificationController.remove(TEST_MODIFIED_NOTIFICATION);
         assertEquals("Not successful at removing Notification", SUCCESS, response.getMeta().getType());
+    }
+    
+    @Test
+    public void testActiveNotifications() {
+        String notifications = notificationController.getActiveNotifications(TEST_QUERY_PARAM);
+        assertEquals("Active Notifications not returned correctly", TEST_NOTIFICATION_TEXT, notifications);
     }
     
     @After

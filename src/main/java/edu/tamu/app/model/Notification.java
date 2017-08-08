@@ -1,41 +1,48 @@
 package edu.tamu.app.model;
 
 import static javax.persistence.FetchType.EAGER;
+import static org.hibernate.annotations.FetchMode.SELECT;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 
+import org.hibernate.annotations.Fetch;
+
 import edu.tamu.app.enums.NotificationLocation;
 import edu.tamu.app.model.validation.NotificationValidator;
-import edu.tamu.framework.model.BaseEntity;
 
 @Entity
-public class Notification extends BaseEntity {
+public class Notification extends AbstractScheduler {
 
     @Column(nullable = false)
     private String name;
-    
+
     @Column(nullable = false)
     private String body;
-    
+
     @Column(nullable = false)
-    private boolean isActive;
-    
+    private Boolean active;
+
     @ElementCollection(fetch = EAGER)
-    private List<NotificationLocation> locations; 
-    
+    @Fetch(value = SELECT)
+    private List<NotificationLocation> locations;
+
     public Notification() {
+        super();
         setModelValidator(new NotificationValidator());
+        setActive(false);
+        setLocations(new ArrayList<NotificationLocation>());
     }
-    
-    public Notification(String name, String body, boolean isActive, List<NotificationLocation> locations) {
+
+    public Notification(String name, String body, List<NotificationLocation> locations) {
         this();
         setName(name);
         setBody(body);
-        setIsActive(isActive);
         setLocations(locations);
     }
 
@@ -55,12 +62,12 @@ public class Notification extends BaseEntity {
         this.body = body;
     }
 
-    public Boolean getIsActive() {
-        return isActive;
+    public Boolean getActive() {
+        return active;
     }
 
-    public void setIsActive(Boolean isActive) {
-        this.isActive = isActive;
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 
     public List<NotificationLocation> getLocations() {
@@ -70,4 +77,20 @@ public class Notification extends BaseEntity {
     public void setLocations(List<NotificationLocation> locations) {
         this.locations = locations;
     }
+    
+    @Override
+    public String getType() {
+        return "notification";
+    }
+
+    @Override
+    public void scheduleStart(Map<String, String> scheduleData) {
+        setActive(true);
+    }
+
+    @Override
+    public void scheduleEnd(Map<String, String> scheduleData) {
+        setActive(false);
+    }
+
 }

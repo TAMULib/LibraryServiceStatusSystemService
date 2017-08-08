@@ -116,4 +116,5 @@ public class NoteControllerTest {
         response = noteController.remove(TEST_MODIFIED_NOTE);
         assertEquals("Not successful at removing Note", SUCCESS, response.getMeta().getType());
     }
+
 }

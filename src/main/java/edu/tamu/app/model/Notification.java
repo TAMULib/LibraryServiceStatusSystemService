@@ -77,7 +77,7 @@ public class Notification extends AbstractScheduler {
     public void setLocations(List<NotificationLocation> locations) {
         this.locations = locations;
     }
-    
+
     @Override
     public String getType() {
         return "notification";

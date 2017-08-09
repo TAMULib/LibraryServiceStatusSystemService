@@ -13,19 +13,17 @@ import edu.tamu.framework.model.ApiResponse;
 @Service
 public class UpdateServiceStatuses {
 
-	@Autowired
-	MonitorService monitorService;
-	
-	@Autowired
-	SimpMessagingTemplate simpMessagingTemplate;
-	
-	@Scheduled(fixedRate=(10*60*1000))
-	public void updateOveralStatuses() {
-		monitorService.updateAll();
-		
-		simpMessagingTemplate.convertAndSend("/channel/status/overall-full", new ApiResponse(SUCCESS, monitorService.getOverallStatus()));
-		simpMessagingTemplate.convertAndSend("/channel/status/overall-public", new ApiResponse(SUCCESS, monitorService.getOverallStatusPublic()));
-		
-	}
+    @Autowired
+    MonitorService monitorService;
+
+    @Autowired
+    SimpMessagingTemplate simpMessagingTemplate;
+
+    @Scheduled(fixedRate = (10 * 60 * 1000))
+    public void updateOveralStatuses() {
+        monitorService.updateAll();
+        simpMessagingTemplate.convertAndSend("/channel/status/overall-full", new ApiResponse(SUCCESS, monitorService.getOverallStatus()));
+        simpMessagingTemplate.convertAndSend("/channel/status/overall-public", new ApiResponse(SUCCESS, monitorService.getOverallStatusPublic()));
+    }
 
 }

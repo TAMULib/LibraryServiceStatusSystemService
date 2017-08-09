@@ -19,4 +19,5 @@ public class NotificationValidator extends BaseModelValidator {
         String locationsProperty = "locations";
         this.addInputValidator(new InputValidator(InputValidationType.required, "Notifications must have a display location", locationsProperty, true));
     }
+
 }

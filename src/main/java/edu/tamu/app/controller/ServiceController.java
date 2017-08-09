@@ -50,16 +50,14 @@ public class ServiceController {
     @Auth(role = "ROLE_SERVICE_MANAGER")
     @ApiValidation(business = { @ApiValidation.Business(value = CREATE), @ApiValidation.Business(value = EXISTS) })
     public ApiResponse createService(@ApiValidatedModel Service service, @ApiCredentials Credentials credentials) {
-        service = serviceRepo.create(service);
-        return new ApiResponse(SUCCESS, service);
+        return new ApiResponse(SUCCESS, serviceRepo.create(service));
     }
 
     @ApiMapping("/update")
     @Auth(role = "ROLE_SERVICE_MANAGER")
     @ApiValidation(business = { @ApiValidation.Business(value = UPDATE), @ApiValidation.Business(value = NONEXISTS) })
     public ApiResponse updateService(@ApiValidatedModel Service service, @ApiCredentials Credentials credentials) {
-        service = serviceRepo.update(service);
-        return new ApiResponse(SUCCESS, service);
+        return new ApiResponse(SUCCESS, serviceRepo.update(service));
     }
 
     @ApiMapping("/remove")
@@ -69,4 +67,5 @@ public class ServiceController {
         serviceRepo.delete(service);
         return new ApiResponse(SUCCESS);
     }
+
 }

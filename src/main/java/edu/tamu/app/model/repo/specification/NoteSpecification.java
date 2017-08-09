@@ -51,7 +51,15 @@ public class NoteSpecification<E> implements Specification<E> {
 
         }
 
-        return cb.and(cb.or(activeOrPinnedPredicates.toArray(new Predicate[activeOrPinnedPredicates.size()])), cb.and(servicePredicates.toArray(new Predicate[servicePredicates.size()])));
+        Predicate predicate;
+
+        if (activeOrPinnedPredicates.size() > 0) {
+            predicate = cb.and(cb.or(activeOrPinnedPredicates.toArray(new Predicate[activeOrPinnedPredicates.size()])), cb.and(servicePredicates.toArray(new Predicate[servicePredicates.size()])));
+        } else {
+            predicate = cb.and(servicePredicates.toArray(new Predicate[servicePredicates.size()]));
+        }
+
+        return predicate;
     }
 
 }

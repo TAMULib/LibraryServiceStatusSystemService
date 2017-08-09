@@ -44,8 +44,7 @@ public class NoteController {
     @Auth(role = "ROLE_SERVICE_MANAGER")
     @ApiValidation(business = { @ApiValidation.Business(value = CREATE), @ApiValidation.Business(value = EXISTS) })
     public ApiResponse create(@ApiValidatedModel Note note, @ApiCredentials Credentials credentials) {
-        note = noteRepo.create(note, credentials);
-        return new ApiResponse(SUCCESS, note);
+        return new ApiResponse(SUCCESS, noteRepo.create(note, credentials));
     }
 
     @ApiMapping("/update")

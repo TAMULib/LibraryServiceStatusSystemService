@@ -1,12 +1,3 @@
-/* 
- * AppServletConfig.java 
- * 
- * Version: 
- *     $Id$ 
- * 
- * Revisions: 
- *     $Log$ 
- */
 package edu.tamu.app.config;
 
 import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
@@ -41,10 +32,7 @@ public class AppServletConfig {
          */
         @Override
         public void customize(ConfigurableEmbeddedServletContainer cesc) {
-            // An example on how to customize a servlet.
-            // MimeMappings mm = new MimeMappings(MimeMappings.DEFAULT);
-            // mm.add("png", "image/png");
-            // cesc.setMimeMappings(mm);
+
         }
 
     }

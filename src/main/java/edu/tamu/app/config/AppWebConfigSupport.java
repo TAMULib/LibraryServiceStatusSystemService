@@ -1,12 +1,3 @@
-/* 
- * AppWebConfigSupport.java 
- * 
- * Version: 
- *     $Id$ 
- * 
- * Revisions: 
- *     $Log$ 
- */
 package edu.tamu.app.config;
 
 import org.springframework.beans.factory.annotation.Autowired;

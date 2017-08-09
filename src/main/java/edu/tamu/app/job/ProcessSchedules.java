@@ -35,7 +35,7 @@ public class ProcessSchedules {
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
 
-    @Scheduled(cron = "5 0/5 * * * ?")
+    @Scheduled(cron = "5 0/1 * * * ?")
     private void checkSchedules() {
 
         Date date = new Date();

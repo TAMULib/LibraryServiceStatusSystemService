@@ -139,4 +139,5 @@ public class Service extends AbstractScheduler {
     public void scheduleEnd(Map<String, String> scheduleData) {
         setStatus(Status.valueOf(scheduleData.get("previousStatus")));
     }
+
 }

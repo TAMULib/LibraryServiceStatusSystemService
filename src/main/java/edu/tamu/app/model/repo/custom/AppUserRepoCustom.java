@@ -1,12 +1,3 @@
-/* 
- * AppUserRepoCustom.java 
- * 
- * Version: 
- *     $Id$ 
- * 
- * Revisions: 
- *     $Log$ 
- */
 package edu.tamu.app.model.repo.custom;
 
 import edu.tamu.app.model.AppUser;

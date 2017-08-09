@@ -73,7 +73,7 @@ public class NotificationControllerTest {
         when(notificationRepo.findOne(any(Long.class))).thenReturn(TEST_NOTIFICATION1);
         when(notificationRepo.create(any(Notification.class))).thenReturn(TEST_NOTIFICATION1);
         when(notificationRepo.update(any(Notification.class))).thenReturn(TEST_MODIFIED_NOTIFICATION);
-        when(notificationRepo.findByActiveAndLocations(any(Boolean.class), any(NotificationLocation.class))).thenReturn(mockNotificationList);
+        when(notificationRepo.activeNotificationsByLocation(any(String.class))).thenReturn(mockNotificationList);
         doNothing().when(notificationRepo).delete(any(Notification.class));
     }
 

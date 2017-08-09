@@ -2,9 +2,13 @@ package edu.tamu.app.model.repo.impl;
 
 import static edu.tamu.framework.enums.ApiResponseType.SUCCESS;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
+import edu.tamu.app.enums.NotificationLocation;
 import edu.tamu.app.model.Notification;
 import edu.tamu.app.model.Schedule;
 import edu.tamu.app.model.repo.NotificationRepo;
@@ -41,4 +45,20 @@ public class NotificationRepoImpl implements NotificationRepoCustom {
         notificationRepo.delete(notification.getId());
         simpMessagingTemplate.convertAndSend("/channel/notification/delete", new ApiResponse(SUCCESS, notification.getId()));
     }
+
+    @Override
+    public List<Notification> activeNotificationsByLocation(String location) {
+        List<Notification> notifications = new ArrayList<Notification>();
+        if (location.equals("ALL")) {
+            notifications = notificationRepo.findByActiveTrue();
+        } else {
+            try {
+                notifications = notificationRepo.findByActiveTrueAndLocations(NotificationLocation.valueOf(location));
+            } catch (IllegalArgumentException e) {
+
+            }
+        }
+        return notifications;
+    }
+
 }

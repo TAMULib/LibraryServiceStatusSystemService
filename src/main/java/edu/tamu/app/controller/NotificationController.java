@@ -7,7 +7,6 @@ import static edu.tamu.framework.enums.BusinessValidationType.EXISTS;
 import static edu.tamu.framework.enums.BusinessValidationType.NONEXISTS;
 import static edu.tamu.framework.enums.BusinessValidationType.UPDATE;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import edu.tamu.app.enums.NotificationLocation;
 import edu.tamu.app.model.Notification;
 import edu.tamu.app.model.repo.NotificationRepo;
 import edu.tamu.framework.aspect.annotation.ApiMapping;
@@ -49,16 +47,14 @@ public class NotificationController {
     @Auth(role = "ROLE_WEB_MANAGER")
     @ApiValidation(business = { @ApiValidation.Business(value = CREATE), @ApiValidation.Business(value = EXISTS) })
     public ApiResponse create(@ApiValidatedModel Notification notification) {
-        notification = notificationRepo.create(notification);
-        return new ApiResponse(SUCCESS, notification);
+        return new ApiResponse(SUCCESS, notificationRepo.create(notification));
     }
 
     @ApiMapping("/update")
     @Auth(role = "ROLE_WEB_MANAGER")
     @ApiValidation(business = { @ApiValidation.Business(value = UPDATE), @ApiValidation.Business(value = NONEXISTS) })
     public ApiResponse update(@ApiValidatedModel Notification notification) {
-        notification = notificationRepo.update(notification);
-        return new ApiResponse(SUCCESS, notification);
+        return new ApiResponse(SUCCESS, notificationRepo.update(notification));
     }
 
     @ApiMapping("/remove")
@@ -71,24 +67,16 @@ public class NotificationController {
 
     @SkipAop
     @RequestMapping("/notification/active")
-    public String getActiveNotifications(@RequestParam(value = "location", defaultValue = "ALL") String locationString) {
-        String notificationString = "";
-        List<Notification> notificationList;
-        if (locationString.equals("ALL")) {
-            notificationList = notificationRepo.findByActive(true);
-        } else {
-            try {
-                NotificationLocation location = NotificationLocation.valueOf(locationString);
-                notificationList = notificationRepo.findByActiveAndLocations(true, location);
-            } catch (IllegalArgumentException e) {
-                notificationList = new ArrayList<Notification>();
-            }
-        }
-        for (Notification notification : notificationList) {
-            notificationString += "<p>" + notification.getBody() + "</p>";
-        }
+    public String getActiveNotifications(@RequestParam(value = "location", defaultValue = "ALL") String location) {
+        return buildNotificationHtml(notificationRepo.activeNotificationsByLocation(location));
+    }
 
-        return notificationString;
+    private String buildNotificationHtml(List<Notification> notifications) {
+        StringBuilder notificationHtmlBuilder = new StringBuilder("");
+        for (Notification notification : notifications) {
+            notificationHtmlBuilder.append("<p>").append(notification.getBody()).append("</p>");
+        }
+        return notificationHtmlBuilder.toString();
     }
 
 }

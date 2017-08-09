@@ -1,12 +1,3 @@
-/* 
- * UserController.java 
- * 
- * Version: 
- *     $Id$ 
- * 
- * Revisions: 
- *     $Log$ 
- */
 package edu.tamu.app.controller;
 
 import static edu.tamu.framework.enums.ApiResponseType.SUCCESS;
@@ -34,10 +25,10 @@ public class UserController {
 
     @Autowired
     private AppUserRepo userRepo;
-    
+
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
-    
+
     /**
      * Websocket endpoint to request credentials.
      * 
@@ -64,9 +55,9 @@ public class UserController {
     @ApiMapping("/all")
     @Auth(role = "ROLE_WEB_MANAGER")
     public ApiResponse allUsers() throws Exception {
-        return new ApiResponse(SUCCESS,  userRepo.findAll());
+        return new ApiResponse(SUCCESS, userRepo.findAll());
     }
-    
+
     /**
      * Returns all users.
      * 
@@ -75,17 +66,14 @@ public class UserController {
      */
     @ApiMapping("/update")
     @Auth(role = "ROLE_WEB_MANAGER")
-    public ApiResponse updateUser(@ApiModel AppUser user) throws Exception {        
-        // get the persisted user for its encoded password        
+    public ApiResponse updateUser(@ApiModel AppUser user) throws Exception {
+        // get the persisted user for its encoded password
         AppUser persistedUser = userRepo.findOne(user.getId());
-        if(persistedUser != null) {
+        if (persistedUser != null) {
             user.setPassword(persistedUser.getPassword());
         }
-        
         user = userRepo.save(user);
-        
         simpMessagingTemplate.convertAndSend("/channel/user", new ApiResponse(SUCCESS, userRepo.findAll()));
-        
         return new ApiResponse(SUCCESS, user);
     }
 

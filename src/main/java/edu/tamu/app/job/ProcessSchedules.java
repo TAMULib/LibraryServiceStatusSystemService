@@ -1,4 +1,4 @@
-package edu.tamu.app.service;
+package edu.tamu.app.job;
 
 import static edu.tamu.framework.enums.ApiResponseType.SUCCESS;
 
@@ -15,12 +15,13 @@ import org.springframework.stereotype.Service;
 import edu.tamu.app.model.AbstractScheduler;
 import edu.tamu.app.model.repo.AbstractSchedulerRepo;
 import edu.tamu.app.model.repo.ScheduleRepo;
+import edu.tamu.app.service.SystemMonitorService;
 import edu.tamu.framework.model.ApiResponse;
 
 @Service
-public class ScheduleService {
+public class ProcessSchedules {
 
-    private Logger logger = LoggerFactory.getLogger(ScheduleService.class);
+    private Logger logger = LoggerFactory.getLogger(ProcessSchedules.class);
 
     @Autowired
     private ScheduleRepo scheduleRepo;
@@ -34,7 +35,7 @@ public class ScheduleService {
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
 
-    @Scheduled(cron = "5 0/1 * * * ?")
+    @Scheduled(cron = "5 0/5 * * * ?")
     private void checkSchedules() {
 
         Date date = new Date();

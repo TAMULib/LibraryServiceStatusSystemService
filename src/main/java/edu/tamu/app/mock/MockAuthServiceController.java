@@ -57,8 +57,7 @@ public class MockAuthServiceController {
     private static final Logger logger = Logger.getLogger(MockAuthServiceController.class);
 
     /**
-     * Token endpoint. Returns a token with credentials from Shibboleth in
-     * payload.
+     * Token endpoint. Returns a token with credentials from Shibboleth in payload.
      *
      * @param params
      *            Map<String,String>
@@ -89,8 +88,7 @@ public class MockAuthServiceController {
     }
 
     /**
-     * Refresh endpoint. Returns a new token with credentials from Shibboleth in
-     * payload.
+     * Refresh endpoint. Returns a new token with credentials from Shibboleth in payload.
      *
      * @param params
      * @RequestParam() Map<String,String>

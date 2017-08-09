@@ -1,12 +1,3 @@
-/* 
- * WebServerInit.java 
- * 
- * Version: 
- *     $Id$ 
- * 
- * Revisions: 
- *     $Log$ 
- */
 package edu.tamu.app;
 
 import org.springframework.boot.SpringApplication;
@@ -19,8 +10,8 @@ import org.springframework.context.annotation.ComponentScan;
  * Web server initialization.
  * 
  */
-@ComponentScan(basePackages = { "edu.tamu.framework", "edu.tamu.app" })
 @SpringBootApplication
+@ComponentScan(basePackages = { "edu.tamu.framework", "edu.tamu.app" })
 public class WebServerInit extends SpringBootServletInitializer {
 
     /**

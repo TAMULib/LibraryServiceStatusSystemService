@@ -15,9 +15,7 @@ public interface NoteRepo extends JpaRepository<Note, Long>, NoteRepoCustom, Jpa
 
     public Page<Note> findAll(Specification<Note> specification, Pageable pageable);
 
-    public List<Note> findAll(Specification<Note> specification);
-
-    public Page<Note> findAll(Pageable pageable);
+    public Page<Note> findAllByOrderByLastModifiedDesc(Pageable pageable);
 
     public List<Note> findAllByServiceId(Long id);
 

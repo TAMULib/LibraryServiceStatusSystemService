@@ -35,7 +35,7 @@ public class ProcessSchedules {
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
 
-    @Scheduled(cron = "5 0/5 * * * ?")
+    @Scheduled(cron = "5 0/1 * * * ?")
     private void checkSchedules() {
 
         Date date = new Date();
@@ -48,6 +48,9 @@ public class ProcessSchedules {
             scheduler.setWithinSchedule(false);
             scheduler = abstractSchedulerRepo.save(scheduler);
             logger.info("Ending schedule for " + scheduler);
+            scheduler.removeSchedule(schedule);
+            scheduler = abstractSchedulerRepo.save(scheduler);
+            scheduleRepo.delete(schedule);
             broadcastUpdate(scheduler);
         });
 

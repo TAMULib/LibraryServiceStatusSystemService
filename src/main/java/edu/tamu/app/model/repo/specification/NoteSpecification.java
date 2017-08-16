@@ -50,6 +50,8 @@ public class NoteSpecification<E> implements Specification<E> {
             }
 
         }
+        
+        query.orderBy(cb.desc(root.get("lastModified")));
 
         Predicate predicate;
 

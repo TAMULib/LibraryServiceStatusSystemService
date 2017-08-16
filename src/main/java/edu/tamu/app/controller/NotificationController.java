@@ -34,7 +34,7 @@ public class NotificationController {
     @ApiMapping("/all")
     @Auth(role = "ROLE_STAFF")
     public ApiResponse getAllNotifications() {
-        return new ApiResponse(SUCCESS, notificationRepo.findAll());
+        return new ApiResponse(SUCCESS, notificationRepo.findAllByOrderByIdDesc());
     }
 
     @ApiMapping("/{id}")

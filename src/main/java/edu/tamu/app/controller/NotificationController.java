@@ -68,7 +68,7 @@ public class NotificationController {
     @SkipAop
     @RequestMapping("/notification/active")
     public String getActiveNotifications(@RequestParam(value = "location", defaultValue = "ALL") String location) {
-        return buildNotificationHtml(notificationRepo.activeNotificationsByLocation(location.toLowerCase()));
+        return buildNotificationHtml(notificationRepo.activeNotificationsByLocation(location.toUpperCase()));
     }
 
     private String buildNotificationHtml(List<Notification> notifications) {

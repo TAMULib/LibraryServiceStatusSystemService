@@ -35,7 +35,7 @@ public class UpdateSchedules {
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
 
-    @Scheduled(cron = "5 0/1 * * * ?")
+    @Scheduled(cron = "5 0/5 * * * ?")
     private void updateSchedules() {
 
         updateEndingSchedules();

@@ -14,7 +14,6 @@ public class NotificationValidator extends BaseModelValidator {
         String bodyProperty = "body";
         this.addInputValidator(new InputValidator(InputValidationType.required, "Notifications require a body", bodyProperty, true));
         this.addInputValidator(new InputValidator(InputValidationType.minlength, "Notification body must be at least 3 characters", bodyProperty, 3));
-        this.addInputValidator(new InputValidator(InputValidationType.maxlength, "Notifications must be no more than 5000 cahracters", bodyProperty, 5000));
 
         String locationsProperty = "locations";
         this.addInputValidator(new InputValidator(InputValidationType.required, "Notifications must have a display location", locationsProperty, true));

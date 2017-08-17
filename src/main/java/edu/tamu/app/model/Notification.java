@@ -22,7 +22,7 @@ public class Notification extends AbstractScheduler {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "text", nullable = false)
     private String body;
 
     @Column(nullable = false)

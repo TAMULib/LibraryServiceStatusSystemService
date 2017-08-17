@@ -19,9 +19,9 @@ import edu.tamu.app.service.SystemMonitorService;
 import edu.tamu.framework.model.ApiResponse;
 
 @Service
-public class ProcessSchedules {
+public class UpdateSchedules {
 
-    private Logger logger = LoggerFactory.getLogger(ProcessSchedules.class);
+    private Logger logger = LoggerFactory.getLogger(UpdateSchedules.class);
 
     @Autowired
     private ScheduleRepo scheduleRepo;
@@ -36,7 +36,15 @@ public class ProcessSchedules {
     private SimpMessagingTemplate simpMessagingTemplate;
 
     @Scheduled(cron = "5 0/1 * * * ?")
-    private void checkSchedules() {
+    private void updateSchedules() {
+
+        updateEndingSchedules();
+
+        updateStartingSchedules();
+
+    }
+
+    private synchronized void updateEndingSchedules() {
 
         Date date = new Date();
         Long now = date.getTime();
@@ -53,8 +61,13 @@ public class ProcessSchedules {
             scheduleRepo.delete(schedule);
             broadcastUpdate(scheduler);
         });
-        
-        now = date.getTime();
+
+    }
+
+    private synchronized void updateStartingSchedules() {
+
+        Date date = new Date();
+        Long now = date.getTime();
 
         logger.info("Checking for starting schedules");
         scheduleRepo.findByScheduledPostingStartLessThanEqualAndScheduledPostingEndGreaterThanEqualAndSchedulerWithinScheduleFalse(now, now).forEach(schedule -> {

@@ -68,8 +68,7 @@ public class NotificationControllerTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-
-        when(notificationRepo.findAll()).thenReturn(mockNotificationList);
+        when(notificationRepo.findAllByOrderByIdDesc()).thenReturn(mockNotificationList);
         when(notificationRepo.findOne(any(Long.class))).thenReturn(TEST_NOTIFICATION1);
         when(notificationRepo.create(any(Notification.class))).thenReturn(TEST_NOTIFICATION1);
         when(notificationRepo.update(any(Notification.class))).thenReturn(TEST_MODIFIED_NOTIFICATION);

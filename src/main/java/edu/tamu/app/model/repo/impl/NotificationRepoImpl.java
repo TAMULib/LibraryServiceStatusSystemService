@@ -50,10 +50,10 @@ public class NotificationRepoImpl implements NotificationRepoCustom {
     public List<Notification> activeNotificationsByLocation(String location) {
         List<Notification> notifications = new ArrayList<Notification>();
         if (location.equals("ALL")) {
-            notifications = notificationRepo.findByActiveTrue();
+            notifications = notificationRepo.findByActiveTrueOrderByIdDesc();
         } else {
             try {
-                notifications = notificationRepo.findByActiveTrueAndLocations(NotificationLocation.valueOf(location));
+                notifications = notificationRepo.findByActiveTrueAndLocationsOrderByIdDesc(NotificationLocation.valueOf(location));
             } catch (IllegalArgumentException e) {
 
             }

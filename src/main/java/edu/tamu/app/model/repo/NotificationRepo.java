@@ -10,9 +10,11 @@ import edu.tamu.app.model.repo.custom.NotificationRepoCustom;
 
 public interface NotificationRepo extends JpaRepository<Notification, Long>, NotificationRepoCustom {
 
-    public List<Notification> findByActiveTrue();
+    public List<Notification> findAllByOrderByIdDesc();
 
-    public List<Notification> findByActiveTrueAndLocations(NotificationLocation location);
+    public List<Notification> findByActiveTrueOrderByIdDesc();
+
+    public List<Notification> findByActiveTrueAndLocationsOrderByIdDesc(NotificationLocation location);
 
     public void delete(Notification notification);
 

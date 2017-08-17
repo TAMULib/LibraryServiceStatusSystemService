@@ -53,6 +53,8 @@ public class ProcessSchedules {
             scheduleRepo.delete(schedule);
             broadcastUpdate(scheduler);
         });
+        
+        now = date.getTime();
 
         logger.info("Checking for starting schedules");
         scheduleRepo.findByScheduledPostingStartLessThanEqualAndScheduledPostingEndGreaterThanEqualAndSchedulerWithinScheduleFalse(now, now).forEach(schedule -> {

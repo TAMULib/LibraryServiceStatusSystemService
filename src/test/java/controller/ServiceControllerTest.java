@@ -81,8 +81,8 @@ public class ServiceControllerTest {
         when(credentials.getUin()).thenReturn("123456789");
         when(userRepo.findByUin(any(String.class))).thenReturn(user);
         when(systemMonitorService.getOverallStatus()).thenReturn(new OverallStatus(edu.tamu.app.enums.OverallMessageType.SUCCESS, "Success"));
-        when(serviceRepo.findAllByOrderByIdDesc()).thenReturn(mockServiceList);
-        when(serviceRepo.findByIsPublicOrderByIdDesc(true)).thenReturn(mockPublicServiceList);
+        when(serviceRepo.findAllByOrderByStatusDescNameAsc()).thenReturn(mockServiceList);
+        when(serviceRepo.findByIsPublicOrderByStatusDescNameAsc(true)).thenReturn(mockPublicServiceList);
         when(serviceRepo.findOne(any(Long.class))).thenReturn(TEST_SERVICE1);
         when(serviceRepo.create(any(Service.class))).thenReturn(TEST_SERVICE1);
         when(serviceRepo.update(any(Service.class))).thenReturn(TEST_MODIFIED_SERVICE1);

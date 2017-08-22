@@ -31,13 +31,13 @@ public class ServiceController {
     @ApiMapping("/all")
     @Auth(role = "ROLE_ANONYMOUS")
     public ApiResponse getAllServices() {
-        return new ApiResponse(SUCCESS, serviceRepo.findAllByOrderByIdDesc());
+        return new ApiResponse(SUCCESS, serviceRepo.findAllByOrderByStatusDescNameAsc());
     }
 
     @ApiMapping("/public")
     @Auth(role = "ROLE_ANONYMOUS")
     public ApiResponse getPublicServices() {
-        return new ApiResponse(SUCCESS, serviceRepo.findByIsPublicOrderByIdDesc(true));
+        return new ApiResponse(SUCCESS, serviceRepo.findByIsPublicOrderByStatusDescNameAsc(true));
     }
 
     @ApiMapping("/{id}")

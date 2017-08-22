@@ -43,7 +43,7 @@ public class OverallStatusService {
             }
         }
 
-        for (edu.tamu.app.model.Service service : serviceRepo.findByIsPublicOrderByIdDesc(true)) {
+        for (edu.tamu.app.model.Service service : serviceRepo.findByIsPublicOrderByStatusDescNameAsc(true)) {
             if (service.getStatus().equals(Status.DOWN)) {
                 publicServicesAreUp = false;
                 break;

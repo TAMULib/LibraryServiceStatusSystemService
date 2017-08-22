@@ -10,11 +10,11 @@ import edu.tamu.app.model.repo.custom.ServiceRepoCustom;
 
 public interface ServiceRepo extends JpaRepository<Service, Long>, ServiceRepoCustom {
 
-    public List<Service> findByIsPublicOrderByIdDesc(Boolean isPublic);
+    public List<Service> findByIsPublicOrderByStatusDescNameAsc(Boolean isPublic);
 
     public List<Service> findByIsAuto(Boolean isAuto);
     
-    public List<Service> findAllByOrderByIdDesc();
+    public List<Service> findAllByOrderByStatusDescNameAsc();
 
     public Long countByStatus(Status status);
 

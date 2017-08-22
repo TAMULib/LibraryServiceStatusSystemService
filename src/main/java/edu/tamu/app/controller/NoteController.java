@@ -64,7 +64,7 @@ public class NoteController {
     @ApiMapping("/page")
     @Auth(role = "ROLE_ANONYMOUS")
     public ApiResponse page(@ApiData FilteredPageRequest filteredPageRequest) {
-        return new ApiResponse(SUCCESS, noteRepo.findAllByOrderByLastModifiedDesc(filteredPageRequest.getPageRequest()));
+        return new ApiResponse(SUCCESS, noteRepo.findAllByOrderByServiceNameAscLastModifiedDesc(filteredPageRequest.getPageRequest()));
     }
 
 }

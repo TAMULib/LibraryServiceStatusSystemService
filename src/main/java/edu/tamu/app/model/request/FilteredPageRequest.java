@@ -34,7 +34,7 @@ public class FilteredPageRequest {
 
     @JsonIgnore
     public PageRequest getPageRequest() {
-        return new PageRequest(pageNumber - 1, pageSize, new Sort(Sort.Direction.fromString(direction), properties));
+        return new PageRequest(pageNumber > 0 ? pageNumber - 1 : 0, pageSize > 0 ? pageSize : 10, new Sort(Sort.Direction.fromString(direction), properties));
     }
 
     public int getPageNumber() {

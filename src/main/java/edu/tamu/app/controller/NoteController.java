@@ -5,21 +5,15 @@ import static edu.tamu.framework.enums.BusinessValidationType.CREATE;
 import static edu.tamu.framework.enums.BusinessValidationType.EXISTS;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import edu.tamu.app.model.Note;
-import edu.tamu.app.model.Service;
 import edu.tamu.app.model.repo.NoteRepo;
 import edu.tamu.app.model.request.FilteredPageRequest;
 import edu.tamu.framework.aspect.annotation.ApiCredentials;
 import edu.tamu.framework.aspect.annotation.ApiData;
 import edu.tamu.framework.aspect.annotation.ApiMapping;
-import edu.tamu.framework.aspect.annotation.ApiModel;
 import edu.tamu.framework.aspect.annotation.ApiValidatedModel;
 import edu.tamu.framework.aspect.annotation.ApiValidation;
 import edu.tamu.framework.aspect.annotation.ApiVariable;
@@ -34,19 +28,10 @@ public class NoteController {
     @Autowired
     private NoteRepo noteRepo;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @ApiMapping("/all")
+    @ApiMapping("/query")
     @Auth(role = "ROLE_ANONYMOUS")
-    public ApiResponse getAllNotes() {
-        return new ApiResponse(SUCCESS, noteRepo.findAll());
-    }
-
-    @ApiMapping("/by-service")
-    @Auth(role = "ROLE_ANONYMOUS")
-    public ApiResponse getAllNotesByService(@ApiModel Service service) {
-        return new ApiResponse(SUCCESS, noteRepo.findAllByService(service));
+    public ApiResponse getAllNotesByService(@ApiData FilteredPageRequest filteredPageRequest) {
+        return new ApiResponse(SUCCESS, noteRepo.findAll(filteredPageRequest.getSpecification(), filteredPageRequest.getPageRequest()));
     }
 
     @ApiMapping("/{id}")
@@ -59,8 +44,7 @@ public class NoteController {
     @Auth(role = "ROLE_SERVICE_MANAGER")
     @ApiValidation(business = { @ApiValidation.Business(value = CREATE), @ApiValidation.Business(value = EXISTS) })
     public ApiResponse create(@ApiValidatedModel Note note, @ApiCredentials Credentials credentials) {
-        note = noteRepo.create(note, credentials);
-        return new ApiResponse(SUCCESS, note);
+        return new ApiResponse(SUCCESS, noteRepo.create(note, credentials));
     }
 
     @ApiMapping("/update")
@@ -80,7 +64,7 @@ public class NoteController {
     @ApiMapping("/page")
     @Auth(role = "ROLE_ANONYMOUS")
     public ApiResponse page(@ApiData FilteredPageRequest filteredPageRequest) {
-        return new ApiResponse(SUCCESS, noteRepo.findAll(filteredPageRequest.toPageRequest()));
+        return new ApiResponse(SUCCESS, noteRepo.findAllByOrderByServiceNameAscLastModifiedDesc(filteredPageRequest.getPageRequest()));
     }
 
 }

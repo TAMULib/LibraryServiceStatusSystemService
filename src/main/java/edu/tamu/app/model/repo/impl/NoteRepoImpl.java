@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import edu.tamu.app.model.Note;
+import edu.tamu.app.model.Schedule;
 import edu.tamu.app.model.repo.AppUserRepo;
 import edu.tamu.app.model.repo.NoteRepo;
 import edu.tamu.app.model.repo.custom.NoteRepoCustom;
@@ -33,6 +34,9 @@ public class NoteRepoImpl implements NoteRepoCustom {
 
     @Override
     public Note update(Note note) {
+        for (Schedule schedule : note.getSchedules()) {
+            schedule.setScheduler(note);
+        }
         note = noteRepo.save(note);
         simpMessagingTemplate.convertAndSend("/channel/note/update", new ApiResponse(SUCCESS, note));
         return note;

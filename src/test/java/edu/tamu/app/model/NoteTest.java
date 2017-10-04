@@ -12,6 +12,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
@@ -24,6 +25,7 @@ import edu.tamu.app.model.repo.ServiceRepo;
 import edu.tamu.framework.model.Credentials;
 
 @WebAppConfiguration
+@ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { WebServerInit.class })
 public class NoteTest {
@@ -67,8 +69,8 @@ public class NoteTest {
     @Before
     public void setUp() {
         testUser = appUserRepo.create(TEST_CREDENTIALS.getUin());
-        service1 = serviceRepo.create(TEST_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, TEST_SERVICE_URL, TEST_DESCRIPTION);
-        service2 = serviceRepo.create(TEST_ALTERNATIVE_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, TEST_SERVICE_URL, TEST_DESCRIPTION);
+        service1 = serviceRepo.create(new Service(TEST_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, TEST_SERVICE_URL, TEST_DESCRIPTION));
+        service2 = serviceRepo.create(new Service(TEST_ALTERNATIVE_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, TEST_SERVICE_URL, TEST_DESCRIPTION));
         testNote = noteRepo.create(new Note(TEST_NOTE_TITLE, testUser, TEST_NOTE_TYPE, TEST_NOTE_BODY, service1), TEST_CREDENTIALS);
     }
 
@@ -131,22 +133,6 @@ public class NoteTest {
         note.setBody(TEST_ALTERNATIVE_NOTE_BODY);
         note = noteRepo.save(note);
         assertEquals("Note body not updated", TEST_ALTERNATIVE_NOTE_BODY, note.getBody());
-    }
-
-    @Test
-    public void testUpdatePostingStart() {
-        Note note = noteRepo.create(testNote, TEST_CREDENTIALS);
-        note.setScheduledPostingStart(TEST_DATE);
-        note = noteRepo.save(note);
-        assertNotEquals("Start time not set", null, note.getScheduledPostingStart());
-    }
-
-    @Test
-    public void testUpdatePostingEnd() {
-        Note note = noteRepo.create(testNote, TEST_CREDENTIALS);
-        note.setScheduledPostingEnd(TEST_DATE);
-        note = noteRepo.save(note);
-        assertNotEquals("End time not set", null, note.getScheduledPostingEnd());
     }
 
     @Test

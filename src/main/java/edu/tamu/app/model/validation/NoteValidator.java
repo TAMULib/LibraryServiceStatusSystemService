@@ -13,8 +13,9 @@ public class NoteValidator extends BaseModelValidator {
 
         String serviceProperty = "service";
         this.addInputValidator(new InputValidator(InputValidationType.required, "Notes require a Service", serviceProperty, true));
-        
+
         String noteTypeProperty = "noteType";
         this.addInputValidator(new InputValidator(InputValidationType.required, "Notes require a type", noteTypeProperty, true));
     }
+
 }

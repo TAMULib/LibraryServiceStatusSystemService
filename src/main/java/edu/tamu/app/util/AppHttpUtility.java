@@ -14,12 +14,12 @@ import edu.tamu.framework.util.HttpUtility;
 public class AppHttpUtility extends HttpUtility {
 
     @Value("${app.http.timeout}")
-    private int DEFAULT_TIMEOUT;
+    private int defaultTimeout;
 
     @Override
     public String makeHttpRequest(String urlString, String method) throws IOException, MalformedURLException {
-        // check if url if malformed
-        new URL(urlString);
-        return makeHttpRequest(urlString, method, Optional.empty(), Optional.empty(), DEFAULT_TIMEOUT);
+        URL url = new URL(urlString);
+        return makeHttpRequest(url.toString(), method, Optional.empty(), Optional.empty(), defaultTimeout);
     }
+
 }

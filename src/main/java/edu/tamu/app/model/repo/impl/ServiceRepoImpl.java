@@ -5,7 +5,7 @@ import static edu.tamu.framework.enums.ApiResponseType.SUCCESS;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
-import edu.tamu.app.enums.Status;
+import edu.tamu.app.model.Schedule;
 import edu.tamu.app.model.Service;
 import edu.tamu.app.model.repo.NoteRepo;
 import edu.tamu.app.model.repo.ServiceRepo;
@@ -28,8 +28,8 @@ public class ServiceRepoImpl implements ServiceRepoCustom {
     private SimpMessagingTemplate simpMessagingTemplate;
 
     @Override
-    public Service create(String name, Status status, Boolean isAuto, Boolean isPublic, Boolean onShortList, String serviceUrl, String description) {
-        Service service = serviceRepo.save(new Service(name, status, isAuto, isPublic, onShortList, serviceUrl, description));
+    public Service create(Service service) {
+        service = serviceRepo.save(service);
         simpMessagingTemplate.convertAndSend("/channel/service/create", new ApiResponse(SUCCESS, service));
         sendStatusUpdate();
         return service;
@@ -37,6 +37,9 @@ public class ServiceRepoImpl implements ServiceRepoCustom {
 
     @Override
     public Service update(Service service) {
+        for (Schedule schedule : service.getSchedules()) {
+            schedule.setScheduler(service);
+        }
         service = serviceRepo.save(service);
         simpMessagingTemplate.convertAndSend("/channel/service/update", new ApiResponse(SUCCESS, service));
         sendStatusUpdate();
@@ -45,7 +48,7 @@ public class ServiceRepoImpl implements ServiceRepoCustom {
 
     @Override
     public void delete(Service service) {
-        noteRepo.findAllByService(service).parallelStream().forEach(note -> {
+        noteRepo.findAllByServiceId(service.getId()).parallelStream().forEach(note -> {
             noteRepo.delete(note);
         });
         serviceRepo.delete(service.getId());

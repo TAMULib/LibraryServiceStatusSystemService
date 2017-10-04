@@ -83,7 +83,7 @@ public class NoteControllerTest {
         when(noteRepo.findOne(any(Long.class))).thenReturn(TEST_NOTE1);
         when(noteRepo.create(any(Note.class), any(Credentials.class))).thenReturn(TEST_NOTE1);
         when(noteRepo.update(any(Note.class))).thenReturn(TEST_MODIFIED_NOTE);
-        when(serviceRepo.getOne(any(Long.class))).thenReturn(TEST_SERVICE);
+        when(serviceRepo.findOne(any(Long.class))).thenReturn(TEST_SERVICE);
         doNothing().when(noteRepo).delete(any(Note.class));
         doNothing().when(noteRepo).delete(any(Note.class));
     }
@@ -116,4 +116,5 @@ public class NoteControllerTest {
         response = noteController.remove(TEST_MODIFIED_NOTE);
         assertEquals("Not successful at removing Note", SUCCESS, response.getMeta().getType());
     }
+
 }

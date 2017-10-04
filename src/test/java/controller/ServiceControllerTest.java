@@ -35,7 +35,7 @@ import edu.tamu.framework.model.Credentials;
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 public class ServiceControllerTest {
-    
+
     protected static final String TEST_SERVICE1_NAME = "Test Service 1 Name";
     protected static final String TEST_SERVICE2_NAME = "Test Service 2 Name";
     protected static final String TEST_SERVICE3_NAME = "Test Service 3 Name";
@@ -45,50 +45,50 @@ public class ServiceControllerTest {
     protected static final Boolean TEST_IS_NOT_PUBLIC = false;
     protected static final Boolean TEST_ON_SHORT_LIST = true;
     protected static final Boolean TEST_NOT_ON_SHORT_LIST = false;
-    
+
     protected static Service TEST_SERVICE1 = new Service(TEST_SERVICE1_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, "", "");
     protected static Service TEST_SERVICE2 = new Service(TEST_SERVICE2_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_NOT_PUBLIC, TEST_ON_SHORT_LIST, "", "");
     protected static Service TEST_SERVICE3 = new Service(TEST_SERVICE3_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_NOT_ON_SHORT_LIST, "", "");
     protected static Service TEST_MODIFIED_SERVICE1 = new Service(TEST_SERVICE1_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_NOT_PUBLIC, TEST_NOT_ON_SHORT_LIST, "", "");
-    protected static List<Service> mockServiceList = new ArrayList<Service>(Arrays.asList(new Service[] { TEST_SERVICE1, TEST_SERVICE2,TEST_SERVICE3 }));
+    protected static List<Service> mockServiceList = new ArrayList<Service>(Arrays.asList(new Service[] { TEST_SERVICE1, TEST_SERVICE2, TEST_SERVICE3 }));
     protected static List<Service> mockPublicServiceList = new ArrayList<Service>(Arrays.asList(new Service[] { TEST_SERVICE1, TEST_SERVICE3 }));
-    
+
     protected static ApiResponse response;
-    
+
     protected static AppUser user = new AppUser("123456789");
-    
+
     @Mock
     protected ServiceRepo serviceRepo;
-    
+
     @Mock
     protected SimpMessagingTemplate simpMessageTemplate;
-    
+
     @InjectMocks
     protected ServiceController serviceController;
-    
+
     @Mock
     protected static Credentials credentials;
-    
+
     @Mock
     protected AppUserRepo userRepo;
-    
+
     @Mock
     protected SystemMonitorService systemMonitorService;
-    
+
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         when(credentials.getUin()).thenReturn("123456789");
         when(userRepo.findByUin(any(String.class))).thenReturn(user);
         when(systemMonitorService.getOverallStatus()).thenReturn(new OverallStatus(edu.tamu.app.enums.OverallMessageType.SUCCESS, "Success"));
-        when(serviceRepo.findAll()).thenReturn(mockServiceList);
-        when(serviceRepo.findByIsPublic(true)).thenReturn(mockPublicServiceList);
+        when(serviceRepo.findAllByOrderByStatusDescNameAsc()).thenReturn(mockServiceList);
+        when(serviceRepo.findByIsPublicOrderByStatusDescNameAsc(true)).thenReturn(mockPublicServiceList);
         when(serviceRepo.findOne(any(Long.class))).thenReturn(TEST_SERVICE1);
-        when(serviceRepo.create(any(String.class), any(Status.class), any(Boolean.class), any(Boolean.class), any(Boolean.class), any(String.class), any(String.class))).thenReturn(TEST_SERVICE1);
+        when(serviceRepo.create(any(Service.class))).thenReturn(TEST_SERVICE1);
         when(serviceRepo.update(any(Service.class))).thenReturn(TEST_MODIFIED_SERVICE1);
         doNothing().when(serviceRepo).delete(any(Service.class));
     }
-    
+
     @Test
     @SuppressWarnings("unchecked")
     public void testAllServices() {
@@ -97,7 +97,7 @@ public class ServiceControllerTest {
         List<Service> list = (List<Service>) response.getPayload().get("ArrayList<Service>");
         assertEquals("The list of Services had none in it", mockServiceList.size(), list.size());
     }
-    
+
     @Test
     @SuppressWarnings("unchecked")
     public void testPublicServices() {
@@ -107,7 +107,7 @@ public class ServiceControllerTest {
         assertEquals("The list of Services is the wrong length", mockPublicServiceList.size(), list.size());
         assertEquals("The list of Services contains services that are not public", list.size(), countPublicServices(list));
     }
-    
+
     private int countPublicServices(List<Service> list) {
         int count = 0;
         for (Service service : list) {
@@ -117,7 +117,7 @@ public class ServiceControllerTest {
         }
         return count;
     }
-    
+
     @Test
     public void testService() {
         response = serviceController.getService(TEST_SERVICE1.getId());
@@ -125,7 +125,7 @@ public class ServiceControllerTest {
         Service service = (Service) response.getPayload().get("Service");
         assertEquals("Did not get the expected service", TEST_SERVICE1.getId(), service.getId());
     }
-    
+
     @Test
     public void testCreate() {
         response = serviceController.createService(TEST_SERVICE1, credentials);
@@ -133,7 +133,7 @@ public class ServiceControllerTest {
         Service service = (Service) response.getPayload().get("Service");
         assertEquals("Incorrect service returned", TEST_SERVICE1.getName(), service.getName());
     }
-    
+
     @Test
     public void testUpdate() {
         response = serviceController.updateService(TEST_MODIFIED_SERVICE1, credentials);
@@ -144,15 +144,16 @@ public class ServiceControllerTest {
         assertEquals("Service isPublic was not properly updated", TEST_MODIFIED_SERVICE1.getIsPublic(), service.getIsPublic());
         assertEquals("Service onShortList was not properly updated", TEST_MODIFIED_SERVICE1.getOnShortList(), service.getOnShortList());
     }
-    
+
     @Test
     public void testRemove() {
         response = serviceController.removeService(TEST_SERVICE1);
-        assertEquals("Not successful at removing Service",SUCCESS, response.getMeta().getType());
+        assertEquals("Not successful at removing Service", SUCCESS, response.getMeta().getType());
     }
-    
+
     @After
     public void cleanUp() {
         response = null;
     }
+
 }

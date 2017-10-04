@@ -1,28 +1,49 @@
 package edu.tamu.app.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.validation.constraints.Size;
+import static javax.persistence.FetchType.EAGER;
+import static org.hibernate.annotations.FetchMode.SELECT;
 
-import edu.tamu.framework.model.BaseEntity;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+
+import org.hibernate.annotations.Fetch;
+
+import edu.tamu.app.enums.NotificationLocation;
+import edu.tamu.app.model.validation.NotificationValidator;
 
 @Entity
-public class Notification extends BaseEntity {
+public class Notification extends AbstractScheduler {
 
-    @Size(min = 1)
     @Column(nullable = false)
     private String name;
-    
-    @Size(min = 1)
-    @Column(nullable = false)
+
+    @Column(columnDefinition = "text", nullable = false)
     private String body;
-    
-    public Notification() {}
-    
-    public Notification(String name, String body) {
+
+    @Column(nullable = false)
+    private Boolean active;
+
+    @ElementCollection(fetch = EAGER)
+    @Fetch(value = SELECT)
+    private List<NotificationLocation> locations;
+
+    public Notification() {
+        super();
+        setModelValidator(new NotificationValidator());
+        setActive(false);
+        setLocations(new ArrayList<NotificationLocation>());
+    }
+
+    public Notification(String name, String body, List<NotificationLocation> locations) {
         this();
         setName(name);
         setBody(body);
+        setLocations(locations);
     }
 
     public String getName() {
@@ -40,4 +61,36 @@ public class Notification extends BaseEntity {
     public void setBody(String body) {
         this.body = body;
     }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
+
+    public List<NotificationLocation> getLocations() {
+        return locations;
+    }
+
+    public void setLocations(List<NotificationLocation> locations) {
+        this.locations = locations;
+    }
+
+    @Override
+    public String getType() {
+        return "notification";
+    }
+
+    @Override
+    public void scheduleStart(Map<String, String> scheduleData) {
+        setActive(true);
+    }
+
+    @Override
+    public void scheduleEnd(Map<String, String> scheduleData) {
+        setActive(false);
+    }
+
 }

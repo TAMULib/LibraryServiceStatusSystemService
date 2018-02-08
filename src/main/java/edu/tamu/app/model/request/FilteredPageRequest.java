@@ -1,5 +1,7 @@
 package edu.tamu.app.model.request;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,14 +19,13 @@ public class FilteredPageRequest {
 
     private int pageSize;
 
-    private String direction;
-
-    private List<String> properties;
+    private List<DirectionSort> sort;
 
     private Map<String, String[]> filters;
 
     public FilteredPageRequest() {
-
+        sort = new ArrayList<DirectionSort>();
+        filters = new HashMap<String, String[]>();
     }
 
     @JsonIgnore
@@ -34,7 +35,14 @@ public class FilteredPageRequest {
 
     @JsonIgnore
     public PageRequest getPageRequest() {
-        return new PageRequest(pageNumber > 0 ? pageNumber - 1 : 0, pageSize > 0 ? pageSize : 10, new Sort(Sort.Direction.fromString(direction), properties));
+        List<Sort.Order> orders = new ArrayList<Sort.Order>();
+        if (orders.isEmpty()) {
+            return new PageRequest(pageNumber > 0 ? pageNumber - 1 : 0, pageSize > 0 ? pageSize : 10);
+        }
+        sort.forEach(sort -> {
+            orders.add(new Sort.Order(sort.getDirection(), sort.getProperty()));
+        });
+        return new PageRequest(pageNumber > 0 ? pageNumber - 1 : 0, pageSize > 0 ? pageSize : 10, new Sort(orders));
     }
 
     public int getPageNumber() {
@@ -53,20 +61,12 @@ public class FilteredPageRequest {
         this.pageSize = pageSize;
     }
 
-    public String getDirection() {
-        return direction;
+    public List<DirectionSort> getSort() {
+        return sort;
     }
 
-    public void setDirection(String direction) {
-        this.direction = direction;
-    }
-
-    public List<String> getProperties() {
-        return properties;
-    }
-
-    public void setProperties(List<String> properties) {
-        this.properties = properties;
+    public void setSort(List<DirectionSort> sort) {
+        this.sort = sort;
     }
 
     public Map<String, String[]> getFilters() {

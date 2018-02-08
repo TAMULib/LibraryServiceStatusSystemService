@@ -22,7 +22,7 @@ public class NoteSpecification<E> implements Specification<E> {
     @Override
     public Predicate toPredicate(Root<E> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
 
-        List<Predicate> activeOrPinnedPredicates = new ArrayList<Predicate>();
+        List<Predicate> activeAndPinnedPredicates = new ArrayList<Predicate>();
         List<Predicate> servicePredicates = new ArrayList<Predicate>();
 
         for (Map.Entry<String, String[]> entry : filters.entrySet()) {
@@ -32,12 +32,12 @@ public class NoteSpecification<E> implements Specification<E> {
             switch (key) {
             case "active":
                 for (String value : values) {
-                    activeOrPinnedPredicates.add(cb.like(cb.lower(root.get(key).as(String.class)), "%" + value.toLowerCase() + "%"));
+                    activeAndPinnedPredicates.add(cb.like(cb.lower(root.get(key).as(String.class)), "%" + value.toLowerCase() + "%"));
                 }
                 break;
             case "pinned":
                 for (String value : values) {
-                    activeOrPinnedPredicates.add(cb.like(cb.lower(root.get(key).as(String.class)), "%" + value.toLowerCase() + "%"));
+                    activeAndPinnedPredicates.add(cb.like(cb.lower(root.get(key).as(String.class)), "%" + value.toLowerCase() + "%"));
                 }
                 break;
             case "service":
@@ -50,13 +50,13 @@ public class NoteSpecification<E> implements Specification<E> {
             }
 
         }
-        
+
         query.orderBy(cb.desc(root.get("lastModified")));
 
         Predicate predicate;
 
-        if (activeOrPinnedPredicates.size() > 0) {
-            predicate = cb.and(cb.or(activeOrPinnedPredicates.toArray(new Predicate[activeOrPinnedPredicates.size()])), cb.and(servicePredicates.toArray(new Predicate[servicePredicates.size()])));
+        if (activeAndPinnedPredicates.size() > 0) {
+            predicate = cb.and(cb.and(activeAndPinnedPredicates.toArray(new Predicate[activeAndPinnedPredicates.size()])), cb.and(servicePredicates.toArray(new Predicate[servicePredicates.size()])));
         } else {
             predicate = cb.and(servicePredicates.toArray(new Predicate[servicePredicates.size()]));
         }

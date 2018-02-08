@@ -28,7 +28,7 @@ public class NoteController {
     @Autowired
     private NoteRepo noteRepo;
 
-    @ApiMapping("/query")
+    @ApiMapping("/page")
     @Auth(role = "ROLE_ANONYMOUS")
     public ApiResponse getAllNotesByService(@ApiData FilteredPageRequest filteredPageRequest) {
         return new ApiResponse(SUCCESS, noteRepo.findAll(filteredPageRequest.getSpecification(), filteredPageRequest.getPageRequest()));
@@ -59,12 +59,6 @@ public class NoteController {
     public ApiResponse remove(@ApiValidatedModel Note note) {
         noteRepo.delete(note);
         return new ApiResponse(SUCCESS);
-    }
-
-    @ApiMapping("/page")
-    @Auth(role = "ROLE_ANONYMOUS")
-    public ApiResponse page(@ApiData FilteredPageRequest filteredPageRequest) {
-        return new ApiResponse(SUCCESS, noteRepo.findAllByOrderByServiceNameAscLastModifiedDesc(filteredPageRequest.getPageRequest()));
     }
 
 }

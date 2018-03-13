@@ -17,10 +17,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import edu.tamu.app.WebServerInit;
+import edu.tamu.app.enums.Role;
 import edu.tamu.app.enums.Status;
-import edu.tamu.app.model.repo.AppUserRepo;
 import edu.tamu.app.model.repo.NoteRepo;
 import edu.tamu.app.model.repo.ServiceRepo;
+import edu.tamu.app.model.repo.UserRepo;
+import edu.tamu.weaver.auth.model.Credentials;
 
 @WebAppConfiguration
 @ActiveProfiles("test")
@@ -41,7 +43,16 @@ public class ServiceTest {
     protected static final Boolean TEST_ON_SHORT_LIST = true;
     protected static final Status TEST_ALTERNATIVE_SERVICE_STATUS = Status.DOWN;
     protected static final List<String> TEST_ALTERNATIVE_SERVICE_ALIASES = Arrays.asList("Alias 4", "Alias 5", "Alias 6");
-    protected AppUser testUser;
+    protected User testUser;
+
+    protected static final Credentials TEST_CREDENTIALS = new Credentials();
+    {
+        TEST_CREDENTIALS.setUin("123456789");
+        TEST_CREDENTIALS.setEmail("aggieJack@tamu.edu");
+        TEST_CREDENTIALS.setFirstName("Aggie");
+        TEST_CREDENTIALS.setLastName("Jack");
+        TEST_CREDENTIALS.setRole("ROLE_USER");
+    }
 
     @Autowired
     ServiceRepo serviceRepo;
@@ -50,11 +61,11 @@ public class ServiceTest {
     NoteRepo noteRepo;
 
     @Autowired
-    AppUserRepo appUserRepo;
+    UserRepo appUserRepo;
 
     @Before
     public void setUp() {
-        testUser = appUserRepo.create("123456789");
+        testUser = appUserRepo.create(TEST_CREDENTIALS.getUin(), TEST_CREDENTIALS.getEmail(), TEST_CREDENTIALS.getFirstName(), TEST_CREDENTIALS.getLastName(), Role.valueOf(TEST_CREDENTIALS.getRole()));
     }
 
     @Test

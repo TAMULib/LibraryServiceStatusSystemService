@@ -1,6 +1,6 @@
 package controller;
 
-import static edu.tamu.framework.enums.ApiResponseType.SUCCESS;
+import static edu.tamu.weaver.response.ApiStatus.SUCCESS;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
@@ -25,7 +25,7 @@ import edu.tamu.app.controller.NotificationController;
 import edu.tamu.app.enums.NotificationLocation;
 import edu.tamu.app.model.Notification;
 import edu.tamu.app.model.repo.NotificationRepo;
-import edu.tamu.framework.model.ApiResponse;
+import edu.tamu.weaver.response.ApiResponse;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
@@ -80,7 +80,7 @@ public class NotificationControllerTest {
     @SuppressWarnings("unchecked")
     public void testAllNotifications() {
         response = notificationController.getAllNotifications();
-        assertEquals("Not successful at getting all Notifications", SUCCESS, response.getMeta().getType());
+        assertEquals("Not successful at getting all Notifications", SUCCESS, response.getMeta().getStatus());
         List<Notification> list = (List<Notification>) response.getPayload().get("ArrayList<Notification>");
         assertEquals("The list of services had the worng number of services", mockNotificationList.size(), list.size());
     }
@@ -88,7 +88,7 @@ public class NotificationControllerTest {
     @Test
     public void testNotification() {
         response = notificationController.getNotification(TEST_NOTIFICATION1.getId());
-        assertEquals("Not successful at getting requested Notification", SUCCESS, response.getMeta().getType());
+        assertEquals("Not successful at getting requested Notification", SUCCESS, response.getMeta().getStatus());
         Notification notification = (Notification) response.getPayload().get("Notification");
         assertEquals("Did not get the expected Notification", TEST_NOTIFICATION1.getId(), notification.getId());
     }
@@ -96,7 +96,7 @@ public class NotificationControllerTest {
     @Test
     public void testCreate() {
         response = notificationController.create(TEST_NOTIFICATION1);
-        assertEquals("Not successful at creating notification", SUCCESS, response.getMeta().getType());
+        assertEquals("Not successful at creating notification", SUCCESS, response.getMeta().getStatus());
         Notification notification = (Notification) response.getPayload().get("Notification");
         assertEquals("Incorrect notification returned", TEST_NOTIFICATION1.getName(), notification.getName());
     }
@@ -104,7 +104,7 @@ public class NotificationControllerTest {
     @Test
     public void testUpdate() {
         response = notificationController.update(TEST_MODIFIED_NOTIFICATION);
-        assertEquals("Not successful at updating notification", SUCCESS, response.getMeta().getType());
+        assertEquals("Not successful at updating notification", SUCCESS, response.getMeta().getStatus());
         Notification notification = (Notification) response.getPayload().get("Notification");
         assertEquals("Notification Name was not properly updated", TEST_MODIFIED_NOTIFICATION.getName(), notification.getName());
         assertEquals("Notification Body was not properly updated", TEST_MODIFIED_NOTIFICATION.getBody(), notification.getBody());
@@ -113,7 +113,7 @@ public class NotificationControllerTest {
     @Test
     public void testRemove() {
         response = notificationController.remove(TEST_MODIFIED_NOTIFICATION);
-        assertEquals("Not successful at removing Notification", SUCCESS, response.getMeta().getType());
+        assertEquals("Not successful at removing Notification", SUCCESS, response.getMeta().getStatus());
     }
 
     @Test

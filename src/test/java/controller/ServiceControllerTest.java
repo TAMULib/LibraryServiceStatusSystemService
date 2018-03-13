@@ -1,6 +1,6 @@
 package controller;
 
-import static edu.tamu.framework.enums.ApiResponseType.SUCCESS;
+import static edu.tamu.weaver.response.ApiStatus.SUCCESS;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.After;
 import org.junit.Before;
@@ -23,14 +24,14 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import edu.tamu.app.controller.ServiceController;
 import edu.tamu.app.enums.Status;
-import edu.tamu.app.model.AppUser;
 import edu.tamu.app.model.OverallStatus;
 import edu.tamu.app.model.Service;
-import edu.tamu.app.model.repo.AppUserRepo;
+import edu.tamu.app.model.User;
 import edu.tamu.app.model.repo.ServiceRepo;
+import edu.tamu.app.model.repo.UserRepo;
 import edu.tamu.app.service.SystemMonitorService;
-import edu.tamu.framework.model.ApiResponse;
-import edu.tamu.framework.model.Credentials;
+import edu.tamu.weaver.auth.model.Credentials;
+import edu.tamu.weaver.response.ApiResponse;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
@@ -55,7 +56,7 @@ public class ServiceControllerTest {
 
     protected static ApiResponse response;
 
-    protected static AppUser user = new AppUser("123456789");
+    protected static User user = new User("123456789");
 
     @Mock
     protected ServiceRepo serviceRepo;
@@ -70,7 +71,7 @@ public class ServiceControllerTest {
     protected static Credentials credentials;
 
     @Mock
-    protected AppUserRepo userRepo;
+    protected UserRepo userRepo;
 
     @Mock
     protected SystemMonitorService systemMonitorService;
@@ -79,7 +80,7 @@ public class ServiceControllerTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         when(credentials.getUin()).thenReturn("123456789");
-        when(userRepo.findByUin(any(String.class))).thenReturn(user);
+        when(userRepo.findByUsername(any(String.class))).thenReturn(Optional.of(user));
         when(systemMonitorService.getOverallStatus()).thenReturn(new OverallStatus(edu.tamu.app.enums.OverallMessageType.SUCCESS, "Success"));
         when(serviceRepo.findAllByOrderByStatusDescNameAsc()).thenReturn(mockServiceList);
         when(serviceRepo.findByIsPublicOrderByStatusDescNameAsc(true)).thenReturn(mockPublicServiceList);
@@ -93,7 +94,7 @@ public class ServiceControllerTest {
     @SuppressWarnings("unchecked")
     public void testAllServices() {
         response = serviceController.getAllServices();
-        assertEquals("Not successful at getting all services", SUCCESS, response.getMeta().getType());
+        assertEquals("Not successful at getting all services", SUCCESS, response.getMeta().getStatus());
         List<Service> list = (List<Service>) response.getPayload().get("ArrayList<Service>");
         assertEquals("The list of Services had none in it", mockServiceList.size(), list.size());
     }
@@ -102,7 +103,7 @@ public class ServiceControllerTest {
     @SuppressWarnings("unchecked")
     public void testPublicServices() {
         response = serviceController.getPublicServices();
-        assertEquals("Not successful at getting public services", SUCCESS, response.getMeta().getType());
+        assertEquals("Not successful at getting public services", SUCCESS, response.getMeta().getStatus());
         List<Service> list = (List<Service>) response.getPayload().get("ArrayList<Service>");
         assertEquals("The list of Services is the wrong length", mockPublicServiceList.size(), list.size());
         assertEquals("The list of Services contains services that are not public", list.size(), countPublicServices(list));
@@ -121,7 +122,7 @@ public class ServiceControllerTest {
     @Test
     public void testService() {
         response = serviceController.getService(TEST_SERVICE1.getId());
-        assertEquals("Not successful at getting requested Service", SUCCESS, response.getMeta().getType());
+        assertEquals("Not successful at getting requested Service", SUCCESS, response.getMeta().getStatus());
         Service service = (Service) response.getPayload().get("Service");
         assertEquals("Did not get the expected service", TEST_SERVICE1.getId(), service.getId());
     }
@@ -129,7 +130,7 @@ public class ServiceControllerTest {
     @Test
     public void testCreate() {
         response = serviceController.createService(TEST_SERVICE1, credentials);
-        assertEquals("Not sucessful at creating Service", SUCCESS, response.getMeta().getType());
+        assertEquals("Not sucessful at creating Service", SUCCESS, response.getMeta().getStatus());
         Service service = (Service) response.getPayload().get("Service");
         assertEquals("Incorrect service returned", TEST_SERVICE1.getName(), service.getName());
     }
@@ -137,7 +138,7 @@ public class ServiceControllerTest {
     @Test
     public void testUpdate() {
         response = serviceController.updateService(TEST_MODIFIED_SERVICE1, credentials);
-        assertEquals("Not successful at updating service", SUCCESS, response.getMeta().getType());
+        assertEquals("Not successful at updating service", SUCCESS, response.getMeta().getStatus());
         Service service = (Service) response.getPayload().get("Service");
         assertEquals("Service name was not properly updated", TEST_MODIFIED_SERVICE1.getName(), service.getName());
         assertEquals("Service status was not properly updated", TEST_MODIFIED_SERVICE1.getStatus(), service.getStatus());
@@ -148,7 +149,7 @@ public class ServiceControllerTest {
     @Test
     public void testRemove() {
         response = serviceController.removeService(TEST_SERVICE1);
-        assertEquals("Not successful at removing Service", SUCCESS, response.getMeta().getType());
+        assertEquals("Not successful at removing Service", SUCCESS, response.getMeta().getStatus());
     }
 
     @After

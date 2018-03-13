@@ -37,7 +37,7 @@ public class AppWebMvcConfig extends WebMvcConfigurerAdapter {
     private List<HttpMessageConverter<?>> converters;
 
     @Autowired
-    private UserRepo appUserRepo;
+    private UserRepo userRepo;
 
     @Bean
     public ResourceUrlEncodingFilter resourceUrlEncodingFilter() {
@@ -73,7 +73,7 @@ public class AppWebMvcConfig extends WebMvcConfigurerAdapter {
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
         argumentResolvers.add(new WeaverValidatedModelMethodProcessor(converters));
         argumentResolvers.add(new WeaverCredentialsArgumentResolver());
-        argumentResolvers.add(new WeaverUserArgumentResolver<User, UserRepo>(appUserRepo));
+        argumentResolvers.add(new WeaverUserArgumentResolver<User, UserRepo>(userRepo));
     }
 
 }

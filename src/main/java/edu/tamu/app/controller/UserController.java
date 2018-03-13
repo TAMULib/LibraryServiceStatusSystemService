@@ -42,7 +42,7 @@ public class UserController {
      */
     @RequestMapping("/credentials")
     @PreAuthorize("hasRole('ANONYMOUS')")
-    public ApiResponse credentials(@WeaverCredentials Credentials credentials) throws Exception {
+    public ApiResponse credentials(@WeaverCredentials Credentials credentials) {
         return new ApiResponse(SUCCESS, credentials);
     }
 

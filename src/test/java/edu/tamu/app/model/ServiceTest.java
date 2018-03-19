@@ -134,6 +134,11 @@ public class ServiceTest {
         assertEquals("The service was not deleted", initialCount, serviceRepo.count());
     }
 
+    @Test
+    public void testAssociateProject() {
+
+    }
+
     @After
     public void cleanUp() {
         serviceRepo.deleteAll();

@@ -1,4 +1,4 @@
-package controller;
+package edu.tamu.app.controller;
 
 import static edu.tamu.weaver.response.ApiStatus.SUCCESS;
 import static org.junit.Assert.assertEquals;
@@ -22,7 +22,6 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import edu.tamu.app.controller.ServiceController;
 import edu.tamu.app.enums.Status;
 import edu.tamu.app.model.OverallStatus;
 import edu.tamu.app.model.Service;
@@ -37,47 +36,47 @@ import edu.tamu.weaver.response.ApiResponse;
 @RunWith(SpringRunner.class)
 public class ServiceControllerTest {
 
-    protected static final String TEST_SERVICE1_NAME = "Test Service 1 Name";
-    protected static final String TEST_SERVICE2_NAME = "Test Service 2 Name";
-    protected static final String TEST_SERVICE3_NAME = "Test Service 3 Name";
-    protected static final Status TEST_SERVICE_STATUS = Status.UP;
-    protected static final Boolean TEST_IS_AUTO = false;
-    protected static final Boolean TEST_IS_PUBLIC = true;
-    protected static final Boolean TEST_IS_NOT_PUBLIC = false;
-    protected static final Boolean TEST_ON_SHORT_LIST = true;
-    protected static final Boolean TEST_NOT_ON_SHORT_LIST = false;
+    private static final String TEST_SERVICE1_NAME = "Test Service 1 Name";
+    private static final String TEST_SERVICE2_NAME = "Test Service 2 Name";
+    private static final String TEST_SERVICE3_NAME = "Test Service 3 Name";
+    private static final Status TEST_SERVICE_STATUS = Status.UP;
+    private static final Boolean TEST_IS_AUTO = false;
+    private static final Boolean TEST_IS_PUBLIC = true;
+    private static final Boolean TEST_IS_NOT_PUBLIC = false;
+    private static final Boolean TEST_ON_SHORT_LIST = true;
+    private static final Boolean TEST_NOT_ON_SHORT_LIST = false;
 
-    protected static Service TEST_SERVICE1 = new Service(TEST_SERVICE1_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, "", "");
-    protected static Service TEST_SERVICE2 = new Service(TEST_SERVICE2_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_NOT_PUBLIC, TEST_ON_SHORT_LIST, "", "");
-    protected static Service TEST_SERVICE3 = new Service(TEST_SERVICE3_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_NOT_ON_SHORT_LIST, "", "");
-    protected static Service TEST_MODIFIED_SERVICE1 = new Service(TEST_SERVICE1_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_NOT_PUBLIC, TEST_NOT_ON_SHORT_LIST, "", "");
-    protected static List<Service> mockServiceList = new ArrayList<Service>(Arrays.asList(new Service[] { TEST_SERVICE1, TEST_SERVICE2, TEST_SERVICE3 }));
-    protected static List<Service> mockPublicServiceList = new ArrayList<Service>(Arrays.asList(new Service[] { TEST_SERVICE1, TEST_SERVICE3 }));
+    private static Service TEST_SERVICE1 = new Service(TEST_SERVICE1_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, "", "");
+    private static Service TEST_SERVICE2 = new Service(TEST_SERVICE2_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_NOT_PUBLIC, TEST_ON_SHORT_LIST, "", "");
+    private static Service TEST_SERVICE3 = new Service(TEST_SERVICE3_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_NOT_ON_SHORT_LIST, "", "");
+    private static Service TEST_MODIFIED_SERVICE1 = new Service(TEST_SERVICE1_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_NOT_PUBLIC, TEST_NOT_ON_SHORT_LIST, "", "");
+    private static List<Service> mockServiceList = new ArrayList<Service>(Arrays.asList(new Service[] { TEST_SERVICE1, TEST_SERVICE2, TEST_SERVICE3 }));
+    private static List<Service> mockPublicServiceList = new ArrayList<Service>(Arrays.asList(new Service[] { TEST_SERVICE1, TEST_SERVICE3 }));
 
-    protected static ApiResponse response;
+    private static ApiResponse response;
 
-    protected static User user = new User("123456789");
-
-    @Mock
-    protected ServiceRepo serviceRepo;
+    private static User user = new User("123456789");
 
     @Mock
-    protected SimpMessagingTemplate simpMessageTemplate;
+    private UserRepo userRepo;
+
+    @Mock
+    private ServiceRepo serviceRepo;
+
+    @Mock
+    private SystemMonitorService systemMonitorService;
+
+    @Mock
+    private SimpMessagingTemplate simpMessageTemplate;
+
+    @Mock
+    private Credentials credentials;
 
     @InjectMocks
-    protected ServiceController serviceController;
-
-    @Mock
-    protected static Credentials credentials;
-
-    @Mock
-    protected UserRepo userRepo;
-
-    @Mock
-    protected SystemMonitorService systemMonitorService;
+    private ServiceController serviceController;
 
     @Before
-    public void setUp() {
+    public void setup() {
         MockitoAnnotations.initMocks(this);
         when(credentials.getUin()).thenReturn("123456789");
         when(userRepo.findByUsername(any(String.class))).thenReturn(Optional.of(user));

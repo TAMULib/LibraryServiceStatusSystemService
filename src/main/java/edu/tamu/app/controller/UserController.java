@@ -1,30 +1,30 @@
 package edu.tamu.app.controller;
 
-import static edu.tamu.framework.enums.ApiResponseType.SUCCESS;
+import static edu.tamu.weaver.response.ApiStatus.SUCCESS;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.stereotype.Controller;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import edu.tamu.app.model.AppUser;
-import edu.tamu.app.model.repo.AppUserRepo;
-import edu.tamu.framework.aspect.annotation.ApiCredentials;
-import edu.tamu.framework.aspect.annotation.ApiMapping;
-import edu.tamu.framework.aspect.annotation.ApiModel;
-import edu.tamu.framework.aspect.annotation.Auth;
-import edu.tamu.framework.model.ApiResponse;
-import edu.tamu.framework.model.Credentials;
+import edu.tamu.app.model.User;
+import edu.tamu.app.model.repo.UserRepo;
+import edu.tamu.weaver.auth.annotation.WeaverCredentials;
+import edu.tamu.weaver.auth.model.Credentials;
+import edu.tamu.weaver.response.ApiResponse;
 
 /**
  * User Controller
  * 
  */
-@Controller
-@ApiMapping("/user")
+@RestController
+@RequestMapping("/user")
 public class UserController {
 
     @Autowired
-    private AppUserRepo userRepo;
+    private UserRepo userRepo;
 
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
@@ -40,9 +40,9 @@ public class UserController {
      * @throws Exception
      * 
      */
-    @ApiMapping("/credentials")
-    @Auth(role = "ROLE_ANONYMOUS")
-    public ApiResponse credentials(@ApiCredentials Credentials credentials) throws Exception {
+    @RequestMapping("/credentials")
+    @PreAuthorize("hasRole('ANONYMOUS')")
+    public ApiResponse credentials(@WeaverCredentials Credentials credentials) {
         return new ApiResponse(SUCCESS, credentials);
     }
 
@@ -52,8 +52,8 @@ public class UserController {
      * @return
      * @throws Exception
      */
-    @ApiMapping("/all")
-    @Auth(role = "ROLE_WEB_MANAGER")
+    @RequestMapping("/all")
+    @PreAuthorize("hasRole('WEB_MANAGER')")
     public ApiResponse allUsers() throws Exception {
         return new ApiResponse(SUCCESS, userRepo.findAll());
     }
@@ -64,14 +64,9 @@ public class UserController {
      * @return
      * @throws Exception
      */
-    @ApiMapping("/update")
-    @Auth(role = "ROLE_WEB_MANAGER")
-    public ApiResponse updateUser(@ApiModel AppUser user) throws Exception {
-        // get the persisted user for its encoded password
-        AppUser persistedUser = userRepo.findOne(user.getId());
-        if (persistedUser != null) {
-            user.setPassword(persistedUser.getPassword());
-        }
+    @RequestMapping("/update")
+    @PreAuthorize("hasRole('WEB_MANAGER')")
+    public ApiResponse updateUser(@RequestBody User user) throws Exception {
         user = userRepo.save(user);
         simpMessagingTemplate.convertAndSend("/channel/user", new ApiResponse(SUCCESS, userRepo.findAll()));
         return new ApiResponse(SUCCESS, user);

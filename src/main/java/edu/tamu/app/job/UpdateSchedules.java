@@ -1,12 +1,11 @@
 package edu.tamu.app.job;
 
-import static edu.tamu.framework.enums.ApiResponseType.SUCCESS;
+import static edu.tamu.weaver.response.ApiStatus.SUCCESS;
 
 import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -16,7 +15,7 @@ import edu.tamu.app.model.AbstractScheduler;
 import edu.tamu.app.model.repo.AbstractSchedulerRepo;
 import edu.tamu.app.model.repo.ScheduleRepo;
 import edu.tamu.app.service.SystemMonitorService;
-import edu.tamu.framework.model.ApiResponse;
+import edu.tamu.weaver.response.ApiResponse;
 
 @Service
 public class UpdateSchedules {
@@ -37,18 +36,13 @@ public class UpdateSchedules {
 
     @Scheduled(cron = "5 0/5 * * * ?")
     private void updateSchedules() {
-
         updateEndingSchedules();
-
         updateStartingSchedules();
-
     }
 
     private synchronized void updateEndingSchedules() {
-
         Date date = new Date();
         Long now = date.getTime();
-
         logger.info("Checking for ending schedules");
         scheduleRepo.findByScheduledPostingEndLessThanEqualAndSchedulerWithinScheduleTrue(now).forEach(schedule -> {
             AbstractScheduler scheduler = schedule.getScheduler();
@@ -61,14 +55,11 @@ public class UpdateSchedules {
             scheduleRepo.delete(schedule);
             broadcastUpdate(scheduler);
         });
-
     }
 
     private synchronized void updateStartingSchedules() {
-
         Date date = new Date();
         Long now = date.getTime();
-
         logger.info("Checking for starting schedules");
         scheduleRepo.findByScheduledPostingStartLessThanEqualAndScheduledPostingEndGreaterThanEqualAndSchedulerWithinScheduleFalse(now, now).forEach(schedule -> {
             AbstractScheduler scheduler = schedule.getScheduler();
@@ -78,7 +69,6 @@ public class UpdateSchedules {
             logger.info("Starting schedule for " + scheduler);
             broadcastUpdate(scheduler);
         });
-
     }
 
     private void broadcastUpdate(AbstractScheduler scheduler) {

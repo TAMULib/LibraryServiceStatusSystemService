@@ -46,7 +46,7 @@ public class Note extends AbstractScheduler {
     private Service service;
 
     @ManyToOne(cascade = REFRESH, optional = false)
-    private AppUser author;
+    private User author;
 
     public Note() {
         super();
@@ -56,19 +56,19 @@ public class Note extends AbstractScheduler {
         setService(new Service());
     }
 
-    public Note(String title, AppUser author) {
+    public Note(String title, User author) {
         this();
         setTitle(title);
         setAuthor(author);
     }
 
-    public Note(String title, AppUser author, NoteType noteType, String body) {
+    public Note(String title, User author, NoteType noteType, String body) {
         this(title, author);
         setNoteType(noteType);
         setBody(body);
     }
 
-    public Note(String title, AppUser author, NoteType noteType, String body, Service service) {
+    public Note(String title, User author, NoteType noteType, String body, Service service) {
         this(title, author, noteType, body);
         setService(service);
     }
@@ -129,11 +129,11 @@ public class Note extends AbstractScheduler {
         this.lastModified = lastModified;
     }
 
-    public AppUser getAuthor() {
+    public User getAuthor() {
         return author;
     }
 
-    public void setAuthor(AppUser author) {
+    public void setAuthor(User author) {
         this.author = author;
     }
 

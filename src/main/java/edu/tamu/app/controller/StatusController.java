@@ -1,37 +1,37 @@
 package edu.tamu.app.controller;
 
-import edu.tamu.app.service.AppRoleService;
-import edu.tamu.app.service.MonitorService;
-import edu.tamu.framework.aspect.annotation.ApiCredentials;
-import edu.tamu.framework.aspect.annotation.ApiMapping;
-import edu.tamu.framework.aspect.annotation.Auth;
-import edu.tamu.framework.model.ApiResponse;
-import edu.tamu.framework.model.Credentials;
-
-import static edu.tamu.framework.enums.ApiResponseType.SUCCESS;
+import static edu.tamu.weaver.response.ApiStatus.SUCCESS;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import edu.tamu.app.service.MonitorService;
+import edu.tamu.app.service.RoleService;
+import edu.tamu.weaver.auth.annotation.WeaverCredentials;
+import edu.tamu.weaver.auth.model.Credentials;
+import edu.tamu.weaver.response.ApiResponse;
+
 @RestController
-@ApiMapping("/status")
+@RequestMapping("/status")
 public class StatusController {
 
     @Autowired
     MonitorService monitorService;
 
     @Autowired
-    AppRoleService appRoleService;
+    RoleService appRoleService;
 
-    @ApiMapping("/overall-full")
-    @Auth(role = "ROLE_STAFF")
-    public ApiResponse overallFull(@ApiCredentials Credentials credentials) {
+    @RequestMapping("/overall-full")
+    @PreAuthorize("hasRole('STAFF')")
+    public ApiResponse overallFull(@WeaverCredentials Credentials credentials) {
         return new ApiResponse(SUCCESS, monitorService.getOverallStatus());
     }
 
-    @ApiMapping("/overall-public")
-    @Auth(role = "ROLE_ANONYMOUS")
-    public ApiResponse overallPublic(@ApiCredentials Credentials credentials) {
+    @RequestMapping("/overall-public")
+    @PreAuthorize("hasRole('ANONYMOUS')")
+    public ApiResponse overallPublic(@WeaverCredentials Credentials credentials) {
         return new ApiResponse(SUCCESS, monitorService.getOverallStatusPublic());
     }
 

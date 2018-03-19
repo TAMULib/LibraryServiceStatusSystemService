@@ -1,6 +1,6 @@
 package edu.tamu.app.model.repo.impl;
 
-import static edu.tamu.framework.enums.ApiResponseType.SUCCESS;
+import static edu.tamu.weaver.response.ApiStatus.SUCCESS;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ import edu.tamu.app.model.Notification;
 import edu.tamu.app.model.Schedule;
 import edu.tamu.app.model.repo.NotificationRepo;
 import edu.tamu.app.model.repo.custom.NotificationRepoCustom;
-import edu.tamu.framework.model.ApiResponse;
+import edu.tamu.weaver.response.ApiResponse;
 
 public class NotificationRepoImpl implements NotificationRepoCustom {
 

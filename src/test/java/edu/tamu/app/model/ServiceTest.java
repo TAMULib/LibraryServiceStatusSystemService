@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import edu.tamu.app.WebServerInit;
-import edu.tamu.app.enums.Role;
 import edu.tamu.app.enums.Status;
 import edu.tamu.app.model.repo.NoteRepo;
 import edu.tamu.app.model.repo.ServiceRepo;
@@ -30,22 +28,19 @@ import edu.tamu.weaver.auth.model.Credentials;
 @SpringBootTest(classes = { WebServerInit.class })
 public class ServiceTest {
 
-    protected static final String TEST_SERVICE_NAME = "Test Service Name";
-    protected static final String TEST_SERVICE_URL = "https://library.tamu.edu";
-    protected static final String TEST_DESCRIPTION = "Test Service Description";
-    protected static final Status TEST_SERVICE_STATUS = Status.UP;
-    protected static final List<String> TEST_SERVICE_ALIASES = Arrays.asList("Alias 1", "Alias 2", "Alias 3");
-    protected static final String TEST_NOTE_TITLE1 = "Note 1";
-    protected static final String TEST_NOTE_TITLE2 = "Note 2";
-    protected static final String TEST_ALTERNATIVE_SERVICE_NAME = "Different Service Name";
-    protected static final Boolean TEST_IS_AUTO = false;
-    protected static final Boolean TEST_IS_PUBLIC = true;
-    protected static final Boolean TEST_ON_SHORT_LIST = true;
-    protected static final Status TEST_ALTERNATIVE_SERVICE_STATUS = Status.DOWN;
-    protected static final List<String> TEST_ALTERNATIVE_SERVICE_ALIASES = Arrays.asList("Alias 4", "Alias 5", "Alias 6");
-    protected User testUser;
+    private static final String TEST_SERVICE_NAME = "Test Service Name";
+    private static final String TEST_SERVICE_URL = "https://library.tamu.edu";
+    private static final String TEST_DESCRIPTION = "Test Service Description";
+    private static final Status TEST_SERVICE_STATUS = Status.UP;
+    private static final List<String> TEST_SERVICE_ALIASES = Arrays.asList("Alias 1", "Alias 2", "Alias 3");
+    private static final String TEST_ALTERNATIVE_SERVICE_NAME = "Different Service Name";
+    private static final Boolean TEST_IS_AUTO = false;
+    private static final Boolean TEST_IS_PUBLIC = true;
+    private static final Boolean TEST_ON_SHORT_LIST = true;
+    private static final Status TEST_ALTERNATIVE_SERVICE_STATUS = Status.DOWN;
+    private static final List<String> TEST_ALTERNATIVE_SERVICE_ALIASES = Arrays.asList("Alias 4", "Alias 5", "Alias 6");
 
-    protected static final Credentials TEST_CREDENTIALS = new Credentials();
+    private static final Credentials TEST_CREDENTIALS = new Credentials();
     {
         TEST_CREDENTIALS.setUin("123456789");
         TEST_CREDENTIALS.setEmail("aggieJack@tamu.edu");
@@ -55,18 +50,13 @@ public class ServiceTest {
     }
 
     @Autowired
-    ServiceRepo serviceRepo;
+    private ServiceRepo serviceRepo;
 
     @Autowired
-    NoteRepo noteRepo;
+    private NoteRepo noteRepo;
 
     @Autowired
-    UserRepo appUserRepo;
-
-    @Before
-    public void setUp() {
-        testUser = appUserRepo.create(TEST_CREDENTIALS.getUin(), TEST_CREDENTIALS.getEmail(), TEST_CREDENTIALS.getFirstName(), TEST_CREDENTIALS.getLastName(), Role.valueOf(TEST_CREDENTIALS.getRole()));
-    }
+    private UserRepo userRepo;
 
     @Test
     public void testCreate() {
@@ -136,13 +126,19 @@ public class ServiceTest {
 
     @Test
     public void testAssociateProject() {
-
+        Service newService = serviceRepo.create(new Service(TEST_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, TEST_SERVICE_URL, TEST_DESCRIPTION));
+        Long serviceId = newService.getId();
+        Long projectId = 1L;
+        newService.setProjectId(projectId);
+        serviceRepo.save(newService);
+        Service serviceWithProjectId = serviceRepo.findOne(serviceId);
+        assertEquals("The service had the incorrect project id!", projectId, serviceWithProjectId.getProjectId());
     }
 
     @After
     public void cleanUp() {
         serviceRepo.deleteAll();
         noteRepo.deleteAll();
-        appUserRepo.deleteAll();
+        userRepo.deleteAll();
     }
 }

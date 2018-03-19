@@ -14,7 +14,7 @@ import edu.tamu.app.service.ProjectService;
 import edu.tamu.weaver.response.ApiResponse;
 
 @RestController
-@RequestMapping("/project")
+@RequestMapping("/projects")
 public class ProjectController {
 
     @Autowired

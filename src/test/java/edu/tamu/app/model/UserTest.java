@@ -25,7 +25,7 @@ import edu.tamu.weaver.auth.model.Credentials;
 @SpringBootTest(classes = { WebServerInit.class })
 public class UserTest {
 
-    protected static final Credentials TEST_CREDENTIALS = new Credentials();
+    private static final Credentials TEST_CREDENTIALS = new Credentials();
     {
         TEST_CREDENTIALS.setUin("123456789");
         TEST_CREDENTIALS.setEmail("aggieJack@tamu.edu");

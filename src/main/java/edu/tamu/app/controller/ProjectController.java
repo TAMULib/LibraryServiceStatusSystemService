@@ -22,7 +22,7 @@ public class ProjectController {
     @Autowired
     private ProjectService projectService;
 
-    @RequestMapping("/all")
+    @RequestMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public ApiResponse getAll() throws JsonProcessingException, IOException {
         return projectService.getAll();

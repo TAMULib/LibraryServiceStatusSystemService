@@ -19,7 +19,7 @@ public class MockProjectManagementController {
     @Autowired
     private MockProjects mockProjects;
 
-    @RequestMapping("/all")
+    @RequestMapping
     public ApiResponse getAll() {
         return new ApiResponse(SUCCESS, mockProjects.getAllProjects());
     }

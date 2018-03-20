@@ -28,7 +28,7 @@ public class ProjectService {
     private RestTemplate restTemplate;
 
     public ApiResponse getAll() throws JsonProcessingException, IOException {
-        JsonNode projectsNode = objectMapper.readTree(new URL(projectsUrl + "/all"));
+        JsonNode projectsNode = objectMapper.readTree(new URL(projectsUrl));
         return objectMapper.convertValue(projectsNode, ApiResponse.class);
     }
 

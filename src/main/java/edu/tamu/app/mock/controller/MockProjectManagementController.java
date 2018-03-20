@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import edu.tamu.app.mock.reader.MockProjects;
+import edu.tamu.app.mock.projects.MockProjects;
 import edu.tamu.app.model.request.ProjectRequest;
 import edu.tamu.weaver.response.ApiResponse;
 

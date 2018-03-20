@@ -19,7 +19,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.tamu.app.WebServerInit;
-import edu.tamu.app.mock.reader.MockProjects;
+import edu.tamu.app.mock.projects.MockProjects;
 import edu.tamu.app.model.request.ProjectRequest;
 import edu.tamu.weaver.response.ApiResponse;
 import edu.tamu.weaver.response.ApiStatus;

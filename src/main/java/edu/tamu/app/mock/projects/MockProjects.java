@@ -1,4 +1,4 @@
-package edu.tamu.app.mock.reader;
+package edu.tamu.app.mock.projects;
 
 import java.io.IOException;
 import java.util.ArrayList;

@@ -17,8 +17,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import edu.tamu.app.model.request.ProjectRequest;
+
 @Service
-public class MockReader {
+public class MockProjects {
 
     private final static List<JsonNode> PROJECTS = new ArrayList<JsonNode>();
 
@@ -53,6 +55,10 @@ public class MockReader {
             }
         }
         return project;
+    }
+
+    public String submitRequest(ProjectRequest request) {
+        return "Successfully submitted " + request.getType().getName() + " request!";
     }
 
 }

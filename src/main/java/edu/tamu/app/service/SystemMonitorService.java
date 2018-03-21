@@ -76,7 +76,8 @@ public class SystemMonitorService implements MonitorService {
 
     protected Status getServiceStatus(String serviceUrl) throws MalformedURLException, IOException {
         String rawStatusResponse = HttpUtility.makeHttpRequest(serviceUrl, "GET");
-        List<Map<String, String>> mappedStatusResponse = objectMapper.readValue(rawStatusResponse, new TypeReference<List<Map<String, String>>>() {});
+        List<Map<String, String>> mappedStatusResponse = objectMapper.readValue(rawStatusResponse, new TypeReference<List<Map<String, String>>>() {
+        });
         return Status.valueOf(mappedStatusResponse.get(0).get("service").toUpperCase());
     }
 

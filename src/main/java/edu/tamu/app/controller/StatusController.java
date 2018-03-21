@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.tamu.app.service.MonitorService;
-import edu.tamu.app.service.RoleService;
 import edu.tamu.weaver.auth.annotation.WeaverCredentials;
 import edu.tamu.weaver.auth.model.Credentials;
 import edu.tamu.weaver.response.ApiResponse;
@@ -18,10 +17,7 @@ import edu.tamu.weaver.response.ApiResponse;
 public class StatusController {
 
     @Autowired
-    MonitorService monitorService;
-
-    @Autowired
-    RoleService appRoleService;
+    private MonitorService monitorService;
 
     @RequestMapping("/overall-full")
     @PreAuthorize("hasRole('STAFF')")

@@ -30,7 +30,6 @@ public class NoteRepoImpl implements NoteRepoCustom {
 
     @Override
     public Note create(Note note, Credentials credentials) throws UserNotFoundException {
-        // TODO: check if Optional is present, else throw exception
         Optional<User> user = userRepo.findByUsername(credentials.getUin());
         if (user.isPresent()) {
             note.setAuthor(user.get());

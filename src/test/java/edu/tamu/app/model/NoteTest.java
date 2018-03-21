@@ -9,10 +9,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 
 import edu.tamu.app.WebServerInit;
 import edu.tamu.app.enums.NoteType;
@@ -24,10 +24,9 @@ import edu.tamu.app.model.repo.ServiceRepo;
 import edu.tamu.app.model.repo.UserRepo;
 import edu.tamu.weaver.auth.model.Credentials;
 
-@WebAppConfiguration
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { WebServerInit.class })
+@SpringBootTest(classes = { WebServerInit.class }, webEnvironment = WebEnvironment.DEFINED_PORT)
 public class NoteTest {
 
     private static final String TEST_NOTE_TITLE = "Note Title";

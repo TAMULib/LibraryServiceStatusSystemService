@@ -3,18 +3,16 @@ package edu.tamu.app.model;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
-import java.util.Calendar;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 
 import edu.tamu.app.WebServerInit;
 import edu.tamu.app.enums.NoteType;
@@ -26,31 +24,29 @@ import edu.tamu.app.model.repo.ServiceRepo;
 import edu.tamu.app.model.repo.UserRepo;
 import edu.tamu.weaver.auth.model.Credentials;
 
-@WebAppConfiguration
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { WebServerInit.class })
+@SpringBootTest(classes = { WebServerInit.class }, webEnvironment = WebEnvironment.DEFINED_PORT)
 public class NoteTest {
 
-    protected static final String TEST_NOTE_TITLE = "Note Title";
-    protected static final String TEST_SERVICE_URL = "https://library.tamu.edu";
-    protected static final String TEST_DESCRIPTION = "Test Service Description";
-    protected static final String TEST_ALTERNATIVE_NOTE_TITLE = "Alternative Note Title";
-    protected static final String TEST_SERVICE_NAME = "Test Service Name";
-    protected static final String TEST_ALTERNATIVE_SERVICE_NAME = "Different Service Name";
-    protected static final String TEST_NOTE_BODY = "Test Note Body";
-    protected static final String TEST_ALTERNATIVE_NOTE_BODY = "Alternative Note Body";
-    protected static final Boolean TEST_IS_AUTO = false;
-    protected static final Boolean TEST_IS_PUBLIC = true;
-    protected static final Boolean TEST_ON_SHORT_LIST = true;
-    protected static final Status TEST_SERVICE_STATUS = Status.UP;
-    protected static final NoteType TEST_NOTE_TYPE = NoteType.ISSUE;
-    protected static final NoteType TEST_ALTERNATIVE_NOTE_TYPE = NoteType.MAINTENANCE;
-    protected static final Calendar TEST_DATE = Calendar.getInstance();
-    protected Service service1;
-    protected Service service2;
+    private static final String TEST_NOTE_TITLE = "Note Title";
+    private static final String TEST_SERVICE_URL = "https://library.tamu.edu";
+    private static final String TEST_DESCRIPTION = "Test Service Description";
+    private static final String TEST_ALTERNATIVE_NOTE_TITLE = "Alternative Note Title";
+    private static final String TEST_SERVICE_NAME = "Test Service Name";
+    private static final String TEST_ALTERNATIVE_SERVICE_NAME = "Different Service Name";
+    private static final String TEST_NOTE_BODY = "Test Note Body";
+    private static final String TEST_ALTERNATIVE_NOTE_BODY = "Alternative Note Body";
+    private static final Boolean TEST_IS_AUTO = false;
+    private static final Boolean TEST_IS_PUBLIC = true;
+    private static final Boolean TEST_ON_SHORT_LIST = true;
+    private static final Status TEST_SERVICE_STATUS = Status.UP;
+    private static final NoteType TEST_NOTE_TYPE = NoteType.ISSUE;
+    private static final NoteType TEST_ALTERNATIVE_NOTE_TYPE = NoteType.MAINTENANCE;
+    private Service service1;
+    private Service service2;
 
-    protected static final Credentials TEST_CREDENTIALS = new Credentials();
+    private static final Credentials TEST_CREDENTIALS = new Credentials();
     {
         TEST_CREDENTIALS.setUin("123456789");
         TEST_CREDENTIALS.setEmail("aggieJack@tamu.edu");
@@ -59,18 +55,18 @@ public class NoteTest {
         TEST_CREDENTIALS.setRole("ROLE_USER");
     }
 
-    protected User testUser;
+    private User testUser;
 
-    protected Note testNote;
-
-    @Autowired
-    NoteRepo noteRepo;
+    private Note testNote;
 
     @Autowired
-    ServiceRepo serviceRepo;
+    private NoteRepo noteRepo;
 
     @Autowired
-    UserRepo appUserRepo;
+    private ServiceRepo serviceRepo;
+
+    @Autowired
+    private UserRepo appUserRepo;
 
     @Before
     public void setUp() throws UserNotFoundException {

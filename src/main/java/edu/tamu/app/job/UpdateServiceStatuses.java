@@ -14,10 +14,10 @@ import edu.tamu.weaver.response.ApiResponse;
 public class UpdateServiceStatuses {
 
     @Autowired
-    MonitorService monitorService;
+    private MonitorService monitorService;
 
     @Autowired
-    SimpMessagingTemplate simpMessagingTemplate;
+    private SimpMessagingTemplate simpMessagingTemplate;
 
     @Scheduled(fixedRate = (10 * 60 * 1000))
     public void updateOveralStatuses() {

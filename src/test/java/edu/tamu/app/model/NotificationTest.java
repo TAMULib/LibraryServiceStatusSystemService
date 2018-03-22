@@ -10,29 +10,28 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 
 import edu.tamu.app.WebServerInit;
 import edu.tamu.app.enums.NotificationLocation;
 import edu.tamu.app.model.repo.NotificationRepo;
 
-@WebAppConfiguration
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { WebServerInit.class })
+@SpringBootTest(classes = { WebServerInit.class }, webEnvironment = WebEnvironment.DEFINED_PORT)
 public class NotificationTest {
 
-    protected static final String TEST_NOTIFICATION_NAME = "Test Notification Name";
-    protected static final String TEST_NOTIFICATION_BODY = "Test Notification Body";
-    protected static final String TEST_ALTERNATE_NOTIFICATION_NAME = "Different Notification Name";
-    protected static final String TEST_ALTERNATE_NOTIFICATION_BODY = "Different Notification Body";
-    protected static final List<NotificationLocation> TEST_LOCATIONS = Arrays.asList(new NotificationLocation[] { NotificationLocation.CUSHING });
+    private static final String TEST_NOTIFICATION_NAME = "Test Notification Name";
+    private static final String TEST_NOTIFICATION_BODY = "Test Notification Body";
+    private static final String TEST_ALTERNATE_NOTIFICATION_NAME = "Different Notification Name";
+    private static final String TEST_ALTERNATE_NOTIFICATION_BODY = "Different Notification Body";
+    private static final List<NotificationLocation> TEST_LOCATIONS = Arrays.asList(new NotificationLocation[] { NotificationLocation.CUSHING });
 
     @Autowired
-    NotificationRepo notificationRepo;
+    private NotificationRepo notificationRepo;
 
     @Test
     public void testCreate() {

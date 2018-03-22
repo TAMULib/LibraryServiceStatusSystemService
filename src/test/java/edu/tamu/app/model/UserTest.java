@@ -10,22 +10,21 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 
 import edu.tamu.app.WebServerInit;
 import edu.tamu.app.enums.Role;
 import edu.tamu.app.model.repo.UserRepo;
 import edu.tamu.weaver.auth.model.Credentials;
 
-@WebAppConfiguration
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { WebServerInit.class })
+@SpringBootTest(classes = { WebServerInit.class }, webEnvironment = WebEnvironment.DEFINED_PORT)
 public class UserTest {
 
-    protected static final Credentials TEST_CREDENTIALS = new Credentials();
+    private static final Credentials TEST_CREDENTIALS = new Credentials();
     {
         TEST_CREDENTIALS.setUin("123456789");
         TEST_CREDENTIALS.setEmail("aggieJack@tamu.edu");
@@ -60,7 +59,6 @@ public class UserTest {
         userRepo.delete(testUser1);
         allUsers = (List<User>) userRepo.findAll();
         assertEquals("Test User1 was not removed.", 0, allUsers.size());
-
     }
 
     @After

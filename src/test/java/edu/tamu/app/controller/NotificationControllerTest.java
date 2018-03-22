@@ -1,4 +1,4 @@
-package controller;
+package edu.tamu.app.controller;
 
 import static edu.tamu.weaver.response.ApiStatus.SUCCESS;
 import static org.junit.Assert.assertEquals;
@@ -21,7 +21,6 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import edu.tamu.app.controller.NotificationController;
 import edu.tamu.app.enums.NotificationLocation;
 import edu.tamu.app.model.Notification;
 import edu.tamu.app.model.repo.NotificationRepo;
@@ -31,42 +30,39 @@ import edu.tamu.weaver.response.ApiResponse;
 @RunWith(SpringRunner.class)
 public class NotificationControllerTest {
 
-    protected static final String TEST_NOTIFICATION1_NAME = "Test Notification Name 1";
-    protected static final String TEST_NOTIFICATION2_NAME = "Test Notification Name 2";
-    protected static final String TEST_NOTIFICATION3_NAME = "Test Notification Name 3";
-    protected static final String TEST_MODIFIED_NOTIFICATION_NAME = "Test Modified Notification Name";
-    protected static final String TEST_NOTIFICATION1_BODY = "Test Notification Body 1";
-    protected static final String TEST_NOTIFICATION2_BODY = "Test Notification Body 2";
-    protected static final String TEST_NOTIFICATION3_BODY = "Test Notification Body 3";
-    protected static final String TEST_MODIFIED_NOTIFICATION_BODY = "Test Modified Notification Body";
+    private static final String TEST_NOTIFICATION1_NAME = "Test Notification Name 1";
+    private static final String TEST_NOTIFICATION2_NAME = "Test Notification Name 2";
+    private static final String TEST_NOTIFICATION3_NAME = "Test Notification Name 3";
+    private static final String TEST_MODIFIED_NOTIFICATION_NAME = "Test Modified Notification Name";
+    private static final String TEST_NOTIFICATION1_BODY = "Test Notification Body 1";
+    private static final String TEST_NOTIFICATION2_BODY = "Test Notification Body 2";
+    private static final String TEST_NOTIFICATION3_BODY = "Test Notification Body 3";
 
-    protected static final String TEST_QUERY_PARAM = "CUSHING";
-    protected static final String TEST_NOTIFICATION_TEXT = "<p>Test Notification Body 1</p><p>Test Notification Body 2</p><p>Test Notification Body 3</p>";
-    protected static final boolean TEST_IS_ACTIVE = true;
-    protected static final boolean TEST_ALTERNATIVE_IS_ACTIVE = false;
+    private static final String TEST_QUERY_PARAM = "CUSHING";
+    private static final String TEST_NOTIFICATION_TEXT = "<p>Test Notification Body 1</p><p>Test Notification Body 2</p><p>Test Notification Body 3</p>";
 
-    protected static final List<NotificationLocation> TEST_LOCATIONS = Arrays.asList(new NotificationLocation[] { NotificationLocation.CUSHING });
+    private static final List<NotificationLocation> TEST_LOCATIONS = Arrays.asList(new NotificationLocation[] { NotificationLocation.CUSHING });
 
-    protected static Notification TEST_NOTIFICATION1 = new Notification(TEST_NOTIFICATION1_NAME, TEST_NOTIFICATION1_BODY, TEST_LOCATIONS);
-    protected static Notification TEST_NOTIFICATION2 = new Notification(TEST_NOTIFICATION2_NAME, TEST_NOTIFICATION2_BODY, TEST_LOCATIONS);
-    protected static Notification TEST_NOTIFICATION3 = new Notification(TEST_NOTIFICATION3_NAME, TEST_NOTIFICATION3_BODY, TEST_LOCATIONS);
-    protected static Notification TEST_MODIFIED_NOTIFICATION = new Notification(TEST_MODIFIED_NOTIFICATION_NAME, TEST_NOTIFICATION2_BODY, TEST_LOCATIONS);
+    private static Notification TEST_NOTIFICATION1 = new Notification(TEST_NOTIFICATION1_NAME, TEST_NOTIFICATION1_BODY, TEST_LOCATIONS);
+    private static Notification TEST_NOTIFICATION2 = new Notification(TEST_NOTIFICATION2_NAME, TEST_NOTIFICATION2_BODY, TEST_LOCATIONS);
+    private static Notification TEST_NOTIFICATION3 = new Notification(TEST_NOTIFICATION3_NAME, TEST_NOTIFICATION3_BODY, TEST_LOCATIONS);
+    private static Notification TEST_MODIFIED_NOTIFICATION = new Notification(TEST_MODIFIED_NOTIFICATION_NAME, TEST_NOTIFICATION2_BODY, TEST_LOCATIONS);
 
-    protected static List<Notification> mockNotificationList = new ArrayList<Notification>(Arrays.asList(new Notification[] { TEST_NOTIFICATION1, TEST_NOTIFICATION2, TEST_NOTIFICATION3 }));
+    private static List<Notification> mockNotificationList = new ArrayList<Notification>(Arrays.asList(new Notification[] { TEST_NOTIFICATION1, TEST_NOTIFICATION2, TEST_NOTIFICATION3 }));
 
-    protected static ApiResponse response;
+    private static ApiResponse response;
 
     @Mock
-    protected NotificationRepo notificationRepo;
+    private NotificationRepo notificationRepo;
 
     @Mock
-    protected SimpMessagingTemplate simpMessagingTemplate;
+    private SimpMessagingTemplate simpMessagingTemplate;
 
     @InjectMocks
-    protected NotificationController notificationController;
+    private NotificationController notificationController;
 
     @Before
-    public void setUp() {
+    public void setup() {
         MockitoAnnotations.initMocks(this);
         when(notificationRepo.findAllByOrderByIdDesc()).thenReturn(mockNotificationList);
         when(notificationRepo.findOne(any(Long.class))).thenReturn(TEST_NOTIFICATION1);

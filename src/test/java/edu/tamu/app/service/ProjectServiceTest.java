@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.List;
 
 import org.junit.Test;
@@ -14,13 +15,15 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.tamu.app.WebServerInit;
 import edu.tamu.app.mock.projects.MockProjects;
 import edu.tamu.app.model.request.ProjectRequest;
+import edu.tamu.app.model.response.Project;
 import edu.tamu.weaver.response.ApiResponse;
 import edu.tamu.weaver.response.ApiStatus;
 
@@ -35,34 +38,33 @@ public class ProjectServiceTest {
     @Autowired
     private ProjectService projectService;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @Test
-    @SuppressWarnings("unchecked")
-    public void getAll() throws JsonProcessingException, IOException {
+    public void getAll() throws JsonParseException, JsonMappingException, MalformedURLException, IOException {
         ApiResponse response = projectService.getAll();
         assertEquals("Response was not a success!", ApiStatus.SUCCESS, response.getMeta().getStatus());
-        List<JsonNode> projects = (List<JsonNode>) response.getPayload().get("ArrayList<ObjectNode>");
-        List<JsonNode> mockProjects = mockReader.getAllProjects();
+        List<Project> projects = objectMapper.convertValue(response.getPayload().get("ArrayList<Project>"), new TypeReference<List<Project>>() {});
+        List<Project> mockProjects = mockReader.getAllProjects();
         assertEquals("Projects response size was not as expected!", mockProjects.size(), projects.size());
-        ObjectMapper mapper = new ObjectMapper();
         for (int i = 0; i < projects.size(); i++) {
-            JsonNode project = mapper.valueToTree(projects.get(i));
-            assertEquals(i + " project did not have the correct id!", mockProjects.get(i).get("id"), project.get("id"));
-            assertEquals(i + " project did not have the correct name!", mockProjects.get(i).get("name"), project.get("name"));
+            Project project = projects.get(i);
+            assertEquals(i + " project did not have the correct id!", mockProjects.get(i).getId(), project.getId());
+            assertEquals(i + " project did not have the correct name!", mockProjects.get(i).getName(), project.getName());
         }
-
     }
 
     @Test
-    public void getById() throws JsonProcessingException, IOException {
+    public void getById() throws JsonParseException, JsonMappingException, MalformedURLException, IOException {
         Long id = 1L;
         ApiResponse response = projectService.getById(id);
         assertEquals("Response was not a success!", ApiStatus.SUCCESS, response.getMeta().getStatus());
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode project = mapper.valueToTree(response.getPayload().get("ObjectNode"));
+        Project project = objectMapper.convertValue(response.getPayload().get("Project"), Project.class);
         assertNotNull("Project is null!", project);
-        JsonNode mockProject = mockReader.getProjectById(id);
-        assertEquals("Project did not have the correct id!", mockProject.get("id"), project.get("id"));
-        assertEquals("Project did not have the correct name!", mockProject.get("name"), project.get("name"));
+        Project mockProject = mockReader.getProjectById(id);
+        assertEquals("Project did not have the correct id!", mockProject.getId(), project.getId());
+        assertEquals("Project did not have the correct name!", mockProject.getName(), project.getName());
     }
 
     @Test

@@ -3,6 +3,7 @@ package edu.tamu.app.mock.controller;
 import static edu.tamu.weaver.response.ApiStatus.SUCCESS;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +14,7 @@ import edu.tamu.app.model.request.ProjectRequest;
 import edu.tamu.weaver.response.ApiResponse;
 
 @RestController
+@Profile("test")
 @RequestMapping("/mock/projects")
 public class MockProjectManagementController {
 

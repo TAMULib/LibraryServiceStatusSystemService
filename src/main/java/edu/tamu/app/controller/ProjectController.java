@@ -1,6 +1,7 @@
 package edu.tamu.app.controller;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -9,7 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 import edu.tamu.app.model.request.ProjectRequest;
 import edu.tamu.app.service.ProjectService;
@@ -24,13 +26,13 @@ public class ProjectController {
 
     @RequestMapping
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ApiResponse getAll() throws JsonProcessingException, IOException {
+    public ApiResponse getAll() throws JsonParseException, JsonMappingException, MalformedURLException, IOException {
         return projectService.getAll();
     }
 
     @RequestMapping("/{id}")
     @PreAuthorize("hasRole('ANONYMOUS')")
-    public ApiResponse getById(@PathVariable Long id) throws JsonProcessingException, IOException {
+    public ApiResponse getById(@PathVariable Long id) throws JsonParseException, JsonMappingException, MalformedURLException, IOException {
         return projectService.getById(id);
     }
 

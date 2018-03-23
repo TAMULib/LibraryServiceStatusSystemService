@@ -25,7 +25,7 @@ public class ProjectController {
     private ProjectService projectService;
 
     @RequestMapping
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('USER')")
     public ApiResponse getAll() throws JsonParseException, JsonMappingException, MalformedURLException, IOException {
         return projectService.getAll();
     }

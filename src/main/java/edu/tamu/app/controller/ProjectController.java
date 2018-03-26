@@ -37,8 +37,10 @@ public class ProjectController {
         return projectService.getById(id);
     }
 
+    // TODO: refactor the following method to operate from a Feature Proposal
+
     @RequestMapping("/feature")
-    // @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('SERVICE_MANAGER')")
     public ApiResponse submitFeatureRequest(@RequestBody FeatureRequest request) throws UserNotFoundException {
         return projectService.submitFeatureRequest(request);
     }

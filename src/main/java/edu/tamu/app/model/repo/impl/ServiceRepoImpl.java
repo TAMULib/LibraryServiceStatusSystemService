@@ -30,7 +30,7 @@ public class ServiceRepoImpl implements ServiceRepoCustom {
     @Override
     public Service create(Service service) {
         service = serviceRepo.save(service);
-        simpMessagingTemplate.convertAndSend("/channel/service/create", new ApiResponse(SUCCESS, service));
+        simpMessagingTemplate.convertAndSend("/channel/services/create", new ApiResponse(SUCCESS, service));
         sendStatusUpdate();
         return service;
     }
@@ -41,7 +41,7 @@ public class ServiceRepoImpl implements ServiceRepoCustom {
             schedule.setScheduler(service);
         }
         service = serviceRepo.save(service);
-        simpMessagingTemplate.convertAndSend("/channel/service/update", new ApiResponse(SUCCESS, service));
+        simpMessagingTemplate.convertAndSend("/channel/services/update", new ApiResponse(SUCCESS, service));
         sendStatusUpdate();
         return service;
     }
@@ -52,7 +52,7 @@ public class ServiceRepoImpl implements ServiceRepoCustom {
             noteRepo.delete(note);
         });
         serviceRepo.delete(service.getId());
-        simpMessagingTemplate.convertAndSend("/channel/service/delete", new ApiResponse(SUCCESS, service.getId()));
+        simpMessagingTemplate.convertAndSend("/channel/services/delete", new ApiResponse(SUCCESS, service.getId()));
         sendStatusUpdate();
     }
 

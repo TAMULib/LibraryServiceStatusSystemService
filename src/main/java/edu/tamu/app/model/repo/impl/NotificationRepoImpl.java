@@ -26,7 +26,7 @@ public class NotificationRepoImpl implements NotificationRepoCustom {
     @Override
     public Notification create(Notification notification) {
         notification = notificationRepo.save(notification);
-        simpMessagingTemplate.convertAndSend("/channel/notification/create", new ApiResponse(SUCCESS, notification));
+        simpMessagingTemplate.convertAndSend("/channel/notifications/create", new ApiResponse(SUCCESS, notification));
         return notification;
     }
 
@@ -36,14 +36,14 @@ public class NotificationRepoImpl implements NotificationRepoCustom {
             schedule.setScheduler(notification);
         }
         notification = notificationRepo.save(notification);
-        simpMessagingTemplate.convertAndSend("/channel/notification/update", new ApiResponse(SUCCESS, notification));
+        simpMessagingTemplate.convertAndSend("/channel/notifications/update", new ApiResponse(SUCCESS, notification));
         return notification;
     }
 
     @Override
     public void delete(Notification notification) {
         notificationRepo.delete(notification.getId());
-        simpMessagingTemplate.convertAndSend("/channel/notification/delete", new ApiResponse(SUCCESS, notification.getId()));
+        simpMessagingTemplate.convertAndSend("/channel/notifications/delete", new ApiResponse(SUCCESS, notification.getId()));
     }
 
     @Override

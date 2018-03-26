@@ -14,6 +14,7 @@ import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.UpdateTimestamp;
 
+import edu.tamu.app.model.request.ServiceRequest;
 import edu.tamu.app.model.validation.IdeaValidator;
 import edu.tamu.weaver.validation.model.ValidatingBaseEntity;
 
@@ -23,7 +24,7 @@ public class Idea extends ValidatingBaseEntity {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "text", nullable = true)
     private String description;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -41,10 +42,18 @@ public class Idea extends ValidatingBaseEntity {
         this.modelValidator = new IdeaValidator();
     }
 
-    public Idea(String title, String description, User author) {
+    public Idea(String title, String description) {
         this();
         this.title = title;
         this.description = description;
+    }
+
+    public Idea(ServiceRequest serviceRequest) {
+        this(serviceRequest.getTitle(), serviceRequest.getDescription());
+    }
+
+    public Idea(String title, String description, User author) {
+        this(title, description);
         this.author = author;
     }
 

@@ -8,4 +8,8 @@ public interface IdeaRepoCustom {
 
     public Idea create(Idea idea, Credentials credentials) throws UserNotFoundException;
 
+    public Idea update(Idea idea);
+
+    public void delete(Idea idea);
+
 }

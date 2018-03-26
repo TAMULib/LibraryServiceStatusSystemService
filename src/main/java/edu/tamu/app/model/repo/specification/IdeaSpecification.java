@@ -9,9 +9,9 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-public class NoteSpecification<E> extends AbstractSpecification<E> {
+public class IdeaSpecification<E> extends AbstractSpecification<E> {
 
-    public NoteSpecification(Map<String, String[]> filters) {
+    public IdeaSpecification(Map<String, String[]> filters) {
         super(filters);
     }
 
@@ -26,16 +26,6 @@ public class NoteSpecification<E> extends AbstractSpecification<E> {
             String[] values = entry.getValue();
 
             switch (key) {
-            case "active":
-                for (String value : values) {
-                    activeAndPinnedPredicates.add(cb.like(cb.lower(root.get(key).as(String.class)), "%" + value.toLowerCase() + "%"));
-                }
-                break;
-            case "pinned":
-                for (String value : values) {
-                    activeAndPinnedPredicates.add(cb.like(cb.lower(root.get(key).as(String.class)), "%" + value.toLowerCase() + "%"));
-                }
-                break;
             case "service":
                 for (String value : values) {
                     servicePredicates.add(cb.like(cb.lower(root.get(key).get("id").as(String.class)), "%" + value.toLowerCase() + "%"));

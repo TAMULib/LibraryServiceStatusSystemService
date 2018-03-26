@@ -155,8 +155,6 @@ public class NoteTest {
 
         noteRepo.save(note);
 
-        System.out.println("\n" + note.getLastModified().getTime().getTime() + "\n");
-
         // TODO: fix false positive, time is not updated
 
         // assertNotEquals("The timestamp was not updated from creation", createTime.getTime().getTime(), updatedNote.getLastModified().getTime().getTime());

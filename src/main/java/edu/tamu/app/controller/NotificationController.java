@@ -21,13 +21,13 @@ import edu.tamu.weaver.validation.aspect.annotation.WeaverValidatedModel;
 import edu.tamu.weaver.validation.aspect.annotation.WeaverValidation;
 
 @RestController
-@RequestMapping("/notification")
+@RequestMapping("/notifications")
 public class NotificationController {
 
     @Autowired
     private NotificationRepo notificationRepo;
 
-    @RequestMapping("/all")
+    @RequestMapping
     @PreAuthorize("hasRole('STAFF')")
     public ApiResponse getAllNotifications() {
         return new ApiResponse(SUCCESS, notificationRepo.findAllByOrderByIdDesc());

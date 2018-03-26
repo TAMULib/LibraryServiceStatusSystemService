@@ -34,7 +34,7 @@ public class NoteRepoImpl implements NoteRepoCustom {
         if (user.isPresent()) {
             note.setAuthor(user.get());
             note = noteRepo.save(note);
-            simpMessagingTemplate.convertAndSend("/channel/note/create", new ApiResponse(SUCCESS, note));
+            simpMessagingTemplate.convertAndSend("/channel/notes/create", new ApiResponse(SUCCESS, note));
             return note;
         }
         throw new UserNotFoundException("Unable to find user with uin " + credentials.getUin());
@@ -46,14 +46,14 @@ public class NoteRepoImpl implements NoteRepoCustom {
             schedule.setScheduler(note);
         }
         note = noteRepo.save(note);
-        simpMessagingTemplate.convertAndSend("/channel/note/update", new ApiResponse(SUCCESS, note));
+        simpMessagingTemplate.convertAndSend("/channel/notes/update", new ApiResponse(SUCCESS, note));
         return note;
     }
 
     @Override
     public void delete(Note note) {
         noteRepo.delete(note.getId());
-        simpMessagingTemplate.convertAndSend("/channel/note/delete", new ApiResponse(SUCCESS, note.getId()));
+        simpMessagingTemplate.convertAndSend("/channel/notes/delete", new ApiResponse(SUCCESS, note.getId()));
     }
 
 }

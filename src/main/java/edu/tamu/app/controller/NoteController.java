@@ -22,7 +22,7 @@ import edu.tamu.weaver.validation.aspect.annotation.WeaverValidatedModel;
 import edu.tamu.weaver.validation.aspect.annotation.WeaverValidation;
 
 @RestController
-@RequestMapping("/note")
+@RequestMapping("/notes")
 public class NoteController {
 
     @Autowired

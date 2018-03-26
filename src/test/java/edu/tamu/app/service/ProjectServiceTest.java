@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.tamu.app.WebServerInit;
 import edu.tamu.app.mock.projects.MockProjects;
+import edu.tamu.app.model.request.AbstractRequest;
 import edu.tamu.app.model.request.ProjectRequest;
 import edu.tamu.app.model.response.Project;
 import edu.tamu.weaver.response.ApiResponse;
@@ -69,7 +70,7 @@ public class ProjectServiceTest {
 
     @Test
     public void submitFeatureRequest() {
-        ProjectRequest request = new ProjectRequest(ProjectRequest.RequestType.FEATURE, "Test feature request", "This is a test feature request on project 1", 1L);
+        ProjectRequest request = new ProjectRequest(AbstractRequest.RequestType.FEATURE, "Test feature request", "This is a test feature request on project 1", 1L);
         ApiResponse response = projectService.submitRequest(request);
         assertEquals("Response was not a success!", ApiStatus.SUCCESS, response.getMeta().getStatus());
         assertEquals("Response message was not correct!", "Successfully submitted " + request.getType().getName() + " request!", response.getMeta().getMessage());
@@ -77,7 +78,7 @@ public class ProjectServiceTest {
 
     @Test
     public void submitIssueRequest() {
-        ProjectRequest request = new ProjectRequest(ProjectRequest.RequestType.ISSUE, "Test issue request", "This is a test issue request on project 1", 1L);
+        ProjectRequest request = new ProjectRequest(AbstractRequest.RequestType.ISSUE, "Test issue request", "This is a test issue request on project 1", 1L);
         ApiResponse response = projectService.submitRequest(request);
         assertEquals("Response was not a success!", ApiStatus.SUCCESS, response.getMeta().getStatus());
         assertEquals("Response message was not correct!", "Successfully submitted " + request.getType().getName() + " request!", response.getMeta().getMessage());

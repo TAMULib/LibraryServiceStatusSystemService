@@ -28,9 +28,14 @@ import edu.tamu.app.model.Service;
 import edu.tamu.app.model.User;
 import edu.tamu.app.model.repo.ServiceRepo;
 import edu.tamu.app.model.repo.UserRepo;
+import edu.tamu.app.model.request.AbstractRequest;
+import edu.tamu.app.model.request.ProjectRequest;
+import edu.tamu.app.model.request.ServiceRequest;
+import edu.tamu.app.service.ProjectService;
 import edu.tamu.app.service.SystemMonitorService;
 import edu.tamu.weaver.auth.model.Credentials;
 import edu.tamu.weaver.response.ApiResponse;
+import edu.tamu.weaver.response.ApiStatus;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
@@ -62,6 +67,9 @@ public class ServiceControllerTest {
 
     @Mock
     private ServiceRepo serviceRepo;
+
+    @Mock
+    private ProjectService projectService;
 
     @Mock
     private SystemMonitorService systemMonitorService;
@@ -149,6 +157,23 @@ public class ServiceControllerTest {
     public void testRemove() {
         response = serviceController.removeService(TEST_SERVICE1);
         assertEquals("Not successful at removing Service", SUCCESS, response.getMeta().getStatus());
+    }
+
+    @Test
+    public void submitIssueRequest() {
+        when(projectService.submitRequest(any(ProjectRequest.class))).thenReturn(new ApiResponse(SUCCESS, "Successfully submitted issue request!"));
+        ServiceRequest request = new ServiceRequest(AbstractRequest.RequestType.ISSUE, "Test feature request", "This is a test issue request on project 1", 1L);
+        ApiResponse response = serviceController.submitIssueRequest(request);
+        assertEquals("Response was not a success!", ApiStatus.SUCCESS, response.getMeta().getStatus());
+        assertEquals("Response message was not correct!", "Successfully submitted " + request.getType().getName() + " request!", response.getMeta().getMessage());
+    }
+
+    @Test
+    public void submitFeatureRequest() {
+        ServiceRequest request = new ServiceRequest(AbstractRequest.RequestType.FEATURE, "Test issue request", "This is a test issue request on project 1", 1L);
+        ApiResponse response = serviceController.submitFeatureRequest(request);
+        assertEquals("Response was not a success!", ApiStatus.SUCCESS, response.getMeta().getStatus());
+        assertEquals("Response message was not correct!", "Your feature request for " + TEST_SERVICE1_NAME + " has been submitted as an idea!", response.getMeta().getMessage());
     }
 
     @After

@@ -28,7 +28,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import edu.tamu.app.model.request.ProjectRequest;
 import edu.tamu.app.model.response.Project;
 import edu.tamu.app.service.ProjectService;
 import edu.tamu.weaver.response.ApiResponse;
@@ -82,24 +81,6 @@ public class ProjectControllerTest {
         assertNotNull("Project is null!", project);
         assertEquals("Project did not have the correct id!", projects.get(0).getId(), project.getId());
         assertEquals("Project did not have the correct name!", projects.get(0).getName(), project.getName());
-    }
-
-    @Test
-    public void submitFeatureRequest() {
-        when(projectService.submitRequest(any(ProjectRequest.class))).thenReturn(new ApiResponse(SUCCESS, "Successfully submitted feature request!"));
-        ProjectRequest request = new ProjectRequest(ProjectRequest.RequestType.FEATURE, "Test feature request", "This is a test feature request on project 1", 1L);
-        ApiResponse response = projectController.submitFeatureRequest(request);
-        assertEquals("Response was not a success!", ApiStatus.SUCCESS, response.getMeta().getStatus());
-        assertEquals("Response message was not correct!", "Successfully submitted " + request.getType().getName() + " request!", response.getMeta().getMessage());
-    }
-
-    @Test
-    public void submitIssueRequest() {
-        when(projectService.submitRequest(any(ProjectRequest.class))).thenReturn(new ApiResponse(SUCCESS, "Successfully submitted issue request!"));
-        ProjectRequest request = new ProjectRequest(ProjectRequest.RequestType.ISSUE, "Test issue request", "This is a test issue request on project 1", 1L);
-        ApiResponse response = projectController.submitIssueRequest(request);
-        assertEquals("Response was not a success!", ApiStatus.SUCCESS, response.getMeta().getStatus());
-        assertEquals("Response message was not correct!", "Successfully submitted " + request.getType().getName() + " request!", response.getMeta().getMessage());
     }
 
 }

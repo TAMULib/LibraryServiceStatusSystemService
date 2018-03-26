@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.tamu.app.mock.projects.MockProjects;
-import edu.tamu.app.model.request.ProjectRequest;
+import edu.tamu.app.model.request.FeatureRequest;
 import edu.tamu.weaver.response.ApiResponse;
 
 @RestController
@@ -32,12 +32,12 @@ public class MockProjectManagementController {
     }
 
     @RequestMapping("/issue")
-    public ApiResponse submitIssue(@RequestBody ProjectRequest request) {
+    public ApiResponse submitIssue(@RequestBody FeatureRequest request) {
         return new ApiResponse(SUCCESS, mockProjects.submitRequest(request));
     }
 
     @RequestMapping("/feature")
-    public ApiResponse submitFeature(@RequestBody ProjectRequest request) {
+    public ApiResponse submitFeature(@RequestBody FeatureRequest request) {
         return new ApiResponse(SUCCESS, mockProjects.submitRequest(request));
     }
 

@@ -32,7 +32,7 @@ import edu.tamu.app.model.repo.IdeaRepo;
 import edu.tamu.app.model.repo.ServiceRepo;
 import edu.tamu.app.model.repo.UserRepo;
 import edu.tamu.app.model.request.AbstractRequest;
-import edu.tamu.app.model.request.ProjectRequest;
+import edu.tamu.app.model.request.IssueRequest;
 import edu.tamu.app.model.request.ServiceRequest;
 import edu.tamu.app.service.ProjectService;
 import edu.tamu.app.service.SystemMonitorService;
@@ -170,7 +170,7 @@ public class ServiceControllerTest {
 
     @Test
     public void submitIssueRequest() {
-        when(projectService.submitRequest(any(ProjectRequest.class))).thenReturn(new ApiResponse(SUCCESS, "Successfully submitted issue request!"));
+        when(projectService.submitIssueRequest(any(IssueRequest.class))).thenReturn(new ApiResponse(SUCCESS, "Successfully submitted issue request!"));
         ServiceRequest request = new ServiceRequest(AbstractRequest.RequestType.ISSUE, "Test feature request", "This is a test issue request on project 1", 1L);
         ApiResponse response = serviceController.submitIssueRequest(request, credentials);
         assertEquals("Response was not a success!", ApiStatus.SUCCESS, response.getMeta().getStatus());

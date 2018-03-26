@@ -17,7 +17,7 @@ import edu.tamu.app.model.Idea;
 import edu.tamu.app.model.Service;
 import edu.tamu.app.model.repo.IdeaRepo;
 import edu.tamu.app.model.repo.ServiceRepo;
-import edu.tamu.app.model.request.ProjectRequest;
+import edu.tamu.app.model.request.IssueRequest;
 import edu.tamu.app.model.request.ServiceRequest;
 import edu.tamu.app.service.ProjectService;
 import edu.tamu.weaver.auth.annotation.WeaverCredentials;
@@ -83,10 +83,10 @@ public class ServiceController {
     @RequestMapping("/issue")
     @PreAuthorize("hasRole('USER')")
     public ApiResponse submitIssueRequest(@RequestBody ServiceRequest request, @WeaverCredentials Credentials credentials) {
-        ProjectRequest projectRequest = new ProjectRequest(request);
+        IssueRequest issueRequest = new IssueRequest(request);
         Service service = serviceRepo.findOne(request.getService());
-        projectRequest.setProject(service.getProjectId());
-        return projectService.submitRequest(projectRequest);
+        issueRequest.setService(service.getName());
+        return projectService.submitIssueRequest(issueRequest);
     }
 
     @RequestMapping("/feature")

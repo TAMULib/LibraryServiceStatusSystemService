@@ -18,7 +18,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import edu.tamu.app.model.request.ProjectRequest;
+import edu.tamu.app.model.request.FeatureRequest;
 import edu.tamu.app.model.response.Project;
 
 @Service
@@ -56,7 +56,7 @@ public class MockProjects {
         return project;
     }
 
-    public String submitRequest(ProjectRequest request) {
+    public String submitRequest(FeatureRequest request) {
         return "Successfully submitted " + request.getType().getName() + " request!";
     }
 

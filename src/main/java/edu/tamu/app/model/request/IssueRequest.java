@@ -1,10 +1,14 @@
 package edu.tamu.app.model.request;
 
+import edu.tamu.weaver.auth.model.Credentials;
+
 public class IssueRequest extends AbstractRequest {
 
     private static final long serialVersionUID = -6953745180846929244L;
 
     private String service;
+
+    private Credentials credentials;
 
     public IssueRequest() {
         super();
@@ -18,9 +22,10 @@ public class IssueRequest extends AbstractRequest {
         super(type, title, description);
     }
 
-    public IssueRequest(RequestType type, String title, String description, String service) {
+    public IssueRequest(RequestType type, String title, String description, String service, Credentials credentials) {
         this(type, title, description);
         this.service = service;
+        this.credentials = credentials;
     }
 
     public String getService() {
@@ -29,6 +34,14 @@ public class IssueRequest extends AbstractRequest {
 
     public void setService(String service) {
         this.service = service;
+    }
+
+    public Credentials getCredentials() {
+        return credentials;
+    }
+
+    public void setCredentials(Credentials credentials) {
+        this.credentials = credentials;
     }
 
 }

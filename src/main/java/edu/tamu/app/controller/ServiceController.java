@@ -86,6 +86,7 @@ public class ServiceController {
         IssueRequest issueRequest = new IssueRequest(request);
         Service service = serviceRepo.findOne(request.getService());
         issueRequest.setService(service.getName());
+        issueRequest.setCredentials(credentials);
         return projectService.submitIssueRequest(issueRequest);
     }
 

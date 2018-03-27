@@ -6,12 +6,15 @@ import java.net.MalformedURLException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
+import edu.tamu.app.exception.UserNotFoundException;
+import edu.tamu.app.model.request.FeatureRequest;
 import edu.tamu.app.service.ProjectService;
 import edu.tamu.weaver.response.ApiResponse;
 
@@ -32,6 +35,14 @@ public class ProjectController {
     @PreAuthorize("hasRole('ANONYMOUS')")
     public ApiResponse getById(@PathVariable Long id) throws JsonParseException, JsonMappingException, MalformedURLException, IOException {
         return projectService.getById(id);
+    }
+
+    // TODO: refactor the following method to operate from a Feature Proposal
+
+    @RequestMapping("/feature")
+    @PreAuthorize("hasRole('SERVICE_MANAGER')")
+    public ApiResponse submitFeatureRequest(@RequestBody FeatureRequest request) throws UserNotFoundException {
+        return projectService.submitFeatureRequest(request);
     }
 
 }

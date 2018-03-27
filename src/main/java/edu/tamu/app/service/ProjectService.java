@@ -13,7 +13,8 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import edu.tamu.app.model.request.ProjectRequest;
+import edu.tamu.app.model.request.FeatureRequest;
+import edu.tamu.app.model.request.IssueRequest;
 import edu.tamu.weaver.response.ApiResponse;;
 
 @Service
@@ -36,8 +37,13 @@ public class ProjectService {
         return objectMapper.readValue(new URL(projectsUrl + "/" + id), ApiResponse.class);
     }
 
-    public ApiResponse submitRequest(ProjectRequest request) {
-        return restTemplate.postForObject(projectsUrl + "/" + request.getType().getName(), request, ApiResponse.class);
+    public ApiResponse submitFeatureRequest(FeatureRequest request) {
+        return restTemplate.postForObject(projectsUrl + "/feature", request, ApiResponse.class);
+    }
+
+    public ApiResponse submitIssueRequest(IssueRequest request) {
+        return restTemplate.postForObject(projectsUrl + "/issue", request, ApiResponse.class);
+
     }
 
 }

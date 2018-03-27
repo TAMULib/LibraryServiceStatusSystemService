@@ -23,13 +23,16 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import edu.tamu.app.enums.Status;
+import edu.tamu.app.exception.UserNotFoundException;
+import edu.tamu.app.model.Idea;
 import edu.tamu.app.model.OverallStatus;
 import edu.tamu.app.model.Service;
 import edu.tamu.app.model.User;
+import edu.tamu.app.model.repo.IdeaRepo;
 import edu.tamu.app.model.repo.ServiceRepo;
 import edu.tamu.app.model.repo.UserRepo;
 import edu.tamu.app.model.request.AbstractRequest;
-import edu.tamu.app.model.request.ProjectRequest;
+import edu.tamu.app.model.request.IssueRequest;
 import edu.tamu.app.model.request.ServiceRequest;
 import edu.tamu.app.service.ProjectService;
 import edu.tamu.app.service.SystemMonitorService;
@@ -51,22 +54,27 @@ public class ServiceControllerTest {
     private static final Boolean TEST_ON_SHORT_LIST = true;
     private static final Boolean TEST_NOT_ON_SHORT_LIST = false;
 
-    private static Service TEST_SERVICE1 = new Service(TEST_SERVICE1_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, "", "");
-    private static Service TEST_SERVICE2 = new Service(TEST_SERVICE2_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_NOT_PUBLIC, TEST_ON_SHORT_LIST, "", "");
-    private static Service TEST_SERVICE3 = new Service(TEST_SERVICE3_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_NOT_ON_SHORT_LIST, "", "");
-    private static Service TEST_MODIFIED_SERVICE1 = new Service(TEST_SERVICE1_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_NOT_PUBLIC, TEST_NOT_ON_SHORT_LIST, "", "");
-    private static List<Service> mockServiceList = new ArrayList<Service>(Arrays.asList(new Service[] { TEST_SERVICE1, TEST_SERVICE2, TEST_SERVICE3 }));
-    private static List<Service> mockPublicServiceList = new ArrayList<Service>(Arrays.asList(new Service[] { TEST_SERVICE1, TEST_SERVICE3 }));
+    private static final Service TEST_SERVICE1 = new Service(TEST_SERVICE1_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, "", "");
+    private static final Service TEST_SERVICE2 = new Service(TEST_SERVICE2_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_NOT_PUBLIC, TEST_ON_SHORT_LIST, "", "");
+    private static final Service TEST_SERVICE3 = new Service(TEST_SERVICE3_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_NOT_ON_SHORT_LIST, "", "");
+    private static final Service TEST_MODIFIED_SERVICE1 = new Service(TEST_SERVICE1_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_NOT_PUBLIC, TEST_NOT_ON_SHORT_LIST, "", "");
+    private static final List<Service> mockServiceList = new ArrayList<Service>(Arrays.asList(new Service[] { TEST_SERVICE1, TEST_SERVICE2, TEST_SERVICE3 }));
+    private static final List<Service> mockPublicServiceList = new ArrayList<Service>(Arrays.asList(new Service[] { TEST_SERVICE1, TEST_SERVICE3 }));
+
+    private static final User TEST_SERVICE = new User("123456789");
+
+    private static final Idea TEST_IDEA = new Idea("Test Idea Title", "Test Idea Description", TEST_SERVICE, TEST_SERVICE1);
 
     private static ApiResponse response;
-
-    private static User user = new User("123456789");
 
     @Mock
     private UserRepo userRepo;
 
     @Mock
     private ServiceRepo serviceRepo;
+
+    @Mock
+    private IdeaRepo ideaRepo;
 
     @Mock
     private ProjectService projectService;
@@ -84,16 +92,17 @@ public class ServiceControllerTest {
     private ServiceController serviceController;
 
     @Before
-    public void setup() {
+    public void setup() throws UserNotFoundException {
         MockitoAnnotations.initMocks(this);
         when(credentials.getUin()).thenReturn("123456789");
-        when(userRepo.findByUsername(any(String.class))).thenReturn(Optional.of(user));
+        when(userRepo.findByUsername(any(String.class))).thenReturn(Optional.of(TEST_SERVICE));
         when(systemMonitorService.getOverallStatus()).thenReturn(new OverallStatus(edu.tamu.app.enums.OverallMessageType.SUCCESS, "Success"));
         when(serviceRepo.findAllByOrderByStatusDescNameAsc()).thenReturn(mockServiceList);
         when(serviceRepo.findByIsPublicOrderByStatusDescNameAsc(true)).thenReturn(mockPublicServiceList);
         when(serviceRepo.findOne(any(Long.class))).thenReturn(TEST_SERVICE1);
         when(serviceRepo.create(any(Service.class))).thenReturn(TEST_SERVICE1);
         when(serviceRepo.update(any(Service.class))).thenReturn(TEST_MODIFIED_SERVICE1);
+        when(ideaRepo.create(any(Idea.class), any(Credentials.class))).thenReturn(TEST_IDEA);
         doNothing().when(serviceRepo).delete(any(Service.class));
     }
 
@@ -161,17 +170,17 @@ public class ServiceControllerTest {
 
     @Test
     public void submitIssueRequest() {
-        when(projectService.submitRequest(any(ProjectRequest.class))).thenReturn(new ApiResponse(SUCCESS, "Successfully submitted issue request!"));
+        when(projectService.submitIssueRequest(any(IssueRequest.class))).thenReturn(new ApiResponse(SUCCESS, "Successfully submitted issue request!"));
         ServiceRequest request = new ServiceRequest(AbstractRequest.RequestType.ISSUE, "Test feature request", "This is a test issue request on project 1", 1L);
-        ApiResponse response = serviceController.submitIssueRequest(request);
+        ApiResponse response = serviceController.submitIssueRequest(request, credentials);
         assertEquals("Response was not a success!", ApiStatus.SUCCESS, response.getMeta().getStatus());
         assertEquals("Response message was not correct!", "Successfully submitted " + request.getType().getName() + " request!", response.getMeta().getMessage());
     }
 
     @Test
-    public void submitFeatureRequest() {
+    public void submitFeatureRequest() throws UserNotFoundException {
         ServiceRequest request = new ServiceRequest(AbstractRequest.RequestType.FEATURE, "Test issue request", "This is a test issue request on project 1", 1L);
-        ApiResponse response = serviceController.submitFeatureRequest(request);
+        ApiResponse response = serviceController.submitFeatureRequest(request, credentials);
         assertEquals("Response was not a success!", ApiStatus.SUCCESS, response.getMeta().getStatus());
         assertEquals("Response message was not correct!", "Your feature request for " + TEST_SERVICE1_NAME + " has been submitted as an idea!", response.getMeta().getMessage());
     }

@@ -23,7 +23,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.tamu.app.WebServerInit;
 import edu.tamu.app.mock.projects.MockProjects;
 import edu.tamu.app.model.request.AbstractRequest;
-import edu.tamu.app.model.request.ProjectRequest;
+import edu.tamu.app.model.request.FeatureRequest;
+import edu.tamu.app.model.request.IssueRequest;
 import edu.tamu.app.model.response.Project;
 import edu.tamu.weaver.response.ApiResponse;
 import edu.tamu.weaver.response.ApiStatus;
@@ -46,7 +47,8 @@ public class ProjectServiceTest {
     public void getAll() throws JsonParseException, JsonMappingException, MalformedURLException, IOException {
         ApiResponse response = projectService.getAll();
         assertEquals("Response was not a success!", ApiStatus.SUCCESS, response.getMeta().getStatus());
-        List<Project> projects = objectMapper.convertValue(response.getPayload().get("ArrayList<Project>"), new TypeReference<List<Project>>() {});
+        List<Project> projects = objectMapper.convertValue(response.getPayload().get("ArrayList<Project>"), new TypeReference<List<Project>>() {
+        });
         List<Project> mockProjects = mockReader.getAllProjects();
         assertEquals("Projects response size was not as expected!", mockProjects.size(), projects.size());
         for (int i = 0; i < projects.size(); i++) {
@@ -70,16 +72,16 @@ public class ProjectServiceTest {
 
     @Test
     public void submitFeatureRequest() {
-        ProjectRequest request = new ProjectRequest(AbstractRequest.RequestType.FEATURE, "Test feature request", "This is a test feature request on project 1", 1L);
-        ApiResponse response = projectService.submitRequest(request);
+        FeatureRequest request = new FeatureRequest(AbstractRequest.RequestType.FEATURE, "Test feature request", "This is a test feature request on project 1!", 1L);
+        ApiResponse response = projectService.submitFeatureRequest(request);
         assertEquals("Response was not a success!", ApiStatus.SUCCESS, response.getMeta().getStatus());
         assertEquals("Response message was not correct!", "Successfully submitted " + request.getType().getName() + " request!", response.getMeta().getMessage());
     }
 
     @Test
     public void submitIssueRequest() {
-        ProjectRequest request = new ProjectRequest(AbstractRequest.RequestType.ISSUE, "Test issue request", "This is a test issue request on project 1", 1L);
-        ApiResponse response = projectService.submitRequest(request);
+        IssueRequest request = new IssueRequest(AbstractRequest.RequestType.ISSUE, "Test issue request", "This is a test issue request on service Cap!", "Cap");
+        ApiResponse response = projectService.submitIssueRequest(request);
         assertEquals("Response was not a success!", ApiStatus.SUCCESS, response.getMeta().getStatus());
         assertEquals("Response message was not correct!", "Successfully submitted " + request.getType().getName() + " request!", response.getMeta().getMessage());
     }

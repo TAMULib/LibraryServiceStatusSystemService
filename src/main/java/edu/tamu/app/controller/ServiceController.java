@@ -5,8 +5,6 @@ import static edu.tamu.weaver.validation.model.BusinessValidationType.CREATE;
 import static edu.tamu.weaver.validation.model.BusinessValidationType.DELETE;
 import static edu.tamu.weaver.validation.model.BusinessValidationType.UPDATE;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,9 +12,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import edu.tamu.app.exception.UserNotFoundException;
+import edu.tamu.app.model.Idea;
 import edu.tamu.app.model.Service;
+import edu.tamu.app.model.repo.IdeaRepo;
 import edu.tamu.app.model.repo.ServiceRepo;
-import edu.tamu.app.model.request.ProjectRequest;
+import edu.tamu.app.model.request.IssueRequest;
 import edu.tamu.app.model.request.ServiceRequest;
 import edu.tamu.app.service.ProjectService;
 import edu.tamu.weaver.auth.annotation.WeaverCredentials;
@@ -32,6 +33,9 @@ public class ServiceController {
 
     @Autowired
     private ServiceRepo serviceRepo;
+
+    @Autowired
+    private IdeaRepo ideaRepo;
 
     @Autowired
     private ProjectService projectService;
@@ -77,35 +81,22 @@ public class ServiceController {
     }
 
     @RequestMapping("/issue")
-    @PreAuthorize("hasRole('ANONYMOUS')")
-    public ApiResponse submitIssueRequest(@RequestBody ServiceRequest request) {
-        ProjectRequest projectRequest = new ProjectRequest(request);
-        Optional<Long> serviceId = Optional.ofNullable(request.getService());
-        if (serviceId.isPresent()) {
-            Service service = serviceRepo.findOne(request.getService());
-            projectRequest.setProject(service.getProjectId());
-        }
-        return projectService.submitRequest(projectRequest);
+    @PreAuthorize("hasRole('USER')")
+    public ApiResponse submitIssueRequest(@RequestBody ServiceRequest request, @WeaverCredentials Credentials credentials) {
+        IssueRequest issueRequest = new IssueRequest(request);
+        Service service = serviceRepo.findOne(request.getService());
+        issueRequest.setService(service.getName());
+        return projectService.submitIssueRequest(issueRequest);
     }
 
     @RequestMapping("/feature")
-    @PreAuthorize("hasRole('ANONYMOUS')")
-    public ApiResponse submitFeatureRequest(@RequestBody ServiceRequest request) {
-
-        ApiResponse respones = new ApiResponse(SUCCESS, "Your feature request has been submitted as an idea!");
-
-        Optional<Long> serviceId = Optional.ofNullable(request.getService());
-
-        // TODO: potentially require service on ServiceRequest
-
-        if (serviceId.isPresent()) {
-            Service service = serviceRepo.findOne(serviceId.get());
-            respones = new ApiResponse(ApiStatus.SUCCESS, "Your feature request for " + service.getName() + " has been submitted as an idea!");
-        }
-
-        // TODO: persist as an idea
-
-        return respones;
+    @PreAuthorize("hasRole('USER')")
+    public ApiResponse submitFeatureRequest(@RequestBody ServiceRequest request, @WeaverCredentials Credentials credentials) throws UserNotFoundException {
+        Service service = serviceRepo.findOne(request.getService());
+        Idea idea = new Idea(request);
+        idea.setService(service);
+        ideaRepo.create(idea, credentials);
+        return new ApiResponse(ApiStatus.SUCCESS, "Your feature request for " + service.getName() + " has been submitted as an idea!");
     }
 
 }

@@ -14,6 +14,10 @@ import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Fetch;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 @Entity
 public class FeatureProposal extends AbstractIdea {
 
@@ -23,6 +27,8 @@ public class FeatureProposal extends AbstractIdea {
     private List<Idea> ideas;
 
     @OneToMany(fetch = EAGER, cascade = { CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE })
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, scope = User.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
     @JoinTable(uniqueConstraints = @UniqueConstraint(columnNames = { "feature_proposal_id", "voters_id" }))
     @Fetch(value = SELECT)
     private List<User> voters;

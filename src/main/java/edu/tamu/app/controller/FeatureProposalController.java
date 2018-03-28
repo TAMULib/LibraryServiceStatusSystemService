@@ -32,7 +32,7 @@ public class FeatureProposalController {
     private FeatureProposalRepo featureProposalRepo;
 
     @RequestMapping("/page")
-    @PreAuthorize("hasRole('SERVICE_MANAGER')")
+    @PreAuthorize("hasRole('ANONYMOUS')")
     public ApiResponse getAllFeatureProposalsByService(@RequestBody FilteredPageRequest filteredPageRequest) {
         return new ApiResponse(SUCCESS, featureProposalRepo.findAll(filteredPageRequest.getFeatureProposalSpecification(), filteredPageRequest.getPageRequest()));
     }

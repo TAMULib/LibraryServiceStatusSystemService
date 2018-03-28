@@ -37,7 +37,7 @@ public class ProjectController {
         return projectService.getById(id);
     }
 
-    // TODO: refactor the following method to operate from a Feature Proposal
+    // TODO: the following method needs to create FeatureRequest from a FeatureProposal
 
     @RequestMapping("/feature")
     @PreAuthorize("hasRole('SERVICE_MANAGER')")

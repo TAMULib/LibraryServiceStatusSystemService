@@ -83,7 +83,7 @@ public class NotificationControllerTest {
 
     @Test
     public void testNotification() {
-        response = notificationController.getNotification(TEST_NOTIFICATION1.getId());
+        response = notificationController.getById(TEST_NOTIFICATION1.getId());
         assertEquals("Not successful at getting requested Notification", SUCCESS, response.getMeta().getStatus());
         Notification notification = (Notification) response.getPayload().get("Notification");
         assertEquals("Did not get the expected Notification", TEST_NOTIFICATION1.getId(), notification.getId());

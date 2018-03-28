@@ -94,7 +94,7 @@ public class IdeaControllerTest {
 
     @Test
     public void testIdea() {
-        response = ideaController.getIdea(TEST_IDEA1.getId());
+        response = ideaController.getById(TEST_IDEA1.getId());
         assertEquals("Not successful at getting requested Idea", SUCCESS, response.getMeta().getStatus());
         Idea idea = (Idea) response.getPayload().get("Idea");
         assertEquals("Did not get the expected service", TEST_IDEA1.getId(), idea.getId());

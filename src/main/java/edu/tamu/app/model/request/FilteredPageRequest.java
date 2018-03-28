@@ -50,13 +50,16 @@ public class FilteredPageRequest {
     @JsonIgnore
     public PageRequest getPageRequest() {
         List<Sort.Order> orders = new ArrayList<Sort.Order>();
-        if (orders.isEmpty()) {
-            return new PageRequest(pageNumber > 0 ? pageNumber - 1 : 0, pageSize > 0 ? pageSize : 10);
-        }
         sort.forEach(sort -> {
             orders.add(new Sort.Order(sort.getDirection(), sort.getProperty()));
         });
-        return new PageRequest(pageNumber > 0 ? pageNumber - 1 : 0, pageSize > 0 ? pageSize : 10, new Sort(orders));
+        PageRequest pageRequest;
+        if (orders.isEmpty()) {
+            pageRequest = new PageRequest(pageNumber > 0 ? pageNumber - 1 : 0, pageSize > 0 ? pageSize : 10);
+        } else {
+            pageRequest = new PageRequest(pageNumber > 0 ? pageNumber - 1 : 0, pageSize > 0 ? pageSize : 10, new Sort(orders));
+        }
+        return pageRequest;
     }
 
     public int getPageNumber() {

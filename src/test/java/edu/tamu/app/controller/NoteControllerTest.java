@@ -91,7 +91,7 @@ public class NoteControllerTest {
 
     @Test
     public void testNote() {
-        response = noteController.getNote(TEST_NOTE1.getId());
+        response = noteController.getById(TEST_NOTE1.getId());
         assertEquals("Not successful at getting requested Note", SUCCESS, response.getMeta().getStatus());
         Note note = (Note) response.getPayload().get("Note");
         assertEquals("Did not get the expected service", TEST_NOTE1.getId(), note.getId());

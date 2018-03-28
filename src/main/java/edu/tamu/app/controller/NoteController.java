@@ -30,13 +30,13 @@ public class NoteController {
 
     @RequestMapping("/page")
     @PreAuthorize("hasRole('ANONYMOUS')")
-    public ApiResponse getAllNotesByService(@RequestBody FilteredPageRequest filteredPageRequest) {
+    public ApiResponse page(@RequestBody FilteredPageRequest filteredPageRequest) {
         return new ApiResponse(SUCCESS, noteRepo.findAll(filteredPageRequest.getNoteSpecification(), filteredPageRequest.getPageRequest()));
     }
 
     @RequestMapping("/{id}")
     @PreAuthorize("hasRole('ANONYMOUS')")
-    public ApiResponse getNote(@PathVariable Long id) {
+    public ApiResponse getById(@PathVariable Long id) {
         return new ApiResponse(SUCCESS, noteRepo.findOne(id));
     }
 

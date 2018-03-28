@@ -35,7 +35,7 @@ public class NotificationController {
 
     @RequestMapping("/{id}")
     @PreAuthorize("hasRole('STAFF')")
-    public ApiResponse getNotification(@PathVariable Long id) {
+    public ApiResponse getById(@PathVariable Long id) {
         return new ApiResponse(SUCCESS, notificationRepo.findOne(id));
     }
 

@@ -30,13 +30,13 @@ public class IdeaController {
 
     @RequestMapping("/page")
     @PreAuthorize("hasRole('SERVICE_MANAGER')")
-    public ApiResponse getAllIdeasByService(@RequestBody FilteredPageRequest filteredPageRequest) {
+    public ApiResponse page(@RequestBody FilteredPageRequest filteredPageRequest) {
         return new ApiResponse(SUCCESS, ideaRepo.findAll(filteredPageRequest.getIdeaSpecification(), filteredPageRequest.getPageRequest()));
     }
 
     @RequestMapping("/{id}")
     @PreAuthorize("hasRole('SERVICE_MANAGER')")
-    public ApiResponse getIdea(@PathVariable Long id) {
+    public ApiResponse getById(@PathVariable Long id) {
         return new ApiResponse(SUCCESS, ideaRepo.findOne(id));
     }
 

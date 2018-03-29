@@ -21,6 +21,11 @@ public class Idea extends AbstractIdea {
         this.elevated = false;
     }
 
+    public Idea(String title, String description, boolean elevated) {
+        super(title, description);
+        this.elevated = elevated;
+    }
+
     public Idea(ServiceRequest serviceRequest) {
         this(serviceRequest.getTitle(), serviceRequest.getDescription());
     }

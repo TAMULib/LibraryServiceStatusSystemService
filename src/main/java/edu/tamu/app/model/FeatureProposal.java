@@ -9,7 +9,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinTable;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
 import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Fetch;
@@ -21,12 +21,12 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @Entity
 public class FeatureProposal extends AbstractIdea {
 
-    @OneToMany(fetch = EAGER, cascade = { CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE })
+    @ManyToMany(fetch = EAGER, cascade = { CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE })
     @JoinTable(uniqueConstraints = @UniqueConstraint(columnNames = { "feature_proposal_id", "ideas_id" }))
     @Fetch(value = SELECT)
     private List<Idea> ideas;
 
-    @OneToMany(fetch = EAGER, cascade = { CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE })
+    @ManyToMany(fetch = EAGER, cascade = { CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE })
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, scope = User.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
     @JoinTable(uniqueConstraints = @UniqueConstraint(columnNames = { "feature_proposal_id", "voters_id" }))

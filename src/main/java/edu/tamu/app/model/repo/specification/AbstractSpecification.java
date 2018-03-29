@@ -59,22 +59,23 @@ public abstract class AbstractSpecification<E> implements Specification<E> {
         private final Map<String, List<Predicate>> predicates;
 
         public PredicateBuilder() {
-            predicates = new HashMap<String, List<Predicate>>();
+            this.predicates = new HashMap<String, List<Predicate>>();
         }
 
         public void addPredicate(String key, Predicate predicate) {
             List<Predicate> predicates = getPredicates(key);
             predicates.add(predicate);
+            this.predicates.put(key, predicates);
         }
 
         public List<Predicate> getPredicates(String key) {
-            Optional<List<Predicate>> potentialPredicates = Optional.ofNullable(predicates.get(key));
+            Optional<List<Predicate>> potentialPredicates = Optional.ofNullable(this.predicates.get(key));
             return potentialPredicates.isPresent() ? potentialPredicates.get() : new ArrayList<Predicate>();
         }
 
         public Predicate build(CriteriaBuilder cb) {
             List<Predicate> columnPredicates = new ArrayList<Predicate>();
-            for (List<Predicate> predicates : predicates.values()) {
+            for (List<Predicate> predicates : this.predicates.values()) {
                 columnPredicates.add(cb.or(predicates.toArray(new Predicate[predicates.size()])));
             }
             return cb.and(columnPredicates.toArray(new Predicate[columnPredicates.size()]));

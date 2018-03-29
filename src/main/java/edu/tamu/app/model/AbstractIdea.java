@@ -1,6 +1,5 @@
 package edu.tamu.app.model;
 
-import static javax.persistence.CascadeType.MERGE;
 import static javax.persistence.CascadeType.REFRESH;
 import static javax.persistence.FetchType.EAGER;
 
@@ -31,10 +30,10 @@ public abstract class AbstractIdea extends ValidatingBaseEntity {
     @UpdateTimestamp
     private Calendar lastModified;
 
-    @ManyToOne(fetch = EAGER, cascade = MERGE, optional = false)
+    @ManyToOne(fetch = EAGER, cascade = REFRESH, optional = false)
     private Service service;
 
-    @ManyToOne(cascade = REFRESH, optional = false)
+    @ManyToOne(fetch = EAGER, cascade = REFRESH, optional = false)
     private User author;
 
     public AbstractIdea() {

@@ -7,31 +7,37 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinTable;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
 import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Fetch;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
+@JsonIgnoreProperties(value = { "voters" }, allowGetters = true)
 public class FeatureProposal extends AbstractIdea {
 
-    @OneToMany(fetch = EAGER, cascade = { CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE })
+    @ManyToMany(fetch = EAGER, cascade = { CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE })
     @JoinTable(uniqueConstraints = @UniqueConstraint(columnNames = { "feature_proposal_id", "ideas_id" }))
     @Fetch(value = SELECT)
     private List<Idea> ideas;
 
-    @OneToMany(fetch = EAGER, cascade = { CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE })
+    @ManyToMany(fetch = EAGER, cascade = { CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE })
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, scope = User.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
     @JoinTable(uniqueConstraints = @UniqueConstraint(columnNames = { "feature_proposal_id", "voters_id" }))
     @Fetch(value = SELECT)
     private List<User> voters;
+
+    @Column(nullable = false)
+    private boolean submitted;
 
     public FeatureProposal() {
         super();
@@ -62,6 +68,7 @@ public class FeatureProposal extends AbstractIdea {
     private void setup() {
         this.ideas = new ArrayList<Idea>();
         this.voters = new ArrayList<User>();
+        this.submitted = false;
     }
 
     public List<Idea> getIdeas() {
@@ -79,10 +86,8 @@ public class FeatureProposal extends AbstractIdea {
     }
 
     public void addIdea(Idea idea) {
-        if (!this.ideas.contains(idea)) {
-            this.ideas.add(idea);
-            addVoter(idea.getAuthor());
-        }
+        this.ideas.add(idea);
+        addVoter(idea.getAuthor());
     }
 
     public void removeIdea(Idea idea) {
@@ -99,9 +104,7 @@ public class FeatureProposal extends AbstractIdea {
     }
 
     public void addVoter(User voter) {
-        if (!this.voters.contains(voter)) {
-            this.voters.add(voter);
-        }
+        this.voters.add(voter);
     }
 
     public void removeVoter(User voter) {
@@ -110,6 +113,14 @@ public class FeatureProposal extends AbstractIdea {
 
     public int getVotes() {
         return this.voters.size();
+    }
+
+    public boolean isSubmitted() {
+        return submitted;
+    }
+
+    public void setSubmitted(boolean submitted) {
+        this.submitted = submitted;
     }
 
 }

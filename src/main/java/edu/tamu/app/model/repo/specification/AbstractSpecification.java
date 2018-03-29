@@ -1,8 +1,10 @@
 package edu.tamu.app.model.repo.specification;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -22,10 +24,7 @@ public abstract class AbstractSpecification<E> implements Specification<E> {
     @Override
     public Predicate toPredicate(Root<E> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
 
-        List<Predicate> predicates = new ArrayList<Predicate>();
-        List<Predicate> repeatPredicates = new ArrayList<Predicate>();
-
-        List<String> keysUsed = new ArrayList<String>();
+        PredicateBuilder builder = new PredicateBuilder();
 
         for (Map.Entry<String, String[]> entry : filters.entrySet()) {
             String key = entry.getKey();
@@ -34,51 +33,53 @@ public abstract class AbstractSpecification<E> implements Specification<E> {
             switch (key) {
             case "service":
                 for (String value : values) {
-                    if (keysUsed.contains(key)) {
-                        repeatPredicates.add(cb.like(cb.lower(root.get(key).get("id").as(String.class)), "%" + value.toLowerCase() + "%"));
-                    } else {
-                        predicates.add(cb.like(cb.lower(root.get(key).get("id").as(String.class)), "%" + value.toLowerCase() + "%"));
-                        keysUsed.add(key);
-                    }
+                    builder.addPredicate(key, cb.like(cb.lower(root.get(key).get("id").as(String.class)), "%" + value.toLowerCase() + "%"));
                 }
                 break;
             case "service.name":
                 for (String value : values) {
-                    if (keysUsed.contains(key)) {
-                        repeatPredicates.add(cb.like(cb.lower(root.get("service").get("name").as(String.class)), "%" + value.toLowerCase() + "%"));
-                    } else {
-                        predicates.add(cb.like(cb.lower(root.get("service").get("name").as(String.class)), "%" + value.toLowerCase() + "%"));
-                        keysUsed.add(key);
-                    }
+                    builder.addPredicate(key, cb.like(cb.lower(root.get("service").get("name").as(String.class)), "%" + value.toLowerCase() + "%"));
                 }
                 break;
             default:
                 for (String value : values) {
-                    if (keysUsed.contains(key)) {
-                        repeatPredicates.add(cb.like(cb.lower(root.get(key).as(String.class)), "%" + value.toLowerCase() + "%"));
-                    } else {
-                        predicates.add(cb.like(cb.lower(root.get(key).as(String.class)), "%" + value.toLowerCase() + "%"));
-                        keysUsed.add(key);
-                    }
-
+                    builder.addPredicate(key, cb.like(cb.lower(root.get(key).as(String.class)), "%" + value.toLowerCase() + "%"));
                 }
                 break;
             }
-
-            keysUsed.add(key);
         }
 
         query.orderBy(cb.desc(root.get("lastModified")));
 
-        Predicate predicate;
+        return builder.build(cb);
+    }
 
-        if (repeatPredicates.size() > 0) {
-            predicate = cb.or(cb.and(predicates.toArray(new Predicate[predicates.size()])), cb.or(repeatPredicates.toArray(new Predicate[repeatPredicates.size()])));
-        } else {
-            predicate = cb.and(predicates.toArray(new Predicate[predicates.size()]));
+    private class PredicateBuilder {
+
+        private final Map<String, List<Predicate>> predicates;
+
+        public PredicateBuilder() {
+            predicates = new HashMap<String, List<Predicate>>();
         }
 
-        return predicate;
+        public void addPredicate(String key, Predicate predicate) {
+            List<Predicate> predicates = getPredicates(key);
+            predicates.add(predicate);
+        }
+
+        public List<Predicate> getPredicates(String key) {
+            Optional<List<Predicate>> potentialPredicates = Optional.ofNullable(predicates.get(key));
+            return potentialPredicates.isPresent() ? potentialPredicates.get() : new ArrayList<Predicate>();
+        }
+
+        public Predicate build(CriteriaBuilder cb) {
+            List<Predicate> columnPredicates = new ArrayList<Predicate>();
+            for (List<Predicate> predicates : predicates.values()) {
+                columnPredicates.add(cb.or(predicates.toArray(new Predicate[predicates.size()])));
+            }
+            return cb.and(columnPredicates.toArray(new Predicate[columnPredicates.size()]));
+        }
+
     }
 
 }

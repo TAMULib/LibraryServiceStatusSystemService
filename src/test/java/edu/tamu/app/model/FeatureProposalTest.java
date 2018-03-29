@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -133,7 +134,7 @@ public class FeatureProposalTest {
         assertEquals("The number of FeatureProposals did not increase by one", initialCount + 1, featureProposalRepo.count());
     }
 
-    @Test(expected = DataIntegrityViolationException.class)
+    @Test(expected = InvalidDataAccessApiUsageException.class)
     public void testDuplicateIdea() throws UserNotFoundException {
         long initialCount = featureProposalRepo.count();
         Idea testIdea = ideaRepo.create(new Idea(TEST_ALTERNATIVE_FEATURE_PROPOSAL_TITLE, TEST_ALTERNATIVE_FEATURE_PROPOSAL_DESCRIPTION, testUser, service1), TEST_CREDENTIALS);

@@ -63,7 +63,7 @@ public class UserController {
      * 
      */
     @RequestMapping("/user")
-    @PreAuthorize("hasRole('ANONYMOUS')")
+    @PreAuthorize("hasRole('USER')")
     public ApiResponse getUser(@WeaverUser User user) {
         if (user == null) {
             return new ApiResponse(ERROR, "Unable to retrieve user!");

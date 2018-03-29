@@ -79,10 +79,8 @@ public class FeatureProposal extends AbstractIdea {
     }
 
     public void addIdea(Idea idea) {
-        if (!this.ideas.contains(idea)) {
-            this.ideas.add(idea);
-            addVoter(idea.getAuthor());
-        }
+        this.ideas.add(idea);
+        addVoter(idea.getAuthor());
     }
 
     public void removeIdea(Idea idea) {
@@ -99,9 +97,7 @@ public class FeatureProposal extends AbstractIdea {
     }
 
     public void addVoter(User voter) {
-        if (!this.voters.contains(voter)) {
-            this.voters.add(voter);
-        }
+        this.voters.add(voter);
     }
 
     public void removeVoter(User voter) {

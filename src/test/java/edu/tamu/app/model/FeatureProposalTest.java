@@ -102,12 +102,45 @@ public class FeatureProposalTest {
         assertEquals("The FeatureProposals had incorrect number of voters", 1, newFeatureProposal.getVotes());
     }
 
+    @Test(expected = DataIntegrityViolationException.class)
+    public void testVoteDuplicate() throws UserNotFoundException {
+        FeatureProposal newFeatureProposal = featureProposalRepo.create(new FeatureProposal(TEST_ALTERNATIVE_FEATURE_PROPOSAL_TITLE, TEST_ALTERNATIVE_FEATURE_PROPOSAL_DESCRIPTION, testUser, service2), TEST_CREDENTIALS);
+        User testVoter = userRepo.create(TEST_VOTER_CREDENTIALS.getUin(), TEST_VOTER_CREDENTIALS.getEmail(), TEST_VOTER_CREDENTIALS.getFirstName(), TEST_VOTER_CREDENTIALS.getLastName(), Role.valueOf(TEST_VOTER_CREDENTIALS.getRole()));
+        newFeatureProposal.addVoter(testVoter);
+        newFeatureProposal.addVoter(testVoter);
+        newFeatureProposal = featureProposalRepo.save(newFeatureProposal);
+    }
+
+    @Test
+    public void testVoteOnMulitpleFeatureProposals() throws UserNotFoundException {
+        FeatureProposal newFeatureProposal = featureProposalRepo.create(new FeatureProposal(TEST_FEATURE_PROPOSAL_TITLE, TEST_FEATURE_PROPOSAL_DESCRIPTION, testUser, service1), TEST_CREDENTIALS);
+        FeatureProposal anotherFeatureProposal = featureProposalRepo.create(new FeatureProposal(TEST_ALTERNATIVE_FEATURE_PROPOSAL_TITLE, TEST_ALTERNATIVE_FEATURE_PROPOSAL_DESCRIPTION, testUser, service2), TEST_CREDENTIALS);
+        User testVoter = userRepo.create(TEST_VOTER_CREDENTIALS.getUin(), TEST_VOTER_CREDENTIALS.getEmail(), TEST_VOTER_CREDENTIALS.getFirstName(), TEST_VOTER_CREDENTIALS.getLastName(), Role.valueOf(TEST_VOTER_CREDENTIALS.getRole()));
+        newFeatureProposal.addVoter(testVoter);
+        newFeatureProposal = featureProposalRepo.save(newFeatureProposal);
+        assertEquals("The FeatureProposals had incorrect number of voters", 1, newFeatureProposal.getVotes());
+
+        anotherFeatureProposal.addVoter(testVoter);
+        anotherFeatureProposal = featureProposalRepo.save(newFeatureProposal);
+        assertEquals("The FeatureProposals had incorrect number of voters", 1, anotherFeatureProposal.getVotes());
+    }
+
     @Test
     public void testElevateIdea() throws UserNotFoundException {
         long initialCount = featureProposalRepo.count();
         Idea testIdea = ideaRepo.create(new Idea(TEST_ALTERNATIVE_FEATURE_PROPOSAL_TITLE, TEST_ALTERNATIVE_FEATURE_PROPOSAL_DESCRIPTION, testUser, service1), TEST_CREDENTIALS);
         featureProposalRepo.create(testIdea);
         assertEquals("The number of FeatureProposals did not increase by one", initialCount + 1, featureProposalRepo.count());
+    }
+
+    @Test(expected = DataIntegrityViolationException.class)
+    public void testDuplicateIdea() throws UserNotFoundException {
+        long initialCount = featureProposalRepo.count();
+        Idea testIdea = ideaRepo.create(new Idea(TEST_ALTERNATIVE_FEATURE_PROPOSAL_TITLE, TEST_ALTERNATIVE_FEATURE_PROPOSAL_DESCRIPTION, testUser, service1), TEST_CREDENTIALS);
+        FeatureProposal featureProposal = featureProposalRepo.create(testIdea);
+        assertEquals("The number of FeatureProposals did not increase by one", initialCount + 1, featureProposalRepo.count());
+        featureProposal.addIdea(testIdea);
+        featureProposalRepo.save(featureProposal);
     }
 
     @Test(expected = DataIntegrityViolationException.class)

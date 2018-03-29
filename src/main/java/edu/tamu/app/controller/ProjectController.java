@@ -6,7 +6,6 @@ import java.net.MalformedURLException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,9 +13,10 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 import edu.tamu.app.exception.UserNotFoundException;
-import edu.tamu.app.model.request.FeatureRequest;
+import edu.tamu.app.model.FeatureProposal;
 import edu.tamu.app.service.ProjectService;
 import edu.tamu.weaver.response.ApiResponse;
+import edu.tamu.weaver.validation.aspect.annotation.WeaverValidatedModel;
 
 @RestController
 @RequestMapping("/projects")
@@ -37,12 +37,10 @@ public class ProjectController {
         return projectService.getById(id);
     }
 
-    // TODO: the following method needs to create FeatureRequest from a FeatureProposal
-
     @RequestMapping("/feature")
     @PreAuthorize("hasRole('SERVICE_MANAGER')")
-    public ApiResponse submitFeatureRequest(@RequestBody FeatureRequest request) throws UserNotFoundException {
-        return projectService.submitFeatureRequest(request);
+    public ApiResponse submitFeatureRequest(@WeaverValidatedModel FeatureProposal proposal) throws UserNotFoundException {
+        return projectService.submitFeatureRequest(proposal);
     }
 
 }

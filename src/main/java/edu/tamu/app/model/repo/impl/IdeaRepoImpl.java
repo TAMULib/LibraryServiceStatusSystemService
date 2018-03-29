@@ -41,6 +41,7 @@ public class IdeaRepoImpl implements IdeaRepoCustom {
 
     @Override
     public Idea update(Idea idea) {
+        idea = ideaRepo.save(idea);
         simpMessagingTemplate.convertAndSend("/channel/ideas/update", new ApiResponse(SUCCESS, idea));
         return idea;
     }

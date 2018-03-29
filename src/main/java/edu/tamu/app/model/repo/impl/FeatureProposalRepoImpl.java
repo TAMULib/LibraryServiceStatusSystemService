@@ -48,15 +48,15 @@ public class FeatureProposalRepoImpl implements FeatureProposalRepoCustom {
     public FeatureProposal create(Idea idea) {
         idea.setElevated(true);
         idea = ideaRepo.save(idea);
-        FeatureProposal featureProposal = featureProposalRepo.save(new FeatureProposal(idea));
-        idea.setElevated(true);
-        ideaRepo.save(idea);
+        simpMessagingTemplate.convertAndSend("/channel/ideas/update", new ApiResponse(SUCCESS, idea));
+        FeatureProposal featureProposal = featureProposalRepo.save(new FeatureProposal(idea));        
         simpMessagingTemplate.convertAndSend("/channel/feature-proposals/create", new ApiResponse(SUCCESS, featureProposal));
         return featureProposal;
     }
 
     @Override
     public FeatureProposal update(FeatureProposal featureProposal) {
+        featureProposal = featureProposalRepo.save(featureProposal);
         simpMessagingTemplate.convertAndSend("/channel/feature-proposals/update", new ApiResponse(SUCCESS, featureProposal));
         return featureProposal;
     }

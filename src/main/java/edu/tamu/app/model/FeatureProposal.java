@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -16,9 +17,11 @@ import org.hibernate.annotations.Fetch;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
+@JsonIgnoreProperties(value = { "voters" }, allowGetters = true)
 public class FeatureProposal extends AbstractIdea {
 
     @ManyToMany(fetch = EAGER, cascade = { CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE })
@@ -32,6 +35,9 @@ public class FeatureProposal extends AbstractIdea {
     @JoinTable(uniqueConstraints = @UniqueConstraint(columnNames = { "feature_proposal_id", "voters_id" }))
     @Fetch(value = SELECT)
     private List<User> voters;
+
+    @Column(nullable = false)
+    private boolean submitted;
 
     public FeatureProposal() {
         super();
@@ -62,6 +68,7 @@ public class FeatureProposal extends AbstractIdea {
     private void setup() {
         this.ideas = new ArrayList<Idea>();
         this.voters = new ArrayList<User>();
+        this.submitted = false;
     }
 
     public List<Idea> getIdeas() {
@@ -106,6 +113,14 @@ public class FeatureProposal extends AbstractIdea {
 
     public int getVotes() {
         return this.voters.size();
+    }
+
+    public boolean isSubmitted() {
+        return submitted;
+    }
+
+    public void setSubmitted(boolean submitted) {
+        this.submitted = submitted;
     }
 
 }

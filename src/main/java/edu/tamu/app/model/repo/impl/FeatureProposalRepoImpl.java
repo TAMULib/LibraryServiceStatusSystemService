@@ -47,7 +47,7 @@ public class FeatureProposalRepoImpl implements FeatureProposalRepoCustom {
     @Override
     public FeatureProposal create(Idea idea) {
         idea.setElevated(true);
-        idea = ideaRepo.update(idea);
+        idea = ideaRepo.save(idea);
         FeatureProposal featureProposal = featureProposalRepo.save(new FeatureProposal(idea));
         simpMessagingTemplate.convertAndSend("/channel/feature-proposals/create", new ApiResponse(SUCCESS, featureProposal));
         return featureProposal;

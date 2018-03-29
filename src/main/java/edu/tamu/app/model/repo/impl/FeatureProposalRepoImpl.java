@@ -12,12 +12,16 @@ import edu.tamu.app.model.FeatureProposal;
 import edu.tamu.app.model.Idea;
 import edu.tamu.app.model.User;
 import edu.tamu.app.model.repo.FeatureProposalRepo;
+import edu.tamu.app.model.repo.IdeaRepo;
 import edu.tamu.app.model.repo.UserRepo;
 import edu.tamu.app.model.repo.custom.FeatureProposalRepoCustom;
 import edu.tamu.weaver.auth.model.Credentials;
 import edu.tamu.weaver.response.ApiResponse;
 
 public class FeatureProposalRepoImpl implements FeatureProposalRepoCustom {
+    
+    @Autowired
+    private IdeaRepo ideaRepo;
 
     @Autowired
     private UserRepo userRepo;
@@ -43,6 +47,8 @@ public class FeatureProposalRepoImpl implements FeatureProposalRepoCustom {
     @Override
     public FeatureProposal create(Idea idea) {
         FeatureProposal featureProposal = featureProposalRepo.save(new FeatureProposal(idea));
+        idea.setElevated(true);
+        ideaRepo.save(idea);
         simpMessagingTemplate.convertAndSend("/channel/feature-proposals/create", new ApiResponse(SUCCESS, featureProposal));
         return featureProposal;
     }

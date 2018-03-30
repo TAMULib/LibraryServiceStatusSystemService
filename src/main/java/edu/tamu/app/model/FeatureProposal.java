@@ -104,7 +104,9 @@ public class FeatureProposal extends AbstractIdea {
     }
 
     public void addVoter(User voter) {
-        this.voters.add(voter);
+        if (!this.voters.contains(voter)) {
+            this.voters.add(voter);
+        }
     }
 
     public void removeVoter(User voter) {

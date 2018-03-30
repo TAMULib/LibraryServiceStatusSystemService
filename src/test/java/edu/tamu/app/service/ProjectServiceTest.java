@@ -21,7 +21,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import edu.tamu.app.WebServerInit;
+import edu.tamu.app.StatusApplication;
 import edu.tamu.app.enums.Role;
 import edu.tamu.app.enums.Status;
 import edu.tamu.app.exception.UserNotFoundException;
@@ -42,7 +42,7 @@ import edu.tamu.weaver.response.ApiStatus;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { WebServerInit.class }, webEnvironment = WebEnvironment.DEFINED_PORT)
+@SpringBootTest(classes = { StatusApplication.class }, webEnvironment = WebEnvironment.DEFINED_PORT)
 public class ProjectServiceTest {
 
     private static final String TEST_SERVICE_NAME = "Test Service Name";
@@ -87,8 +87,7 @@ public class ProjectServiceTest {
     public void getAll() throws JsonParseException, JsonMappingException, MalformedURLException, IOException {
         ApiResponse response = projectService.getAll();
         assertEquals("Response was not a success!", ApiStatus.SUCCESS, response.getMeta().getStatus());
-        List<Project> projects = objectMapper.convertValue(response.getPayload().get("ArrayList<Project>"), new TypeReference<List<Project>>() {
-        });
+        List<Project> projects = objectMapper.convertValue(response.getPayload().get("ArrayList<Project>"), new TypeReference<List<Project>>() {});
         List<Project> mockProjects = mockReader.getAllProjects();
         assertEquals("Projects response size was not as expected!", mockProjects.size(), projects.size());
         for (int i = 0; i < projects.size(); i++) {

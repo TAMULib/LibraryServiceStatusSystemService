@@ -15,13 +15,13 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import edu.tamu.app.WebServerInit;
+import edu.tamu.app.StatusApplication;
 import edu.tamu.app.enums.NotificationLocation;
 import edu.tamu.app.model.repo.NotificationRepo;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { WebServerInit.class }, webEnvironment = WebEnvironment.DEFINED_PORT)
+@SpringBootTest(classes = { StatusApplication.class }, webEnvironment = WebEnvironment.DEFINED_PORT)
 public class NotificationTest {
 
     private static final String TEST_NOTIFICATION_NAME = "Test Notification Name";

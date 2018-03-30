@@ -14,7 +14,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @SpringBootApplication
 @ComponentScan(basePackages = { "edu.tamu.*" })
-public class WebServerInit extends SpringBootServletInitializer {
+public class StatusApplication extends SpringBootServletInitializer {
 
     /**
      * Entry point to the application from within servlet.
@@ -24,7 +24,7 @@ public class WebServerInit extends SpringBootServletInitializer {
      *
      */
     public static void main(String[] args) {
-        SpringApplication.run(WebServerInit.class, args);
+        SpringApplication.run(StatusApplication.class, args);
     }
 
     /**
@@ -38,7 +38,7 @@ public class WebServerInit extends SpringBootServletInitializer {
      */
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(WebServerInit.class);
+        return application.sources(StatusApplication.class);
     }
 
 }

@@ -14,12 +14,12 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import edu.tamu.app.WebServerInit;
+import edu.tamu.app.StatusApplication;
 import edu.tamu.weaver.auth.model.Credentials;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { WebServerInit.class }, webEnvironment = WebEnvironment.DEFINED_PORT)
+@SpringBootTest(classes = { StatusApplication.class }, webEnvironment = WebEnvironment.DEFINED_PORT)
 public class ShibTest {
 
     private Map<String, Object> aggieJackToken;
@@ -28,7 +28,6 @@ public class ShibTest {
 
     @Before
     public void setup() {
-
         aggieJackToken = new HashMap<String, Object>();
         aggieJackToken.put("lastName", "Daniels");
         aggieJackToken.put("firstName", "Jack");
@@ -36,12 +35,10 @@ public class ShibTest {
         aggieJackToken.put("uin", "123456789");
         aggieJackToken.put("exp", String.valueOf(timestamp));
         aggieJackToken.put("email", "aggiejack@tamu.edu");
-
     }
 
     @Test
     public void testCreateShib() {
-
         Credentials shib = new Credentials(aggieJackToken);
 
         assertEquals("Last name did not match.", "Daniels", shib.getLastName());
@@ -50,7 +47,6 @@ public class ShibTest {
         assertEquals("UIN did not match.", "123456789", shib.getUin());
         assertEquals("Expiration did not match.", String.valueOf(timestamp), shib.getExp());
         assertEquals("Email did not match.", "aggiejack@tamu.edu", shib.getEmail());
-
     }
 
     private Map<String, String> createToken(String uin, String firstName, String lastName, String email, String netid, Long time) {
@@ -62,10 +58,11 @@ public class ShibTest {
         newToken.put("lastName", lastName);
         newToken.put("email", email);
         newToken.put("netid", netid);
-        if (time != null)
+        if (time != null) {
             newToken.put("exp", String.valueOf(time));
-        else
+        } else {
             newToken.put("exp", String.valueOf(timestamp));
+        }
 
         return newToken;
     }

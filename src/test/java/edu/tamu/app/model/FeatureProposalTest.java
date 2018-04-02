@@ -3,6 +3,8 @@ package edu.tamu.app.model;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
+import java.util.ArrayList;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,7 +17,7 @@ import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import edu.tamu.app.WebServerInit;
+import edu.tamu.app.StatusApplication;
 import edu.tamu.app.enums.Role;
 import edu.tamu.app.enums.Status;
 import edu.tamu.app.exception.UserNotFoundException;
@@ -27,7 +29,7 @@ import edu.tamu.weaver.auth.model.Credentials;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { WebServerInit.class }, webEnvironment = WebEnvironment.DEFINED_PORT)
+@SpringBootTest(classes = { StatusApplication.class }, webEnvironment = WebEnvironment.DEFINED_PORT)
 public class FeatureProposalTest {
 
     private static final String TEST_FEATURE_PROPOSAL_TITLE = "Feature Proposal Title";
@@ -112,8 +114,13 @@ public class FeatureProposalTest {
     public void testVoteDuplicate() throws UserNotFoundException {
         FeatureProposal newFeatureProposal = featureProposalRepo.create(new FeatureProposal(TEST_ALTERNATIVE_FEATURE_PROPOSAL_TITLE, TEST_ALTERNATIVE_FEATURE_PROPOSAL_DESCRIPTION, testUser, service2), TEST_CREDENTIALS);
         User testVoter = userRepo.create(TEST_VOTER_CREDENTIALS.getUin(), TEST_VOTER_CREDENTIALS.getEmail(), TEST_VOTER_CREDENTIALS.getFirstName(), TEST_VOTER_CREDENTIALS.getLastName(), Role.valueOf(TEST_VOTER_CREDENTIALS.getRole()));
-        newFeatureProposal.addVoter(testVoter);
-        newFeatureProposal.addVoter(testVoter);
+        newFeatureProposal.setVoters(new ArrayList<User>() {
+            private static final long serialVersionUID = -7900927790649066585L;
+            {
+                add(testVoter);
+                add(testVoter);
+            }
+        });
         newFeatureProposal = featureProposalRepo.save(newFeatureProposal);
     }
 

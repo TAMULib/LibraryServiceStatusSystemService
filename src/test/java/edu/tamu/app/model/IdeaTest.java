@@ -14,7 +14,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import edu.tamu.app.WebServerInit;
+import edu.tamu.app.StatusApplication;
 import edu.tamu.app.enums.Role;
 import edu.tamu.app.enums.Status;
 import edu.tamu.app.exception.UserNotFoundException;
@@ -25,7 +25,7 @@ import edu.tamu.weaver.auth.model.Credentials;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { WebServerInit.class }, webEnvironment = WebEnvironment.DEFINED_PORT)
+@SpringBootTest(classes = { StatusApplication.class }, webEnvironment = WebEnvironment.DEFINED_PORT)
 public class IdeaTest {
 
     private static final String TEST_IDEA_TITLE = "Idea Title";

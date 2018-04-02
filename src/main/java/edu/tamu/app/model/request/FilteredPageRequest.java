@@ -1,4 +1,4 @@
- package edu.tamu.app.model.request;
+package edu.tamu.app.model.request;
 
 import java.util.ArrayList;
 import java.util.HashMap;

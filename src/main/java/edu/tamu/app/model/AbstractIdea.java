@@ -14,7 +14,6 @@ import javax.persistence.TemporalType;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import edu.tamu.app.model.request.ServiceRequest;
-import edu.tamu.app.model.validation.IdeaValidator;
 import edu.tamu.weaver.validation.model.ValidatingBaseEntity;
 
 @MappedSuperclass

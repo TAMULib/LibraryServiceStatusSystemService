@@ -146,14 +146,16 @@ public class FeatureProposalTest {
         assertEquals("The number of FeatureProposals did not increase by one", initialCount + 1, featureProposalRepo.count());
     }
 
-    @Test(expected = InvalidDataAccessApiUsageException.class)
+    @Test
     public void testDuplicateIdea() throws UserNotFoundException {
         long initialCount = featureProposalRepo.count();
         Idea testIdea = ideaRepo.create(new Idea(TEST_ALTERNATIVE_FEATURE_PROPOSAL_TITLE, TEST_ALTERNATIVE_FEATURE_PROPOSAL_DESCRIPTION, testUser, service1), TEST_CREDENTIALS);
         FeatureProposal featureProposal = featureProposalRepo.create(testIdea);
         assertEquals("The number of FeatureProposals did not increase by one", initialCount + 1, featureProposalRepo.count());
+        long ideaCount = featureProposal.getIdeas().size();
         featureProposal.addIdea(testIdea);
         featureProposalRepo.save(featureProposal);
+        assertEquals("The number of Ideas on the FeatureProposal did not increase", ideaCount, featureProposal.getIdeas().size());
     }
 
     @Test(expected = DataIntegrityViolationException.class)

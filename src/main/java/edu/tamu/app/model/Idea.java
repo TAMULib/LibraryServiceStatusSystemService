@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 
 import edu.tamu.app.model.request.ServiceRequest;
+import edu.tamu.app.model.validation.IdeaValidator;
 
 @Entity
 public class Idea extends AbstractIdea {
@@ -13,6 +14,7 @@ public class Idea extends AbstractIdea {
 
     public Idea() {
         super();
+        this.modelValidator = new IdeaValidator();
         this.elevated = false;
     }
 

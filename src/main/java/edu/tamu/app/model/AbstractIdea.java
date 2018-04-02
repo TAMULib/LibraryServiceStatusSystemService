@@ -38,7 +38,6 @@ public abstract class AbstractIdea extends ValidatingBaseEntity {
 
     public AbstractIdea() {
         super();
-        this.modelValidator = new IdeaValidator();
     }
 
     public AbstractIdea(String title, String description) {

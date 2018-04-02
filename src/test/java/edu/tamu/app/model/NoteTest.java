@@ -66,11 +66,11 @@ public class NoteTest {
     private ServiceRepo serviceRepo;
 
     @Autowired
-    private UserRepo appUserRepo;
+    private UserRepo userRepo;
 
     @Before
     public void setUp() throws UserNotFoundException {
-        testUser = appUserRepo.create(TEST_CREDENTIALS.getUin(), TEST_CREDENTIALS.getEmail(), TEST_CREDENTIALS.getFirstName(), TEST_CREDENTIALS.getLastName(), Role.valueOf(TEST_CREDENTIALS.getRole()));
+        testUser = userRepo.create(TEST_CREDENTIALS.getUin(), TEST_CREDENTIALS.getEmail(), TEST_CREDENTIALS.getFirstName(), TEST_CREDENTIALS.getLastName(), Role.valueOf(TEST_CREDENTIALS.getRole()));
         service1 = serviceRepo.create(new Service(TEST_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, TEST_SERVICE_URL, TEST_DESCRIPTION));
         service2 = serviceRepo.create(new Service(TEST_ALTERNATIVE_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, TEST_SERVICE_URL, TEST_DESCRIPTION));
         testNote = noteRepo.create(new Note(TEST_NOTE_TITLE, testUser, TEST_NOTE_TYPE, TEST_NOTE_BODY, service1), TEST_CREDENTIALS);
@@ -174,6 +174,6 @@ public class NoteTest {
     public void cleanUp() {
         noteRepo.deleteAll();
         serviceRepo.deleteAll();
-        appUserRepo.deleteAll();
+        userRepo.deleteAll();
     }
 }

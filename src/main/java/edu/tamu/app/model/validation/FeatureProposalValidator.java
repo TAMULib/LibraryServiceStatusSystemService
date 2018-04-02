@@ -9,5 +9,8 @@ public class FeatureProposalValidator extends BaseModelValidator {
     public FeatureProposalValidator() {
         String titleProperty = "title";
         this.addInputValidator(new InputValidator(InputValidationType.required, "Feature Proposals require a title", titleProperty, true));
+        
+        String serviceProperty = "service";
+        this.addInputValidator(new InputValidator(InputValidationType.required, "Feature Proposals require a Service", serviceProperty, true));
     }
 }

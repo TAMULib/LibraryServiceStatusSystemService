@@ -4,6 +4,7 @@ import static javax.persistence.FetchType.EAGER;
 import static org.hibernate.annotations.FetchMode.SELECT;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -82,15 +83,20 @@ public class FeatureProposal extends AbstractIdea {
         this.ideas.forEach(idea -> {
             removeVoter(idea.getAuthor());
         });
-        this.ideas = ideas;
+        HashSet<Idea> ideaSet = new HashSet<Idea>();
+        ideaSet.addAll(ideas);
+        this.ideas.clear();
+        this.ideas.addAll(ideaSet);
         this.ideas.forEach(idea -> {
             addVoter(idea.getAuthor());
         });
     }
 
     public void addIdea(Idea idea) {
-        this.ideas.add(idea);
-        addVoter(idea.getAuthor());
+        if (!this.ideas.contains(idea)) {
+            this.ideas.add(idea);
+            addVoter(idea.getAuthor());
+        }
     }
 
     public void removeIdea(Idea idea) {

@@ -20,6 +20,8 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
+import edu.tamu.app.model.validation.FeatureProposalValidator;
+
 @Entity
 @JsonIgnoreProperties(value = { "voters" }, allowGetters = true)
 public class FeatureProposal extends AbstractIdea {
@@ -41,6 +43,7 @@ public class FeatureProposal extends AbstractIdea {
 
     public FeatureProposal() {
         super();
+        this.modelValidator = new FeatureProposalValidator();
         setup();
     }
 

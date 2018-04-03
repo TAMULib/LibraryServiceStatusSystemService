@@ -37,6 +37,11 @@ public class FeatureProposalRepoImpl implements FeatureProposalRepoCustom {
         Optional<User> user = userRepo.findByUsername(credentials.getUin());
         if (user.isPresent()) {
             featureProposal.setAuthor(user.get());
+            featureProposal.getIdeas().forEach(idea -> {
+                idea.setElevated(true);
+                idea = ideaRepo.save(idea);
+                simpMessagingTemplate.convertAndSend("/channel/ideas/update", new ApiResponse(SUCCESS, idea));
+            });
             featureProposal = featureProposalRepo.save(featureProposal);
             simpMessagingTemplate.convertAndSend("/channel/feature-proposals/create", new ApiResponse(SUCCESS, featureProposal));
             return featureProposal;
@@ -56,6 +61,11 @@ public class FeatureProposalRepoImpl implements FeatureProposalRepoCustom {
 
     @Override
     public FeatureProposal update(FeatureProposal featureProposal) {
+        featureProposal.getIdeas().forEach(idea -> {
+            idea.setElevated(true);
+            idea = ideaRepo.save(idea);
+            simpMessagingTemplate.convertAndSend("/channel/ideas/update", new ApiResponse(SUCCESS, idea));
+        });
         featureProposal = featureProposalRepo.save(featureProposal);
         simpMessagingTemplate.convertAndSend("/channel/feature-proposals/update", new ApiResponse(SUCCESS, featureProposal));
         return featureProposal;
@@ -63,6 +73,11 @@ public class FeatureProposalRepoImpl implements FeatureProposalRepoCustom {
 
     @Override
     public void delete(FeatureProposal featureProposal) {
+        featureProposal.getIdeas().forEach(idea -> {
+            idea.setElevated(false);
+            idea = ideaRepo.save(idea);
+            simpMessagingTemplate.convertAndSend("/channel/ideas/update", new ApiResponse(SUCCESS, idea));
+        });
         featureProposalRepo.delete(featureProposal.getId());
         simpMessagingTemplate.convertAndSend("/channel/feature-proposals/delete", new ApiResponse(SUCCESS, featureProposal.getId()));
     }

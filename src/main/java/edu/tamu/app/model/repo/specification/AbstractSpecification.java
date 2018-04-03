@@ -33,7 +33,7 @@ public abstract class AbstractSpecification<E> implements Specification<E> {
             switch (key) {
             case "service":
                 for (String value : values) {
-                    builder.addPredicate(key, cb.like(cb.lower(root.get(key).get("id").as(String.class)), "%" + value.toLowerCase() + "%"));
+                    builder.addPredicate(key, cb.equal(root.get(key).get("id").as(Long.class), Long.valueOf(value.toLowerCase())));
                 }
                 break;
             case "service.name":

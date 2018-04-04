@@ -1,71 +1,103 @@
 package edu.tamu.app.controller;
 
-import static edu.tamu.framework.enums.ApiResponseType.SUCCESS;
-import static edu.tamu.framework.enums.BusinessValidationType.CREATE;
-import static edu.tamu.framework.enums.BusinessValidationType.DELETE;
-import static edu.tamu.framework.enums.BusinessValidationType.EXISTS;
-import static edu.tamu.framework.enums.BusinessValidationType.NONEXISTS;
-import static edu.tamu.framework.enums.BusinessValidationType.UPDATE;
+import static edu.tamu.weaver.response.ApiStatus.SUCCESS;
+import static edu.tamu.weaver.validation.model.BusinessValidationType.CREATE;
+import static edu.tamu.weaver.validation.model.BusinessValidationType.DELETE;
+import static edu.tamu.weaver.validation.model.BusinessValidationType.UPDATE;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import edu.tamu.app.exception.UserNotFoundException;
+import edu.tamu.app.model.Idea;
 import edu.tamu.app.model.Service;
+import edu.tamu.app.model.repo.IdeaRepo;
 import edu.tamu.app.model.repo.ServiceRepo;
-import edu.tamu.framework.aspect.annotation.ApiCredentials;
-import edu.tamu.framework.aspect.annotation.ApiMapping;
-import edu.tamu.framework.aspect.annotation.ApiValidatedModel;
-import edu.tamu.framework.aspect.annotation.ApiValidation;
-import edu.tamu.framework.aspect.annotation.ApiVariable;
-import edu.tamu.framework.aspect.annotation.Auth;
-import edu.tamu.framework.model.ApiResponse;
-import edu.tamu.framework.model.Credentials;
+import edu.tamu.app.model.request.IssueRequest;
+import edu.tamu.app.model.request.ServiceRequest;
+import edu.tamu.app.service.ProjectService;
+import edu.tamu.weaver.auth.annotation.WeaverCredentials;
+import edu.tamu.weaver.auth.model.Credentials;
+import edu.tamu.weaver.response.ApiResponse;
+import edu.tamu.weaver.response.ApiStatus;
+import edu.tamu.weaver.validation.aspect.annotation.WeaverValidatedModel;
+import edu.tamu.weaver.validation.aspect.annotation.WeaverValidation;
 
 @RestController
-@ApiMapping("/service")
+@RequestMapping("/services")
 public class ServiceController {
 
     @Autowired
     private ServiceRepo serviceRepo;
 
-    @ApiMapping("/all")
-    @Auth(role = "ROLE_ANONYMOUS")
+    @Autowired
+    private IdeaRepo ideaRepo;
+
+    @Autowired
+    private ProjectService projectService;
+
+    @RequestMapping
+    @PreAuthorize("hasRole('ANONYMOUS')")
     public ApiResponse getAllServices() {
         return new ApiResponse(SUCCESS, serviceRepo.findAllByOrderByStatusDescNameAsc());
     }
 
-    @ApiMapping("/public")
-    @Auth(role = "ROLE_ANONYMOUS")
+    @RequestMapping("/public")
+    @PreAuthorize("hasRole('ANONYMOUS')")
     public ApiResponse getPublicServices() {
         return new ApiResponse(SUCCESS, serviceRepo.findByIsPublicOrderByStatusDescNameAsc(true));
     }
 
-    @ApiMapping("/{id}")
-    @Auth(role = "ROLE_ANONYMOUS")
-    public ApiResponse getService(@ApiVariable Long id) {
+    @RequestMapping("/{id}")
+    @PreAuthorize("hasRole('ANONYMOUS')")
+    public ApiResponse getService(@PathVariable Long id) {
         return new ApiResponse(SUCCESS, serviceRepo.findOne(id));
     }
 
-    @ApiMapping("/create")
-    @Auth(role = "ROLE_SERVICE_MANAGER")
-    @ApiValidation(business = { @ApiValidation.Business(value = CREATE), @ApiValidation.Business(value = EXISTS) })
-    public ApiResponse createService(@ApiValidatedModel Service service, @ApiCredentials Credentials credentials) {
+    @RequestMapping("/create")
+    @PreAuthorize("hasRole('SERVICE_MANAGER')")
+    @WeaverValidation(business = { @WeaverValidation.Business(value = CREATE) })
+    public ApiResponse createService(@WeaverValidatedModel Service service, @WeaverCredentials Credentials credentials) {
         return new ApiResponse(SUCCESS, serviceRepo.create(service));
     }
 
-    @ApiMapping("/update")
-    @Auth(role = "ROLE_SERVICE_MANAGER")
-    @ApiValidation(business = { @ApiValidation.Business(value = UPDATE), @ApiValidation.Business(value = NONEXISTS) })
-    public ApiResponse updateService(@ApiValidatedModel Service service, @ApiCredentials Credentials credentials) {
+    @RequestMapping("/update")
+    @PreAuthorize("hasRole('SERVICE_MANAGER')")
+    @WeaverValidation(business = { @WeaverValidation.Business(value = UPDATE) })
+    public ApiResponse updateService(@WeaverValidatedModel Service service, @WeaverCredentials Credentials credentials) {
         return new ApiResponse(SUCCESS, serviceRepo.update(service));
     }
 
-    @ApiMapping("/remove")
-    @Auth(role = "ROLE_SERVICE_MANAGER")
-    @ApiValidation(business = { @ApiValidation.Business(value = DELETE), @ApiValidation.Business(value = NONEXISTS) })
-    public ApiResponse removeService(@ApiValidatedModel Service service) {
+    @RequestMapping("/remove")
+    @PreAuthorize("hasRole('SERVICE_MANAGER')")
+    @WeaverValidation(business = { @WeaverValidation.Business(value = DELETE) })
+    public ApiResponse removeService(@WeaverValidatedModel Service service) {
         serviceRepo.delete(service);
         return new ApiResponse(SUCCESS);
+    }
+
+    @RequestMapping("/issue")
+    @PreAuthorize("hasRole('USER')")
+    public ApiResponse submitIssueRequest(@RequestBody ServiceRequest request, @WeaverCredentials Credentials credentials) {
+        IssueRequest issueRequest = new IssueRequest(request);
+        Service service = serviceRepo.findOne(request.getService());
+        issueRequest.setService(service.getName());
+        issueRequest.setCredentials(credentials);
+        return projectService.submitIssueRequest(issueRequest);
+    }
+
+    @RequestMapping("/feature")
+    @PreAuthorize("hasRole('USER')")
+    public ApiResponse submitFeatureRequest(@RequestBody ServiceRequest request, @WeaverCredentials Credentials credentials) throws UserNotFoundException {
+        Service service = serviceRepo.findOne(request.getService());
+        Idea idea = new Idea(request);
+        idea.setService(service);
+        ideaRepo.create(idea, credentials);
+        return new ApiResponse(ApiStatus.SUCCESS, "Your feature request for " + service.getName() + " has been submitted as an idea!");
     }
 
 }

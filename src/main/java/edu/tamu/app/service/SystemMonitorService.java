@@ -19,16 +19,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.tamu.app.enums.Status;
 import edu.tamu.app.model.OverallStatus;
 import edu.tamu.app.model.repo.ServiceRepo;
-import edu.tamu.framework.util.HttpUtility;
+import edu.tamu.weaver.utility.HttpUtility;
 
 @Service
 public class SystemMonitorService implements MonitorService {
 
     @Autowired
     private ServiceRepo serviceRepo;
-
-    @Autowired
-    private HttpUtility httpUtility;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -78,8 +75,9 @@ public class SystemMonitorService implements MonitorService {
     }
 
     protected Status getServiceStatus(String serviceUrl) throws MalformedURLException, IOException {
-        String rawStatusResponse = httpUtility.makeHttpRequest(serviceUrl, "GET");
-        List<Map<String, String>> mappedStatusResponse = objectMapper.readValue(rawStatusResponse, new TypeReference<List<Map<String, String>>>() {});
+        String rawStatusResponse = HttpUtility.makeHttpRequest(serviceUrl, "GET");
+        List<Map<String, String>> mappedStatusResponse = objectMapper.readValue(rawStatusResponse, new TypeReference<List<Map<String, String>>>() {
+        });
         return Status.valueOf(mappedStatusResponse.get(0).get("service").toUpperCase());
     }
 

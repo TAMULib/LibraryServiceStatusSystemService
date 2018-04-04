@@ -44,6 +44,15 @@ public class Service extends AbstractScheduler {
     @Column(columnDefinition = "text", nullable = true)
     private String description;
 
+    @Column(nullable = true)
+    private String website;
+
+    @Column(nullable = true)
+    private String software;
+
+    @Column(nullable = true)
+    private Long projectId;
+
     public Service() {
         super();
         setModelValidator(new ServiceValidator());
@@ -123,6 +132,30 @@ public class Service extends AbstractScheduler {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getWebsite() {
+        return website;
+    }
+
+    public void setWebsite(String website) {
+        this.website = website;
+    }
+
+    public String getSoftware() {
+        return software;
+    }
+
+    public void setSoftware(String software) {
+        this.software = software;
+    }
+
+    public Long getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(Long projectId) {
+        this.projectId = projectId;
     }
 
     @Override

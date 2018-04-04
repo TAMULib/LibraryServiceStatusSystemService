@@ -10,7 +10,11 @@ import org.springframework.data.domain.Sort;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import edu.tamu.app.model.FeatureProposal;
+import edu.tamu.app.model.Idea;
 import edu.tamu.app.model.Note;
+import edu.tamu.app.model.repo.specification.FeatureProposalSpecification;
+import edu.tamu.app.model.repo.specification.IdeaSpecification;
 import edu.tamu.app.model.repo.specification.NoteSpecification;
 
 public class FilteredPageRequest {
@@ -29,20 +33,33 @@ public class FilteredPageRequest {
     }
 
     @JsonIgnore
-    public NoteSpecification<Note> getSpecification() {
+    public NoteSpecification<Note> getNoteSpecification() {
         return new NoteSpecification<Note>(filters);
+    }
+
+    @JsonIgnore
+    public IdeaSpecification<Idea> getIdeaSpecification() {
+        return new IdeaSpecification<Idea>(filters);
+    }
+
+    @JsonIgnore
+    public FeatureProposalSpecification<FeatureProposal> getFeatureProposalSpecification() {
+        return new FeatureProposalSpecification<FeatureProposal>(filters);
     }
 
     @JsonIgnore
     public PageRequest getPageRequest() {
         List<Sort.Order> orders = new ArrayList<Sort.Order>();
-        if (orders.isEmpty()) {
-            return new PageRequest(pageNumber > 0 ? pageNumber - 1 : 0, pageSize > 0 ? pageSize : 10);
-        }
         sort.forEach(sort -> {
             orders.add(new Sort.Order(sort.getDirection(), sort.getProperty()));
         });
-        return new PageRequest(pageNumber > 0 ? pageNumber - 1 : 0, pageSize > 0 ? pageSize : 10, new Sort(orders));
+        PageRequest pageRequest;
+        if (orders.isEmpty()) {
+            pageRequest = new PageRequest(pageNumber > 0 ? pageNumber - 1 : 0, pageSize > 0 ? pageSize : 10);
+        } else {
+            pageRequest = new PageRequest(pageNumber > 0 ? pageNumber - 1 : 0, pageSize > 0 ? pageSize : 10, new Sort(orders));
+        }
+        return pageRequest;
     }
 
     public int getPageNumber() {

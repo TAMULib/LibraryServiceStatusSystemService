@@ -1,6 +1,8 @@
 package edu.tamu.app.model;
 
 import static javax.persistence.FetchType.EAGER;
+import static javax.persistence.InheritanceType.JOINED;
+import static org.hibernate.annotations.FetchMode.SELECT;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,14 +15,11 @@ import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.Fetch;
 
-import edu.tamu.framework.model.BaseEntity;
-
-import static javax.persistence.InheritanceType.JOINED;
-import static org.hibernate.annotations.FetchMode.SELECT;
+import edu.tamu.weaver.validation.model.ValidatingBaseEntity;
 
 @Entity
 @Inheritance(strategy = JOINED)
-public abstract class AbstractScheduler extends BaseEntity implements Scheduler {
+public abstract class AbstractScheduler extends ValidatingBaseEntity implements Scheduler {
 
     @OneToMany(fetch = EAGER, cascade = { CascadeType.ALL }, orphanRemoval = true)
     @Fetch(value = SELECT)

@@ -1,6 +1,6 @@
 package edu.tamu.app.model.repo.impl;
 
-import static edu.tamu.framework.enums.ApiResponseType.SUCCESS;
+import static edu.tamu.weaver.response.ApiStatus.SUCCESS;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ import edu.tamu.app.model.Notification;
 import edu.tamu.app.model.Schedule;
 import edu.tamu.app.model.repo.NotificationRepo;
 import edu.tamu.app.model.repo.custom.NotificationRepoCustom;
-import edu.tamu.framework.model.ApiResponse;
+import edu.tamu.weaver.response.ApiResponse;
 
 public class NotificationRepoImpl implements NotificationRepoCustom {
 
@@ -26,7 +26,7 @@ public class NotificationRepoImpl implements NotificationRepoCustom {
     @Override
     public Notification create(Notification notification) {
         notification = notificationRepo.save(notification);
-        simpMessagingTemplate.convertAndSend("/channel/notification/create", new ApiResponse(SUCCESS, notification));
+        simpMessagingTemplate.convertAndSend("/channel/notifications/create", new ApiResponse(SUCCESS, notification));
         return notification;
     }
 
@@ -36,14 +36,14 @@ public class NotificationRepoImpl implements NotificationRepoCustom {
             schedule.setScheduler(notification);
         }
         notification = notificationRepo.save(notification);
-        simpMessagingTemplate.convertAndSend("/channel/notification/update", new ApiResponse(SUCCESS, notification));
+        simpMessagingTemplate.convertAndSend("/channel/notifications/update", new ApiResponse(SUCCESS, notification));
         return notification;
     }
 
     @Override
     public void delete(Notification notification) {
         notificationRepo.delete(notification.getId());
-        simpMessagingTemplate.convertAndSend("/channel/notification/delete", new ApiResponse(SUCCESS, notification.getId()));
+        simpMessagingTemplate.convertAndSend("/channel/notifications/delete", new ApiResponse(SUCCESS, notification.getId()));
     }
 
     @Override

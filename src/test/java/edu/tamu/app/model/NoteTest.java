@@ -3,98 +3,100 @@ package edu.tamu.app.model;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
-import java.util.Calendar;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 
-import edu.tamu.app.WebServerInit;
+import edu.tamu.app.StatusApplication;
 import edu.tamu.app.enums.NoteType;
+import edu.tamu.app.enums.Role;
 import edu.tamu.app.enums.Status;
-import edu.tamu.app.model.repo.AppUserRepo;
+import edu.tamu.app.exception.UserNotFoundException;
 import edu.tamu.app.model.repo.NoteRepo;
 import edu.tamu.app.model.repo.ServiceRepo;
-import edu.tamu.framework.model.Credentials;
+import edu.tamu.app.model.repo.UserRepo;
+import edu.tamu.weaver.auth.model.Credentials;
 
-@WebAppConfiguration
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { WebServerInit.class })
+@SpringBootTest(classes = { StatusApplication.class }, webEnvironment = WebEnvironment.DEFINED_PORT)
 public class NoteTest {
 
-    protected static final String TEST_NOTE_TITLE = "Note Title";
-    protected static final String TEST_SERVICE_URL = "https://library.tamu.edu";
-    protected static final String TEST_DESCRIPTION = "Test Service Description";
-    protected static final String TEST_ALTERNATIVE_NOTE_TITLE = "Alternative Note Title";
-    protected static final String TEST_SERVICE_NAME = "Test Service Name";
-    protected static final String TEST_ALTERNATIVE_SERVICE_NAME = "Different Service Name";
-    protected static final String TEST_NOTE_BODY = "Test Note Body";
-    protected static final String TEST_ALTERNATIVE_NOTE_BODY = "Alternative Note Body";
-    protected static final Boolean TEST_IS_AUTO = false;
-    protected static final Boolean TEST_IS_PUBLIC = true;
-    protected static final Boolean TEST_ON_SHORT_LIST = true;
-    protected static final Status TEST_SERVICE_STATUS = Status.UP;
-    protected static final NoteType TEST_NOTE_TYPE = NoteType.ISSUE;
-    protected static final NoteType TEST_ALTERNATIVE_NOTE_TYPE = NoteType.MAINTENANCE;
-    protected static final Calendar TEST_DATE = Calendar.getInstance();
-    protected Service service1;
-    protected Service service2;
+    private static final String TEST_NOTE_TITLE = "Note Title";
+    private static final String TEST_SERVICE_URL = "https://library.tamu.edu";
+    private static final String TEST_DESCRIPTION = "Test Service Description";
+    private static final String TEST_ALTERNATIVE_NOTE_TITLE = "Alternative Note Title";
+    private static final String TEST_SERVICE_NAME = "Test Service Name";
+    private static final String TEST_ALTERNATIVE_SERVICE_NAME = "Different Service Name";
+    private static final String TEST_NOTE_BODY = "Test Note Body";
+    private static final String TEST_ALTERNATIVE_NOTE_BODY = "Alternative Note Body";
+    private static final Boolean TEST_IS_AUTO = false;
+    private static final Boolean TEST_IS_PUBLIC = true;
+    private static final Boolean TEST_ON_SHORT_LIST = true;
+    private static final Status TEST_SERVICE_STATUS = Status.UP;
+    private static final NoteType TEST_NOTE_TYPE = NoteType.ISSUE;
+    private static final NoteType TEST_ALTERNATIVE_NOTE_TYPE = NoteType.MAINTENANCE;
+    private Service service1;
+    private Service service2;
 
-    protected static final Credentials TEST_CREDENTIALS = new Credentials();
+    private static final Credentials TEST_CREDENTIALS = new Credentials();
     {
         TEST_CREDENTIALS.setUin("123456789");
+        TEST_CREDENTIALS.setEmail("aggieJack@tamu.edu");
+        TEST_CREDENTIALS.setFirstName("Aggie");
+        TEST_CREDENTIALS.setLastName("Jack");
+        TEST_CREDENTIALS.setRole("ROLE_USER");
     }
 
-    protected AppUser testUser;
+    private User testUser;
 
-    protected Note testNote;
-
-    @Autowired
-    NoteRepo noteRepo;
+    private Note testNote;
 
     @Autowired
-    ServiceRepo serviceRepo;
+    private NoteRepo noteRepo;
 
     @Autowired
-    AppUserRepo appUserRepo;
+    private ServiceRepo serviceRepo;
+
+    @Autowired
+    private UserRepo userRepo;
 
     @Before
-    public void setUp() {
-        testUser = appUserRepo.create(TEST_CREDENTIALS.getUin());
+    public void setUp() throws UserNotFoundException {
+        testUser = userRepo.create(TEST_CREDENTIALS.getUin(), TEST_CREDENTIALS.getEmail(), TEST_CREDENTIALS.getFirstName(), TEST_CREDENTIALS.getLastName(), Role.valueOf(TEST_CREDENTIALS.getRole()));
         service1 = serviceRepo.create(new Service(TEST_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, TEST_SERVICE_URL, TEST_DESCRIPTION));
         service2 = serviceRepo.create(new Service(TEST_ALTERNATIVE_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, TEST_SERVICE_URL, TEST_DESCRIPTION));
         testNote = noteRepo.create(new Note(TEST_NOTE_TITLE, testUser, TEST_NOTE_TYPE, TEST_NOTE_BODY, service1), TEST_CREDENTIALS);
     }
 
     @Test
-    public void testCreate() {
+    public void testCreate() throws UserNotFoundException {
         long initialCount = noteRepo.count();
         noteRepo.create(new Note(TEST_ALTERNATIVE_NOTE_TITLE, testUser, TEST_NOTE_TYPE, TEST_ALTERNATIVE_NOTE_BODY, service2), TEST_CREDENTIALS);
         assertEquals("The number of notes did not increase by one", initialCount + 1, noteRepo.count());
     }
 
     @Test(expected = DataIntegrityViolationException.class)
-    public void testTitleNotNull() {
+    public void testTitleNotNull() throws UserNotFoundException {
         testNote.setTitle(null);
         noteRepo.create(new Note(null, testUser, TEST_NOTE_TYPE, TEST_ALTERNATIVE_NOTE_BODY, service2), TEST_CREDENTIALS);
     }
 
-    @Test(expected = DataIntegrityViolationException.class)
-    public void testAuthorNotNull() {
+    @Test(expected = UserNotFoundException.class)
+    public void testAuthorNotNull() throws UserNotFoundException {
         TEST_CREDENTIALS.setUin("987654321");
         noteRepo.create(new Note(TEST_ALTERNATIVE_NOTE_TITLE, null, TEST_NOTE_TYPE, TEST_ALTERNATIVE_NOTE_BODY, service2), TEST_CREDENTIALS);
     }
 
     @Test
-    public void testUpdateTitle() {
+    public void testUpdateTitle() throws UserNotFoundException {
         Note note = noteRepo.create(testNote, TEST_CREDENTIALS);
         note.setTitle(TEST_ALTERNATIVE_NOTE_TITLE);
         note = noteRepo.save(note);
@@ -102,7 +104,7 @@ public class NoteTest {
     }
 
     @Test
-    public void testUpdateServices() {
+    public void testUpdateServices() throws UserNotFoundException {
 
         Note note = noteRepo.create(testNote, TEST_CREDENTIALS);
         note.setService(service1);
@@ -114,7 +116,7 @@ public class NoteTest {
     }
 
     @Test
-    public void testUpdateNoteType() {
+    public void testUpdateNoteType() throws UserNotFoundException {
         Note note = noteRepo.create(testNote, TEST_CREDENTIALS);
         note.setNoteType(TEST_NOTE_TYPE);
         note = noteRepo.save(note);
@@ -125,7 +127,7 @@ public class NoteTest {
     }
 
     @Test
-    public void testUpdateBody() {
+    public void testUpdateBody() throws UserNotFoundException {
         Note note = noteRepo.create(testNote, TEST_CREDENTIALS);
         note.setBody(TEST_NOTE_BODY);
         note = noteRepo.save(note);
@@ -136,14 +138,14 @@ public class NoteTest {
     }
 
     @Test
-    public void testTimestampSetOnCreate() {
+    public void testTimestampSetOnCreate() throws UserNotFoundException {
         Note note = noteRepo.create(testNote, TEST_CREDENTIALS);
         note = noteRepo.findOne(note.getId());
         assertNotEquals("Timestamp not set on creation", null, note.getLastModified());
     }
 
     @Test
-    public void testTimestampSetOnUpdate() throws InterruptedException {
+    public void testTimestampSetOnUpdate() throws InterruptedException, UserNotFoundException {
         Note note = noteRepo.create(testNote, TEST_CREDENTIALS);
         note = noteRepo.findOne(note.getId());
         // Calendar createTime = note.getLastModified();
@@ -153,15 +155,13 @@ public class NoteTest {
 
         noteRepo.save(note);
 
-        System.out.println("\n" + note.getLastModified().getTime().getTime() + "\n");
-
         // TODO: fix false positive, time is not updated
 
         // assertNotEquals("The timestamp was not updated from creation", createTime.getTime().getTime(), updatedNote.getLastModified().getTime().getTime());
     }
 
     @Test
-    public void testDelete() {
+    public void testDelete() throws UserNotFoundException {
         long initalCount = noteRepo.count();
         Note note = noteRepo.create(new Note(TEST_ALTERNATIVE_NOTE_TITLE, testUser, TEST_NOTE_TYPE, TEST_ALTERNATIVE_NOTE_BODY, service2), TEST_CREDENTIALS);
         assertEquals("Note not created", initalCount + 1, noteRepo.count());
@@ -174,6 +174,6 @@ public class NoteTest {
     public void cleanUp() {
         noteRepo.deleteAll();
         serviceRepo.deleteAll();
-        appUserRepo.deleteAll();
+        userRepo.deleteAll();
     }
 }

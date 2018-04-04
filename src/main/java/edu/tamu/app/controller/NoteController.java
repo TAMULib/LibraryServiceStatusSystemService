@@ -1,62 +1,62 @@
 package edu.tamu.app.controller;
 
-import static edu.tamu.framework.enums.ApiResponseType.SUCCESS;
-import static edu.tamu.framework.enums.BusinessValidationType.CREATE;
-import static edu.tamu.framework.enums.BusinessValidationType.EXISTS;
+import static edu.tamu.weaver.response.ApiStatus.SUCCESS;
+import static edu.tamu.weaver.validation.model.BusinessValidationType.CREATE;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import edu.tamu.app.exception.UserNotFoundException;
 import edu.tamu.app.model.Note;
 import edu.tamu.app.model.repo.NoteRepo;
 import edu.tamu.app.model.request.FilteredPageRequest;
-import edu.tamu.framework.aspect.annotation.ApiCredentials;
-import edu.tamu.framework.aspect.annotation.ApiData;
-import edu.tamu.framework.aspect.annotation.ApiMapping;
-import edu.tamu.framework.aspect.annotation.ApiValidatedModel;
-import edu.tamu.framework.aspect.annotation.ApiValidation;
-import edu.tamu.framework.aspect.annotation.ApiVariable;
-import edu.tamu.framework.aspect.annotation.Auth;
-import edu.tamu.framework.model.ApiResponse;
-import edu.tamu.framework.model.Credentials;
+import edu.tamu.weaver.auth.annotation.WeaverCredentials;
+import edu.tamu.weaver.auth.model.Credentials;
+import edu.tamu.weaver.response.ApiResponse;
+import edu.tamu.weaver.validation.aspect.annotation.WeaverValidatedModel;
+import edu.tamu.weaver.validation.aspect.annotation.WeaverValidation;
 
 @RestController
-@ApiMapping("/note")
+@RequestMapping("/notes")
 public class NoteController {
 
     @Autowired
     private NoteRepo noteRepo;
 
-    @ApiMapping("/page")
-    @Auth(role = "ROLE_ANONYMOUS")
-    public ApiResponse getAllNotesByService(@ApiData FilteredPageRequest filteredPageRequest) {
-        return new ApiResponse(SUCCESS, noteRepo.findAll(filteredPageRequest.getSpecification(), filteredPageRequest.getPageRequest()));
+    @RequestMapping("/page")
+    @PreAuthorize("hasRole('ANONYMOUS')")
+    public ApiResponse page(@RequestBody FilteredPageRequest filteredPageRequest) {
+        return new ApiResponse(SUCCESS, noteRepo.findAll(filteredPageRequest.getNoteSpecification(), filteredPageRequest.getPageRequest()));
     }
 
-    @ApiMapping("/{id}")
-    @Auth(role = "ROLE_ANONYMOUS")
-    public ApiResponse getNote(@ApiVariable Long id) {
+    @RequestMapping("/{id}")
+    @PreAuthorize("hasRole('ANONYMOUS')")
+    public ApiResponse getById(@PathVariable Long id) {
         return new ApiResponse(SUCCESS, noteRepo.findOne(id));
     }
 
-    @ApiMapping("/create")
-    @Auth(role = "ROLE_SERVICE_MANAGER")
-    @ApiValidation(business = { @ApiValidation.Business(value = CREATE), @ApiValidation.Business(value = EXISTS) })
-    public ApiResponse create(@ApiValidatedModel Note note, @ApiCredentials Credentials credentials) {
+    @RequestMapping("/create")
+    @PreAuthorize("hasRole('SERVICE_MANAGER')")
+    @WeaverValidation(business = { @WeaverValidation.Business(value = CREATE) })
+    public ApiResponse create(@WeaverValidatedModel Note note, @WeaverCredentials Credentials credentials) throws UserNotFoundException {
         return new ApiResponse(SUCCESS, noteRepo.create(note, credentials));
     }
 
-    @ApiMapping("/update")
-    @Auth(role = "ROLE_SERVICE_MANAGER")
-    public ApiResponse update(@ApiValidatedModel Note note) {
+    @RequestMapping("/update")
+    @PreAuthorize("hasRole('SERVICE_MANAGER')")
+    public ApiResponse update(@WeaverValidatedModel Note note) {
         return new ApiResponse(SUCCESS, noteRepo.update(note));
     }
 
     @Transactional
-    @ApiMapping("/remove")
-    @Auth(role = "ROLE_SERVICE_MANAGER")
-    public ApiResponse remove(@ApiValidatedModel Note note) {
+    @RequestMapping("/remove")
+    @PreAuthorize("hasRole('SERVICE_MANAGER')")
+    public ApiResponse remove(@WeaverValidatedModel Note note) {
         noteRepo.delete(note);
         return new ApiResponse(SUCCESS);
     }

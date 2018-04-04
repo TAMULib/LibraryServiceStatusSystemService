@@ -13,7 +13,7 @@ public interface ServiceRepo extends JpaRepository<Service, Long>, ServiceRepoCu
     public List<Service> findByIsPublicOrderByStatusDescNameAsc(Boolean isPublic);
 
     public List<Service> findByIsAuto(Boolean isAuto);
-    
+
     public List<Service> findAllByOrderByStatusDescNameAsc();
 
     public Long countByStatus(Status status);

@@ -20,7 +20,6 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -33,7 +32,6 @@ import edu.tamu.app.service.ProjectService;
 import edu.tamu.weaver.response.ApiResponse;
 import edu.tamu.weaver.response.ApiStatus;
 
-@ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 public class ProjectControllerTest {
 

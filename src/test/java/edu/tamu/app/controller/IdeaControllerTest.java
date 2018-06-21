@@ -17,6 +17,9 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -29,6 +32,8 @@ import edu.tamu.app.model.User;
 import edu.tamu.app.model.repo.IdeaRepo;
 import edu.tamu.app.model.repo.ServiceRepo;
 import edu.tamu.app.model.repo.UserRepo;
+import edu.tamu.app.model.repo.specification.IdeaSpecification;
+import edu.tamu.app.model.request.FilteredPageRequest;
 import edu.tamu.weaver.auth.model.Credentials;
 import edu.tamu.weaver.response.ApiResponse;
 
@@ -55,6 +60,7 @@ public class IdeaControllerTest {
     private static Idea TEST_IDEA3 = new Idea(TEST_IDEA_TITLE3, TEST_IDEA_DESCRIPTION3, TEST_USER1);
     private static Idea TEST_MODIFIED_IDEA = new Idea(TEST_MODIFIED_IDEA_TITLE, TEST_MODIFIED_IDEA_DESCRIPTION, TEST_USER2, TEST_SERVICE);
     private static List<Idea> mockIdeaList = new ArrayList<Idea>(Arrays.asList(new Idea[] { TEST_IDEA1, TEST_IDEA2, TEST_IDEA3 }));
+    private static Page<Idea> mockPageableIdeaList = new PageImpl<Idea>(Arrays.asList(new Idea[] { TEST_IDEA1, TEST_IDEA2, TEST_IDEA3 }));
 
     private static User user = new User("123456789");
 
@@ -79,17 +85,30 @@ public class IdeaControllerTest {
     private IdeaController ideaController;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setup() throws UserNotFoundException {
         MockitoAnnotations.initMocks(this);
         when(credentials.getUin()).thenReturn("123456789");
         when(userRepo.findByUsername(any(String.class))).thenReturn(Optional.of(user));
         when(ideaRepo.findAll()).thenReturn(mockIdeaList);
+        when(ideaRepo.findAll(any(IdeaSpecification.class), any(Pageable.class))).thenReturn(mockPageableIdeaList);
         when(ideaRepo.findOne(any(Long.class))).thenReturn(TEST_IDEA1);
         when(ideaRepo.create(any(Idea.class), any(Credentials.class))).thenReturn(TEST_IDEA1);
         when(ideaRepo.update(any(Idea.class))).thenReturn(TEST_MODIFIED_IDEA);
         when(serviceRepo.findOne(any(Long.class))).thenReturn(TEST_SERVICE);
         doNothing().when(ideaRepo).delete(any(Idea.class));
         doNothing().when(ideaRepo).delete(any(Idea.class));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testPage() {
+        FilteredPageRequest mockFilter = new FilteredPageRequest();
+        response = ideaController.page(mockFilter);
+        assertEquals("Not successful at getting paged Ideas", SUCCESS, response.getMeta().getStatus());
+
+        Page<Idea> page = (Page<Idea>) response.getPayload().get("PageImpl");
+        assertEquals("The paged list of Ideas is the wrong length", mockPageableIdeaList.getSize(), page.getSize());
     }
 
     @Test

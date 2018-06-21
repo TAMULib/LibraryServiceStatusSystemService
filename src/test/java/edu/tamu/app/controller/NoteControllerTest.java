@@ -17,6 +17,9 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -30,6 +33,8 @@ import edu.tamu.app.model.User;
 import edu.tamu.app.model.repo.NoteRepo;
 import edu.tamu.app.model.repo.ServiceRepo;
 import edu.tamu.app.model.repo.UserRepo;
+import edu.tamu.app.model.repo.specification.NoteSpecification;
+import edu.tamu.app.model.request.FilteredPageRequest;
 import edu.tamu.weaver.auth.model.Credentials;
 import edu.tamu.weaver.response.ApiResponse;
 
@@ -52,6 +57,7 @@ public class NoteControllerTest {
     private static Note TEST_NOTE3 = new Note(TEST_NOTE_TITLE3, TEST_USER1);
     private static Note TEST_MODIFIED_NOTE = new Note(TEST_MODIFIED_NOTE_TITLE, TEST_USER2, NoteType.ISSUE, "", TEST_SERVICE);
     private static List<Note> mockNoteList = new ArrayList<Note>(Arrays.asList(new Note[] { TEST_NOTE1, TEST_NOTE2, TEST_NOTE3 }));
+    private static Page<Note> mockPageableNoteList = new PageImpl<Note>(Arrays.asList(new Note[] { TEST_NOTE1, TEST_NOTE2, TEST_NOTE3  }));
 
     private static User user = new User("123456789");
 
@@ -76,17 +82,30 @@ public class NoteControllerTest {
     private NoteController noteController;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setup() throws UserNotFoundException {
         MockitoAnnotations.initMocks(this);
         when(credentials.getUin()).thenReturn("123456789");
         when(userRepo.findByUsername(any(String.class))).thenReturn(Optional.of(user));
         when(noteRepo.findAll()).thenReturn(mockNoteList);
+        when(noteRepo.findAll(any(NoteSpecification.class), any(Pageable.class))).thenReturn(mockPageableNoteList);
         when(noteRepo.findOne(any(Long.class))).thenReturn(TEST_NOTE1);
         when(noteRepo.create(any(Note.class), any(Credentials.class))).thenReturn(TEST_NOTE1);
         when(noteRepo.update(any(Note.class))).thenReturn(TEST_MODIFIED_NOTE);
         when(serviceRepo.findOne(any(Long.class))).thenReturn(TEST_SERVICE);
         doNothing().when(noteRepo).delete(any(Note.class));
         doNothing().when(noteRepo).delete(any(Note.class));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testPage() {
+        FilteredPageRequest mockFilter = new FilteredPageRequest();
+        response = noteController.page(mockFilter);
+        assertEquals("Not successful at getting paged Notes", SUCCESS, response.getMeta().getStatus());
+
+        Page<Note> page = (Page<Note>) response.getPayload().get("PageImpl");
+        assertEquals("The paged list of Notes is the wrong length", mockPageableNoteList.getSize(), page.getSize());
     }
 
     @Test

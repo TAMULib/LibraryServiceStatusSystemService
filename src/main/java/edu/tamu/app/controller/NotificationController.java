@@ -40,21 +40,21 @@ public class NotificationController {
     }
 
     @RequestMapping("/create")
-    @PreAuthorize("hasRole('WEB_MANAGER')")
+    @PreAuthorize("hasAnyRole('ADMIN','SERVICE_ADMIN','NOTICE_MANAGER')")
     @WeaverValidation(business = { @WeaverValidation.Business(value = CREATE) })
     public ApiResponse create(@WeaverValidatedModel Notification notification) {
         return new ApiResponse(SUCCESS, notificationRepo.create(notification));
     }
 
     @RequestMapping("/update")
-    @PreAuthorize("hasRole('WEB_MANAGER')")
+    @PreAuthorize("hasAnyRole('ADMIN','SERVICE_ADMIN','NOTICE_MANAGER')")
     @WeaverValidation(business = { @WeaverValidation.Business(value = UPDATE) })
     public ApiResponse update(@WeaverValidatedModel Notification notification) {
         return new ApiResponse(SUCCESS, notificationRepo.update(notification));
     }
 
     @RequestMapping("/remove")
-    @PreAuthorize("hasRole('WEB_MANAGER')")
+    @PreAuthorize("hasAnyRole('ADMIN','SERVICE_ADMIN','NOTICE_MANAGER')")
     @WeaverValidation(business = { @WeaverValidation.Business(value = DELETE) })
     public ApiResponse remove(@WeaverValidatedModel Notification notification) {
         notificationRepo.delete(notification);

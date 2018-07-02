@@ -40,7 +40,6 @@ import edu.tamu.weaver.auth.model.Credentials;
 import edu.tamu.weaver.response.ApiResponse;
 import edu.tamu.weaver.response.ApiStatus;
 
-@ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { StatusApplication.class }, webEnvironment = WebEnvironment.DEFINED_PORT)
 public class ProjectServiceTest {

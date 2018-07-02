@@ -19,7 +19,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import edu.tamu.app.enums.Status;
@@ -40,7 +39,6 @@ import edu.tamu.weaver.auth.model.Credentials;
 import edu.tamu.weaver.response.ApiResponse;
 import edu.tamu.weaver.response.ApiStatus;
 
-@ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 public class ServiceControllerTest {
 

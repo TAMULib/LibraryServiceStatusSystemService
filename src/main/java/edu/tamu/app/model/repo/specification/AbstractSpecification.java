@@ -49,9 +49,16 @@ public abstract class AbstractSpecification<E> implements Specification<E> {
             }
         }
 
-        query.orderBy(cb.desc(root.get("lastModified")));
+        toPredicateDefaultQueryOrderBy(root, query, cb);
 
         return builder.build(cb);
+    }
+
+    /**
+     * Allow implementing classes to control order by in case lastModified is non-existent.
+     */
+    protected void toPredicateDefaultQueryOrderBy(Root<E> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+        query.orderBy(cb.desc(root.get("lastModified")));
     }
 
     private class PredicateBuilder {

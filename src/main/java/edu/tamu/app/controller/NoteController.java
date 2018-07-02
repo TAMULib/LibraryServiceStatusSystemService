@@ -41,21 +41,21 @@ public class NoteController {
     }
 
     @RequestMapping("/create")
-    @PreAuthorize("hasRole('SERVICE_MANAGER')")
+    @PreAuthorize("hasRole('WEB_MANAGER')")
     @WeaverValidation(business = { @WeaverValidation.Business(value = CREATE) })
     public ApiResponse create(@WeaverValidatedModel Note note, @WeaverCredentials Credentials credentials) throws UserNotFoundException {
         return new ApiResponse(SUCCESS, noteRepo.create(note, credentials));
     }
 
     @RequestMapping("/update")
-    @PreAuthorize("hasRole('SERVICE_MANAGER')")
+    @PreAuthorize("hasRole('WEB_MANAGER')")
     public ApiResponse update(@WeaverValidatedModel Note note) {
         return new ApiResponse(SUCCESS, noteRepo.update(note));
     }
 
     @Transactional
     @RequestMapping("/remove")
-    @PreAuthorize("hasRole('SERVICE_MANAGER')")
+    @PreAuthorize("hasRole('WEB_MANAGER')")
     public ApiResponse remove(@WeaverValidatedModel Note note) {
         noteRepo.delete(note);
         return new ApiResponse(SUCCESS);

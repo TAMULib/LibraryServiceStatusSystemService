@@ -17,6 +17,7 @@ import edu.tamu.app.model.Idea;
 import edu.tamu.app.model.Service;
 import edu.tamu.app.model.repo.IdeaRepo;
 import edu.tamu.app.model.repo.ServiceRepo;
+import edu.tamu.app.model.request.FilteredPageRequest;
 import edu.tamu.app.model.request.IssueRequest;
 import edu.tamu.app.model.request.ServiceRequest;
 import edu.tamu.app.service.ProjectService;
@@ -50,6 +51,12 @@ public class ServiceController {
     @PreAuthorize("hasRole('ANONYMOUS')")
     public ApiResponse getPublicServices() {
         return new ApiResponse(SUCCESS, serviceRepo.findByIsPublicOrderByStatusDescNameAsc(true));
+    }
+
+    @RequestMapping("/page")
+    @PreAuthorize("hasRole('ANONYMOUS')")
+    public ApiResponse page(@RequestBody FilteredPageRequest filteredPageRequest) {
+        return new ApiResponse(SUCCESS, serviceRepo.findAll(filteredPageRequest.getServiceSpecification(), filteredPageRequest.getPageRequest()));
     }
 
     @RequestMapping("/{id}")

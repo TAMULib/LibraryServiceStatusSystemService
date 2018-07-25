@@ -13,9 +13,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import edu.tamu.app.model.FeatureProposal;
 import edu.tamu.app.model.Idea;
 import edu.tamu.app.model.Note;
+import edu.tamu.app.model.Service;
 import edu.tamu.app.model.repo.specification.FeatureProposalSpecification;
 import edu.tamu.app.model.repo.specification.IdeaSpecification;
 import edu.tamu.app.model.repo.specification.NoteSpecification;
+import edu.tamu.app.model.repo.specification.ServiceSpecification;
 
 public class FilteredPageRequest {
 
@@ -40,6 +42,11 @@ public class FilteredPageRequest {
     @JsonIgnore
     public IdeaSpecification<Idea> getIdeaSpecification() {
         return new IdeaSpecification<Idea>(filters);
+    }
+
+    @JsonIgnore
+    public ServiceSpecification<Service> getServiceSpecification() {
+        return new ServiceSpecification<Service>(filters);
     }
 
     @JsonIgnore

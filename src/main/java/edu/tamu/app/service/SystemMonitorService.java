@@ -48,7 +48,7 @@ public class SystemMonitorService implements MonitorService {
                 if (serviceStatus != service.getStatus()) {
                     logger.debug("Updating the status of [" + service.getName() + "] to: " + serviceStatus);
                     service.setStatus(serviceStatus);
-                    serviceRepo.save(service);
+                    serviceRepo.update(service);
                 }
             } catch (MalformedURLException e) {
                 logger.error("Did not check the status of [" + service.getName() + "] due to a malformed URL: " + service.getServiceUrl());

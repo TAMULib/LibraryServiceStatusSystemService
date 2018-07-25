@@ -78,7 +78,7 @@ public class UserController {
      * @throws Exception
      */
     @RequestMapping
-    @PreAuthorize("hasRole('WEB_MANAGER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ApiResponse allUsers() throws Exception {
         return new ApiResponse(SUCCESS, userRepo.findAll());
     }
@@ -90,7 +90,7 @@ public class UserController {
      * @throws Exception
      */
     @RequestMapping("/update")
-    @PreAuthorize("hasRole('WEB_MANAGER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ApiResponse updateUser(@RequestBody User user) throws Exception {
         user = userRepo.save(user);
         simpMessagingTemplate.convertAndSend("/channel/user", new ApiResponse(SUCCESS, userRepo.findAll()));

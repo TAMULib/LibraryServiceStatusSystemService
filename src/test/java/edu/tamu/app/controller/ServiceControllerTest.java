@@ -18,8 +18,10 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import edu.tamu.app.enums.Status;
@@ -31,7 +33,9 @@ import edu.tamu.app.model.User;
 import edu.tamu.app.model.repo.IdeaRepo;
 import edu.tamu.app.model.repo.ServiceRepo;
 import edu.tamu.app.model.repo.UserRepo;
+import edu.tamu.app.model.repo.specification.ServiceSpecification;
 import edu.tamu.app.model.request.AbstractRequest;
+import edu.tamu.app.model.request.FilteredPageRequest;
 import edu.tamu.app.model.request.IssueRequest;
 import edu.tamu.app.model.request.ServiceRequest;
 import edu.tamu.app.service.ProjectService;
@@ -40,7 +44,6 @@ import edu.tamu.weaver.auth.model.Credentials;
 import edu.tamu.weaver.response.ApiResponse;
 import edu.tamu.weaver.response.ApiStatus;
 
-@ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 public class ServiceControllerTest {
 
@@ -59,6 +62,7 @@ public class ServiceControllerTest {
     private static final Service TEST_SERVICE3 = new Service(TEST_SERVICE3_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_NOT_ON_SHORT_LIST, "", "");
     private static final Service TEST_MODIFIED_SERVICE1 = new Service(TEST_SERVICE1_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_NOT_PUBLIC, TEST_NOT_ON_SHORT_LIST, "", "");
     private static final List<Service> mockServiceList = new ArrayList<Service>(Arrays.asList(new Service[] { TEST_SERVICE1, TEST_SERVICE2, TEST_SERVICE3 }));
+    private static final Page<Service> mockPageableServiceList = new PageImpl<Service>(Arrays.asList(new Service[] { TEST_SERVICE1, TEST_SERVICE2, TEST_SERVICE3 }));
     private static final List<Service> mockPublicServiceList = new ArrayList<Service>(Arrays.asList(new Service[] { TEST_SERVICE1, TEST_SERVICE3 }));
 
     private static final User TEST_SERVICE = new User("123456789");
@@ -92,11 +96,14 @@ public class ServiceControllerTest {
     private ServiceController serviceController;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setup() throws UserNotFoundException {
         MockitoAnnotations.initMocks(this);
         when(credentials.getUin()).thenReturn("123456789");
         when(userRepo.findByUsername(any(String.class))).thenReturn(Optional.of(TEST_SERVICE));
         when(systemMonitorService.getOverallStatus()).thenReturn(new OverallStatus(edu.tamu.app.enums.OverallMessageType.SUCCESS, "Success"));
+        when(serviceRepo.findAll()).thenReturn(mockServiceList);
+        when(serviceRepo.findAll(any(ServiceSpecification.class), any(Pageable.class))).thenReturn(mockPageableServiceList);
         when(serviceRepo.findAllByOrderByStatusDescNameAsc()).thenReturn(mockServiceList);
         when(serviceRepo.findByIsPublicOrderByStatusDescNameAsc(true)).thenReturn(mockPublicServiceList);
         when(serviceRepo.findOne(any(Long.class))).thenReturn(TEST_SERVICE1);
@@ -133,6 +140,17 @@ public class ServiceControllerTest {
             }
         }
         return count;
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testPage() {
+        FilteredPageRequest mockFilter = new FilteredPageRequest();
+        response = serviceController.page(mockFilter);
+        assertEquals("Not successful at getting paged Services", SUCCESS, response.getMeta().getStatus());
+
+        Page<Service> page = (Page<Service>) response.getPayload().get("PageImpl");
+        assertEquals("The paged list of Services is the wrong length", mockPageableServiceList.getSize(), page.getSize());
     }
 
     @Test

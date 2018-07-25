@@ -13,7 +13,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -86,7 +85,8 @@ public class ProjectServiceTest {
     public void getAll() throws JsonParseException, JsonMappingException, MalformedURLException, IOException {
         ApiResponse response = projectService.getAll();
         assertEquals("Response was not a success!", ApiStatus.SUCCESS, response.getMeta().getStatus());
-        List<Project> projects = objectMapper.convertValue(response.getPayload().get("ArrayList<Project>"), new TypeReference<List<Project>>() {});
+        List<Project> projects = objectMapper.convertValue(response.getPayload().get("ArrayList<Project>"), new TypeReference<List<Project>>() {
+        });
         List<Project> mockProjects = mockReader.getAllProjects();
         assertEquals("Projects response size was not as expected!", mockProjects.size(), projects.size());
         for (int i = 0; i < projects.size(); i++) {

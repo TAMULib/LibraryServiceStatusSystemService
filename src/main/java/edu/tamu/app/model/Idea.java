@@ -2,6 +2,8 @@ package edu.tamu.app.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 
 import edu.tamu.app.enums.IdeaState;
 import edu.tamu.app.model.request.ServiceRequest;
@@ -10,6 +12,7 @@ import edu.tamu.app.model.validation.IdeaValidator;
 @Entity
 public class Idea extends AbstractIdea {
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private IdeaState state;
 

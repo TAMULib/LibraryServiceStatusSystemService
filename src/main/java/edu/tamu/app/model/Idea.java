@@ -3,6 +3,7 @@ package edu.tamu.app.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
+import edu.tamu.app.enums.IdeaState;
 import edu.tamu.app.model.request.ServiceRequest;
 import edu.tamu.app.model.validation.IdeaValidator;
 
@@ -10,17 +11,17 @@ import edu.tamu.app.model.validation.IdeaValidator;
 public class Idea extends AbstractIdea {
 
     @Column(nullable = false)
-    private boolean elevated;
+    private IdeaState state;
 
     public Idea() {
         super();
         this.modelValidator = new IdeaValidator();
-        this.elevated = false;
+        this.state = IdeaState.WAITING_ON_REVIEW;
     }
 
     public Idea(String title, String description) {
         super(title, description);
-        this.elevated = false;
+        this.state = IdeaState.WAITING_ON_REVIEW;
     }
 
     public Idea(ServiceRequest serviceRequest) {
@@ -29,20 +30,21 @@ public class Idea extends AbstractIdea {
 
     public Idea(String title, String description, User author) {
         super(title, description, author);
-        this.elevated = false;
+        this.state = IdeaState.WAITING_ON_REVIEW;
     }
 
     public Idea(String title, String description, User author, Service service) {
         super(title, description, author, service);
-        this.elevated = false;
+        this.state = IdeaState.WAITING_ON_REVIEW;
     }
 
-    public boolean isElevated() {
-        return elevated;
+    public IdeaState getState() {
+        return state;
     }
 
-    public void setElevated(boolean elevated) {
-        this.elevated = elevated;
+    public void setState(IdeaState state) {
+        this.state = state;
     }
-
 }
+
+

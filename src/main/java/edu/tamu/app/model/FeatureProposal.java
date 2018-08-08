@@ -42,9 +42,6 @@ public class FeatureProposal extends AbstractIdea {
     @Fetch(value = SELECT)
     private List<User> voters;
 
-    @Column(nullable = false)
-    private boolean submitted;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private FeatureProposalState state;
@@ -79,7 +76,6 @@ public class FeatureProposal extends AbstractIdea {
     private void setup() {
         this.ideas = new ArrayList<Idea>();
         this.voters = new ArrayList<User>();
-        this.submitted = false;
         this.state = FeatureProposalState.IN_PROGRESS;
     }
 
@@ -132,14 +128,6 @@ public class FeatureProposal extends AbstractIdea {
 
     public int getVotes() {
         return this.voters.size();
-    }
-
-    public boolean isSubmitted() {
-        return submitted;
-    }
-
-    public void setSubmitted(boolean submitted) {
-        this.submitted = submitted;
     }
 
     public FeatureProposalState getState() {

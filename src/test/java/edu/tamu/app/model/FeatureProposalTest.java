@@ -232,8 +232,8 @@ public class FeatureProposalTest {
 
     @After
     public void cleanUp() {
-        featureProposalRepo.deleteAll();
         ideaRepo.deleteAll();
+        featureProposalRepo.deleteAll();
         serviceRepo.deleteAll();
         userRepo.deleteAll();
     }

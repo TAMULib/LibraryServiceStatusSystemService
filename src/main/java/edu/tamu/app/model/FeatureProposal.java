@@ -14,6 +14,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Fetch;
@@ -30,8 +31,7 @@ import edu.tamu.app.model.validation.FeatureProposalValidator;
 @JsonIgnoreProperties(value = { "voters" }, allowGetters = true)
 public class FeatureProposal extends AbstractIdea {
 
-    @ManyToMany(fetch = EAGER, cascade = { CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE })
-    @JoinTable(uniqueConstraints = @UniqueConstraint(columnNames = { "feature_proposal_id", "ideas_id" }))
+    @OneToMany(fetch = EAGER, cascade = { CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE }, mappedBy = "featureProposal")
     @Fetch(value = SELECT)
     private List<Idea> ideas;
 

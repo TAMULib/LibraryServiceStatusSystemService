@@ -10,6 +10,8 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.UniqueConstraint;
@@ -21,6 +23,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
+import edu.tamu.app.enums.FeatureProposalState;
 import edu.tamu.app.model.validation.FeatureProposalValidator;
 
 @Entity
@@ -39,8 +42,9 @@ public class FeatureProposal extends AbstractIdea {
     @Fetch(value = SELECT)
     private List<User> voters;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private boolean submitted;
+    private FeatureProposalState state;
 
     public FeatureProposal() {
         super();
@@ -72,7 +76,7 @@ public class FeatureProposal extends AbstractIdea {
     private void setup() {
         this.ideas = new ArrayList<Idea>();
         this.voters = new ArrayList<User>();
-        this.submitted = false;
+        this.state = FeatureProposalState.IN_PROGRESS;
     }
 
     public List<Idea> getIdeas() {
@@ -126,12 +130,12 @@ public class FeatureProposal extends AbstractIdea {
         return this.voters.size();
     }
 
-    public boolean isSubmitted() {
-        return submitted;
+    public FeatureProposalState getState() {
+        return state;
     }
 
-    public void setSubmitted(boolean submitted) {
-        this.submitted = submitted;
+    public void setState(FeatureProposalState state) {
+        this.state = state;
     }
 
 }

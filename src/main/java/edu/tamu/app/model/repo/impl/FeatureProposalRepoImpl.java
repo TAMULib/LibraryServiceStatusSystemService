@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
+import edu.tamu.app.enums.IdeaState;
 import edu.tamu.app.exception.UserNotFoundException;
 import edu.tamu.app.model.FeatureProposal;
 import edu.tamu.app.model.Idea;
@@ -38,7 +39,7 @@ public class FeatureProposalRepoImpl implements FeatureProposalRepoCustom {
         if (user.isPresent()) {
             featureProposal.setAuthor(user.get());
             featureProposal.getIdeas().forEach(idea -> {
-                idea.setElevated(true);
+                idea.setState(IdeaState.ELEVATED);
                 idea = ideaRepo.save(idea);
                 simpMessagingTemplate.convertAndSend("/channel/ideas/update", new ApiResponse(SUCCESS, idea));
             });
@@ -51,7 +52,7 @@ public class FeatureProposalRepoImpl implements FeatureProposalRepoCustom {
 
     @Override
     public FeatureProposal create(Idea idea) {
-        idea.setElevated(true);
+        idea.setState(IdeaState.ELEVATED);
         idea = ideaRepo.save(idea);
         simpMessagingTemplate.convertAndSend("/channel/ideas/update", new ApiResponse(SUCCESS, idea));
         FeatureProposal featureProposal = featureProposalRepo.save(new FeatureProposal(idea));
@@ -62,7 +63,7 @@ public class FeatureProposalRepoImpl implements FeatureProposalRepoCustom {
     @Override
     public FeatureProposal update(FeatureProposal featureProposal) {
         featureProposal.getIdeas().forEach(idea -> {
-            idea.setElevated(true);
+            idea.setState(IdeaState.ELEVATED);
             idea = ideaRepo.save(idea);
             simpMessagingTemplate.convertAndSend("/channel/ideas/update", new ApiResponse(SUCCESS, idea));
         });
@@ -74,7 +75,7 @@ public class FeatureProposalRepoImpl implements FeatureProposalRepoCustom {
     @Override
     public void delete(FeatureProposal featureProposal) {
         featureProposal.getIdeas().forEach(idea -> {
-            idea.setElevated(false);
+            idea.setState(IdeaState.WAITING_ON_REVIEW);
             idea = ideaRepo.save(idea);
             simpMessagingTemplate.convertAndSend("/channel/ideas/update", new ApiResponse(SUCCESS, idea));
         });

@@ -6,6 +6,8 @@ public class ServiceRequest extends AbstractRequest {
 
     private Long service;
 
+    private String email;
+
     public ServiceRequest() {
         super();
     }
@@ -15,12 +17,25 @@ public class ServiceRequest extends AbstractRequest {
         this.service = service;
     }
 
+    public ServiceRequest(RequestType type, String title, String description, Long service, String email) {
+        this(type, title, description, service);
+        this.email = email;
+    }
+
     public Long getService() {
         return service;
     }
 
     public void setService(Long service) {
         this.service = service;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
 }

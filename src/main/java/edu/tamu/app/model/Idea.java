@@ -73,7 +73,6 @@ public class Idea extends AbstractIdea {
         this.state = state;
     }
 
-<<<<<<< HEAD
     public String getEmail() {
         return email;
     }
@@ -81,7 +80,7 @@ public class Idea extends AbstractIdea {
     public void setEmail(String email) {
         this.email = email;
     }
-=======
+
     public FeatureProposal getFeatureProposal() {
         return featureProposal;
     }
@@ -90,5 +89,4 @@ public class Idea extends AbstractIdea {
         this.featureProposal = featureProposal;
     }
 
->>>>>>> sprint6-staging
 }

@@ -15,6 +15,9 @@ public class Idea extends AbstractIdea {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private IdeaState state;
+    
+    @Column(nullable = true)
+    private String feedback;
 
     public Idea() {
         super();
@@ -47,6 +50,14 @@ public class Idea extends AbstractIdea {
 
     public void setState(IdeaState state) {
         this.state = state;
+    }
+
+    public String getFeedback() {
+        return feedback;
+    }
+
+    public void setFeedback(String feedback) {
+        this.feedback = feedback;
     }
 }
 

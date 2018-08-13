@@ -12,4 +12,6 @@ public interface IdeaRepoCustom {
 
     public void delete(Idea idea);
 
+    public Idea reject(Idea idea);
+
 }

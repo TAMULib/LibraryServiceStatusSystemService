@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
+import edu.tamu.app.enums.IdeaState;
 import edu.tamu.app.exception.UserNotFoundException;
 import edu.tamu.app.model.Idea;
 import edu.tamu.app.model.User;
@@ -52,4 +53,8 @@ public class IdeaRepoImpl implements IdeaRepoCustom {
         simpMessagingTemplate.convertAndSend("/channel/ideas/delete", new ApiResponse(SUCCESS, idea.getId()));
     }
 
+    public Idea reject(Idea idea) {
+        idea.setState(IdeaState.REJECTED);
+        return ideaRepo.update(idea);
+    }
 }

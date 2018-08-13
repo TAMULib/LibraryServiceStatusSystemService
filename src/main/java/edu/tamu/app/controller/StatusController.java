@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.tamu.app.service.MonitorService;
-import edu.tamu.weaver.auth.annotation.WeaverCredentials;
-import edu.tamu.weaver.auth.model.Credentials;
 import edu.tamu.weaver.response.ApiResponse;
 
 @RestController
@@ -21,13 +19,13 @@ public class StatusController {
 
     @RequestMapping("/overall-full")
     @PreAuthorize("hasRole('STAFF')")
-    public ApiResponse overallFull(@WeaverCredentials Credentials credentials) {
+    public ApiResponse overallFull() {
         return new ApiResponse(SUCCESS, monitorService.getOverallStatus());
     }
 
     @RequestMapping("/overall-public")
     @PreAuthorize("hasRole('ANONYMOUS')")
-    public ApiResponse overallPublic(@WeaverCredentials Credentials credentials) {
+    public ApiResponse overallPublic() {
         return new ApiResponse(SUCCESS, monitorService.getOverallStatusPublic());
     }
 

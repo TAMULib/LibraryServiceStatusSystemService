@@ -1,15 +1,26 @@
 package edu.tamu.app.model;
 
+import static javax.persistence.FetchType.EAGER;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import edu.tamu.app.enums.IdeaState;
 import edu.tamu.app.model.request.ServiceRequest;
 import edu.tamu.app.model.validation.IdeaValidator;
 
 @Entity
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = { "id", "feature_proposal_id" }))
 public class Idea extends AbstractIdea {
 
     @Enumerated(EnumType.STRING)
@@ -18,6 +29,11 @@ public class Idea extends AbstractIdea {
 
     @Column(nullable = true)
     private String email;
+
+    @ManyToOne(fetch = EAGER, cascade = { CascadeType.REFRESH, CascadeType.DETACH }, optional = true)
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, scope = FeatureProposal.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
+    private FeatureProposal featureProposal;
 
     public Idea() {
         super();
@@ -57,6 +73,7 @@ public class Idea extends AbstractIdea {
         this.state = state;
     }
 
+<<<<<<< HEAD
     public String getEmail() {
         return email;
     }
@@ -64,4 +81,14 @@ public class Idea extends AbstractIdea {
     public void setEmail(String email) {
         this.email = email;
     }
+=======
+    public FeatureProposal getFeatureProposal() {
+        return featureProposal;
+    }
+
+    public void setFeatureProposal(FeatureProposal featureProposal) {
+        this.featureProposal = featureProposal;
+    }
+
+>>>>>>> sprint6-staging
 }

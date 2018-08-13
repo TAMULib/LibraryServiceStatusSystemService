@@ -16,6 +16,9 @@ public class Idea extends AbstractIdea {
     @Column(nullable = false)
     private IdeaState state;
 
+    @Column(nullable = true)
+    private String email;
+
     public Idea() {
         super();
         this.modelValidator = new IdeaValidator();
@@ -27,8 +30,13 @@ public class Idea extends AbstractIdea {
         this.state = IdeaState.WAITING_ON_REVIEW;
     }
 
+    public Idea(String title, String description, String email) {
+        this(title, description);
+        this.email = email;
+    }
+
     public Idea(ServiceRequest serviceRequest) {
-        this(serviceRequest.getTitle(), serviceRequest.getDescription());
+        this(serviceRequest.getTitle(), serviceRequest.getDescription(), serviceRequest.getEmail());
     }
 
     public Idea(String title, String description, User author) {
@@ -48,6 +56,12 @@ public class Idea extends AbstractIdea {
     public void setState(IdeaState state) {
         this.state = state;
     }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 }
-
-

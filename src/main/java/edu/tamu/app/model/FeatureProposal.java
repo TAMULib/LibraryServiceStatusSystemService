@@ -46,6 +46,9 @@ public class FeatureProposal extends AbstractIdea {
     @Column(nullable = false)
     private FeatureProposalState state;
 
+    @Column(nullable = false)
+    private Boolean isPublic;
+
     public FeatureProposal() {
         super();
         this.modelValidator = new FeatureProposalValidator();
@@ -77,6 +80,7 @@ public class FeatureProposal extends AbstractIdea {
         this.ideas = new ArrayList<Idea>();
         this.voters = new ArrayList<User>();
         this.state = FeatureProposalState.IN_PROGRESS;
+        this.isPublic = true;
     }
 
     public List<Idea> getIdeas() {
@@ -136,6 +140,14 @@ public class FeatureProposal extends AbstractIdea {
 
     public void setState(FeatureProposalState state) {
         this.state = state;
+    }
+
+    public Boolean getIsPublic() {
+        return isPublic;
+    }
+
+    public void setIsPublic(Boolean isPublic) {
+        this.isPublic = isPublic;
     }
 
 }

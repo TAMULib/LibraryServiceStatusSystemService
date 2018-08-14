@@ -8,7 +8,6 @@ import edu.tamu.weaver.email.config.WeaverEmailConfig;
 
 @Configuration
 @Profile("!test")
-@Ignore("Not used in tests")
 public class AppEmailConfig extends WeaverEmailConfig {
 
 }

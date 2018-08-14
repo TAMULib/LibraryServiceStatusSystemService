@@ -51,7 +51,7 @@ public class Idea extends AbstractIdea {
 
     public Idea(String title, String description, String email) {
         this(title, description);
-        this.email = email;
+        setEmail(email);
     }
 
     public Idea(ServiceRequest serviceRequest) {

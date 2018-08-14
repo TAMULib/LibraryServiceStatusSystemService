@@ -155,6 +155,12 @@ public class IdeaTest {
     }
 
     @Test
+    public void testRejectException() {
+        Idea idea = new Idea(TEST_IDEA_TITLE, TEST_IDEA_DESCRIPTION, testUser, service1);
+        ideaRepo.reject(idea);
+    }
+
+    @Test
     public void testTimestampSetOnCreate() throws UserNotFoundException {
         Idea Idea = ideaRepo.create(testIdea, TEST_CREDENTIALS);
         Idea = ideaRepo.findOne(Idea.getId());

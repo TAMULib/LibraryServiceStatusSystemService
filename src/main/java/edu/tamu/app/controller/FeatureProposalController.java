@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import edu.tamu.app.enums.FeatureProposalState;
 import edu.tamu.app.exception.UserNotFoundException;
 import edu.tamu.app.model.FeatureProposal;
 import edu.tamu.app.model.Idea;
@@ -75,6 +76,14 @@ public class FeatureProposalController {
     public ApiResponse vote(@PathVariable Long id, @WeaverUser User voter) {
         FeatureProposal featureProposal = featureProposalRepo.findOne(id);
         featureProposal.addVoter(voter);
+        return new ApiResponse(SUCCESS, featureProposalRepo.update(featureProposal));
+    }
+
+    @RequestMapping("/{id}/reject")
+    @PreAuthorize("hasRole('SERVICE_MANAGER')")
+    public ApiResponse reject(@PathVariable Long id, @WeaverUser User voter) {
+        FeatureProposal featureProposal = featureProposalRepo.findOne(id);
+        featureProposal.setState(FeatureProposalState.REJECTED);
         return new ApiResponse(SUCCESS, featureProposalRepo.update(featureProposal));
     }
 

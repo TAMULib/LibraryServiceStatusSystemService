@@ -1,5 +1,6 @@
 package edu.tamu.app.model.request;
 
+import edu.tamu.app.model.Idea;
 import edu.tamu.weaver.auth.model.Credentials;
 
 public class IssueRequest extends AbstractRequest {
@@ -26,6 +27,10 @@ public class IssueRequest extends AbstractRequest {
         this(type, title, description);
         this.service = service;
         this.credentials = credentials;
+    }
+
+    public IssueRequest(Idea idea, Credentials credentials) {
+        this(RequestType.ISSUE, idea.getTitle(), idea.getDescription(), idea.getService().getName(), credentials);
     }
 
     public String getService() {

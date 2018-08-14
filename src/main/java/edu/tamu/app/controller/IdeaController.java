@@ -1,7 +1,7 @@
 package edu.tamu.app.controller;
 
-import static edu.tamu.weaver.response.ApiStatus.SUCCESS;
 import static edu.tamu.weaver.response.ApiStatus.INVALID;
+import static edu.tamu.weaver.response.ApiStatus.SUCCESS;
 import static edu.tamu.weaver.validation.model.BusinessValidationType.CREATE;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +12,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import edu.tamu.app.enums.IdeaState;
 import edu.tamu.app.exception.UserNotFoundException;
 import edu.tamu.app.model.Idea;
 import edu.tamu.app.model.repo.IdeaRepo;
 import edu.tamu.app.model.request.FilteredPageRequest;
+import edu.tamu.app.model.request.IssueRequest;
+import edu.tamu.app.service.ProjectService;
 import edu.tamu.weaver.auth.annotation.WeaverCredentials;
 import edu.tamu.weaver.auth.model.Credentials;
 import edu.tamu.weaver.response.ApiResponse;
@@ -28,6 +31,9 @@ public class IdeaController {
 
     @Autowired
     private IdeaRepo ideaRepo;
+
+    @Autowired
+    private ProjectService projectService;
 
     @RequestMapping("/page")
     @PreAuthorize("hasRole('SERVICE_MANAGER')")
@@ -64,6 +70,15 @@ public class IdeaController {
             response = new ApiResponse(SUCCESS, ideaRepo.reject(idea));
         }
         return response;
+    }
+
+    @RequestMapping("/helpdesk")
+    @PreAuthorize("hasRole('SERVICE_MANAGER')")
+    public ApiResponse helpdesk(@WeaverValidatedModel Idea idea, @WeaverCredentials Credentials credentials) {
+        idea.setState(IdeaState.SENT_TO_HELPDESK);
+        idea = ideaRepo.update(idea);
+        IssueRequest request = new IssueRequest(idea, credentials);
+        return projectService.submitIssueRequest(request);
     }
 
     @Transactional

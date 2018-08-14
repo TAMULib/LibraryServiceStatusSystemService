@@ -67,6 +67,11 @@ public class Idea extends AbstractIdea {
         super(title, description, author, service);
         this.state = IdeaState.WAITING_ON_REVIEW;
     }
+    
+    public Idea(String title, String description, User author, Service service, String email) {
+        this(title, description, author, service);
+        this.email = email;
+    }
 
     public IdeaState getState() {
         return state;

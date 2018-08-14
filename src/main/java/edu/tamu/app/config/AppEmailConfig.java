@@ -1,6 +1,5 @@
 package edu.tamu.app.config;
 
-import org.junit.Ignore;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 

@@ -1,6 +1,7 @@
 package edu.tamu.app.controller;
 
 import static edu.tamu.weaver.response.ApiStatus.SUCCESS;
+import static edu.tamu.weaver.response.ApiStatus.INVALID;
 import static edu.tamu.weaver.validation.model.BusinessValidationType.CREATE;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +52,18 @@ public class IdeaController {
     @PreAuthorize("hasRole('SERVICE_MANAGER')")
     public ApiResponse update(@WeaverValidatedModel Idea idea) {
         return new ApiResponse(SUCCESS, ideaRepo.update(idea));
+    }
+    
+    @RequestMapping("/reject")
+    @PreAuthorize("hasRole('SERVICE_MANAGER')")
+    public ApiResponse reject(@WeaverValidatedModel Idea idea) {
+        ApiResponse response;
+        if (idea.getFeedback() == null || idea.getFeedback().equals("")) {
+            response = new ApiResponse(INVALID, "You must provide feedback to reject an idea.");
+        } else {
+            response = new ApiResponse(SUCCESS, ideaRepo.reject(idea));
+        }
+        return response;
     }
 
     @Transactional

@@ -14,6 +14,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import edu.tamu.app.StatusApplication;
+import edu.tamu.app.enums.IdeaState;
 import edu.tamu.app.enums.Role;
 import edu.tamu.app.enums.Status;
 import edu.tamu.app.exception.UserNotFoundException;
@@ -35,6 +36,7 @@ public class IdeaTest {
     private static final String TEST_ALTERNATIVE_SERVICE_NAME = "Different Service Name";
     private static final String TEST_IDEA_DESCRIPTION = "Test Idea Description";
     private static final String TEST_ALTERNATIVE_IDEA_DESCRIPTION = "Alternative Idea Description";
+    private static final String TEST_IDEA_EMAIL = "aggiejack@mailinator.com";
     private static final Boolean TEST_IS_AUTO = false;
     private static final Boolean TEST_IS_PUBLIC = true;
     private static final Boolean TEST_ON_SHORT_LIST = true;
@@ -78,7 +80,7 @@ public class IdeaTest {
         testUser = userRepo.create(TEST_CREDENTIALS.getUin(), TEST_CREDENTIALS.getEmail(), TEST_CREDENTIALS.getFirstName(), TEST_CREDENTIALS.getLastName(), Role.valueOf(TEST_CREDENTIALS.getRole()));
         service1 = serviceRepo.create(new Service(TEST_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, TEST_SERVICE_URL, TEST_DESCRIPTION));
         service2 = serviceRepo.create(new Service(TEST_ALTERNATIVE_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, TEST_SERVICE_URL, TEST_DESCRIPTION));
-        testIdea = ideaRepo.create(new Idea(TEST_IDEA_TITLE, TEST_IDEA_DESCRIPTION, testUser, service1), TEST_CREDENTIALS);
+        testIdea = ideaRepo.create(new Idea(TEST_IDEA_TITLE, TEST_IDEA_DESCRIPTION, testUser, service1, TEST_IDEA_EMAIL), TEST_CREDENTIALS);
         testFeatureProposal = featureProposalRepo.create(new FeatureProposal(TEST_FEATURE_PROPOSAL_TITLE, TEST_FEATURE_PROPOSAL_DESCRIPTION, testUser, service1), TEST_CREDENTIALS);
     }
 
@@ -142,6 +144,20 @@ public class IdeaTest {
         assertEquals("Idea does not have feature proposal", testFeatureProposal, idea.getFeatureProposal());
         assertEquals("Feature proposal does not have expedted number of ideas", 1, testFeatureProposal.getIdeas().size());
         assertEquals("Feature proposal does not have idea", idea, testFeatureProposal.getIdeas().get(0));
+    }
+
+    @Test
+    public void testReject() throws UserNotFoundException {
+        Idea idea = ideaRepo.create(testIdea, TEST_CREDENTIALS);
+        idea = ideaRepo.reject(idea);
+
+        assertEquals("Idea was not rejected", IdeaState.REJECTED, idea.getState());
+    }
+
+    @Test
+    public void testRejectException() {
+        Idea idea = new Idea(TEST_IDEA_TITLE, TEST_IDEA_DESCRIPTION, testUser, service1);
+        ideaRepo.reject(idea);
     }
 
     @Test

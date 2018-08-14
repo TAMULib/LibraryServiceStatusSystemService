@@ -14,12 +14,12 @@ public class ServiceRequest extends AbstractRequest {
 
     public ServiceRequest(RequestType type, String title, String description, Long service) {
         super(type, title, description);
-        this.service = service;
+        setService(service);
     }
 
     public ServiceRequest(RequestType type, String title, String description, Long service, String email) {
         this(type, title, description, service);
-        this.email = email;
+        setEmail(email);
     }
 
     public Long getService() {

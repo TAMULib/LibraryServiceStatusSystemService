@@ -47,7 +47,7 @@ public class FeatureProposal extends AbstractIdea {
     private FeatureProposalState state;
 
     @Column(nullable = false)
-    private Boolean isPublic;
+    private Boolean isPrivate;
 
     public FeatureProposal() {
         super();
@@ -80,7 +80,7 @@ public class FeatureProposal extends AbstractIdea {
         this.ideas = new ArrayList<Idea>();
         this.voters = new ArrayList<User>();
         this.state = FeatureProposalState.IN_PROGRESS;
-        this.isPublic = true;
+        this.isPrivate = false;
     }
 
     public List<Idea> getIdeas() {
@@ -142,12 +142,12 @@ public class FeatureProposal extends AbstractIdea {
         this.state = state;
     }
 
-    public Boolean getIsPublic() {
-        return isPublic;
+    public Boolean getIsPrivate() {
+        return isPrivate;
     }
 
-    public void setIsPublic(Boolean isPublic) {
-        this.isPublic = isPublic;
+    public void setIsPrivate(Boolean isPrivate) {
+        this.isPrivate = isPrivate;
     }
 
 }

@@ -29,14 +29,20 @@ import edu.tamu.weaver.auth.model.Credentials;
 public class IdeaTest {
 
     private static final String TEST_IDEA_TITLE = "Idea Title";
-    private static final String TEST_SERVICE_URL = "https://library.tamu.edu";
-    private static final String TEST_DESCRIPTION = "Test Service Description";
-    private static final String TEST_ALTERNATIVE_IDEA_TITLE = "Alternative Idea Title";
-    private static final String TEST_SERVICE_NAME = "Test Service Name";
-    private static final String TEST_ALTERNATIVE_SERVICE_NAME = "Different Service Name";
     private static final String TEST_IDEA_DESCRIPTION = "Test Idea Description";
-    private static final String TEST_ALTERNATIVE_IDEA_DESCRIPTION = "Alternative Idea Description";
+    private static final String TEST_IDEA_FEEDBACK = "Idea Feedback";
     private static final String TEST_IDEA_EMAIL = "aggiejack@mailinator.com";
+
+    private static final String TEST_SERVICE_NAME = "Test Service Name";
+    private static final String TEST_SERVICE_URL = "https://library.tamu.edu";
+    private static final String TEST_SERVICE_DESCRIPTION = "Test Service Description";
+
+    private static final String TEST_ALTERNATIVE_IDEA_TITLE = "Alternative Idea Title";
+    private static final String TEST_ALTERNATIVE_IDEA_FEEDBACK = "Alternative Idea Feedback";
+    private static final String TEST_ALTERNATIVE_IDEA_DESCRIPTION = "Alternative Idea Description";
+
+    private static final String TEST_ALTERNATIVE_SERVICE_NAME = "Different Service Name";
+
     private static final Boolean TEST_IS_AUTO = false;
     private static final Boolean TEST_IS_PUBLIC = true;
     private static final Boolean TEST_ON_SHORT_LIST = true;
@@ -78,8 +84,8 @@ public class IdeaTest {
     @Before
     public void setUp() throws UserNotFoundException {
         testUser = userRepo.create(TEST_CREDENTIALS.getUin(), TEST_CREDENTIALS.getEmail(), TEST_CREDENTIALS.getFirstName(), TEST_CREDENTIALS.getLastName(), Role.valueOf(TEST_CREDENTIALS.getRole()));
-        service1 = serviceRepo.create(new Service(TEST_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, TEST_SERVICE_URL, TEST_DESCRIPTION));
-        service2 = serviceRepo.create(new Service(TEST_ALTERNATIVE_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, TEST_SERVICE_URL, TEST_DESCRIPTION));
+        service1 = serviceRepo.create(new Service(TEST_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, TEST_SERVICE_URL, TEST_SERVICE_DESCRIPTION));
+        service2 = serviceRepo.create(new Service(TEST_ALTERNATIVE_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, TEST_SERVICE_URL, TEST_SERVICE_DESCRIPTION));
         testIdea = ideaRepo.create(new Idea(TEST_IDEA_TITLE, TEST_IDEA_DESCRIPTION, testUser, service1, TEST_IDEA_EMAIL), TEST_CREDENTIALS);
         testFeatureProposal = featureProposalRepo.create(new FeatureProposal(TEST_FEATURE_PROPOSAL_TITLE, TEST_FEATURE_PROPOSAL_DESCRIPTION, testUser, service1), TEST_CREDENTIALS);
     }
@@ -131,6 +137,17 @@ public class IdeaTest {
         idea.setDescription(TEST_ALTERNATIVE_IDEA_DESCRIPTION);
         idea = ideaRepo.save(idea);
         assertEquals("Idea body not updated", TEST_ALTERNATIVE_IDEA_DESCRIPTION, idea.getDescription());
+    }
+
+    @Test
+    public void testUpdateFeedback() throws UserNotFoundException {
+        Idea idea = ideaRepo.create(testIdea, TEST_CREDENTIALS);
+        idea.setFeedback(TEST_IDEA_FEEDBACK);
+        idea = ideaRepo.save(idea);
+        assertEquals("Idea feedback not set", TEST_IDEA_FEEDBACK, idea.getFeedback());
+        idea.setFeedback(TEST_ALTERNATIVE_IDEA_FEEDBACK);
+        idea = ideaRepo.save(idea);
+        assertEquals("Idea feedback not updated", TEST_ALTERNATIVE_IDEA_FEEDBACK, idea.getFeedback());
     }
 
     @Test

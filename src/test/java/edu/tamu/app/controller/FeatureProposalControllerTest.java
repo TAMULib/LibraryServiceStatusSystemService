@@ -102,6 +102,7 @@ public class FeatureProposalControllerTest {
         when(featureProposalRepo.create(any(FeatureProposal.class), any(Credentials.class))).thenReturn(TEST_FEATURE_PROPOSAL1);
         when(featureProposalRepo.create(any(Idea.class))).thenReturn(TEST_FEATURE_PROPOSAL1);
         when(featureProposalRepo.update(any(FeatureProposal.class))).thenReturn(TEST_MODIFIED_FEATURE_PROPOSAL);
+        when(featureProposalRepo.reject(TEST_FEATURE_PROPOSAL1)).thenReturn(rejectedFeatureProposal);
         when(serviceRepo.findOne(any(Long.class))).thenReturn(TEST_SERVICE);
         doNothing().when(featureProposalRepo).delete(any(FeatureProposal.class));
         doNothing().when(featureProposalRepo).delete(any(FeatureProposal.class));

@@ -80,7 +80,7 @@ public class FeatureProposal extends AbstractIdea {
         this.ideas = new ArrayList<Idea>();
         this.voters = new ArrayList<User>();
         this.state = FeatureProposalState.IN_PROGRESS;
-        this.isPrivate = true;
+        this.isPrivate = false;
     }
 
     public List<Idea> getIdeas() {

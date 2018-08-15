@@ -25,6 +25,9 @@ public abstract class AbstractIdea extends ValidatingBaseEntity {
     @Column(columnDefinition = "text", nullable = true)
     private String description;
 
+    @Column(nullable = true)
+    private String feedback;
+
     @Temporal(TemporalType.TIMESTAMP)
     @UpdateTimestamp
     private Calendar lastModified;
@@ -37,6 +40,7 @@ public abstract class AbstractIdea extends ValidatingBaseEntity {
 
     public AbstractIdea() {
         super();
+        this.feedback = "";
     }
 
     public AbstractIdea(String title, String description) {
@@ -73,6 +77,14 @@ public abstract class AbstractIdea extends ValidatingBaseEntity {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getFeedback() {
+        return feedback;
+    }
+
+    public void setFeedback(String feedback) {
+        this.feedback = feedback;
     }
 
     public Calendar getLastModified() {

@@ -31,6 +31,7 @@ public class FeatureProposalTest {
 
     private static final String TEST_FEATURE_PROPOSAL_TITLE = "Feature Proposal Title";
     private static final String TEST_FEATURE_PROPOSAL_DESCRIPTION = "Test Feature Proposal Description";
+    private static final String TEST_FEATURE_PROPOSAL_FEEDBACK = "Feature Proposal Feedback";
 
     private static final String TEST_SERVICE_NAME = "Test Service Name";
     private static final String TEST_SERVICE_URL = "https://library.tamu.edu";
@@ -38,6 +39,7 @@ public class FeatureProposalTest {
 
     private static final String TEST_ALTERNATIVE_FEATURE_PROPOSAL_TITLE = "Alternative Feature Proposal Title";
     private static final String TEST_ALTERNATIVE_FEATURE_PROPOSAL_DESCRIPTION = "Alternative Feature Proposal Description";
+    private static final String TEST_ALTERNATIVE_FEATURE_PROPOSAL_FEEDBACK = "Alternative Feature Proposal Feedback";
 
     private static final String TEST_ALTERNATIVE_SERVICE_NAME = "Different Service Name";
 
@@ -195,6 +197,17 @@ public class FeatureProposalTest {
         featureProposal.setDescription(TEST_ALTERNATIVE_FEATURE_PROPOSAL_DESCRIPTION);
         featureProposal = featureProposalRepo.save(featureProposal);
         assertEquals("FeatureProposal body not updated", TEST_ALTERNATIVE_FEATURE_PROPOSAL_DESCRIPTION, featureProposal.getDescription());
+    }
+
+    @Test
+    public void testUpdateFeedback() throws UserNotFoundException {
+        FeatureProposal featureProposal = featureProposalRepo.create(testFeatureProposal, TEST_CREDENTIALS);
+        featureProposal.setFeedback(TEST_FEATURE_PROPOSAL_FEEDBACK);
+        featureProposal = featureProposalRepo.save(featureProposal);
+        assertEquals("FeatureProposal feedback not set", TEST_FEATURE_PROPOSAL_FEEDBACK, featureProposal.getFeedback());
+        featureProposal.setFeedback(TEST_ALTERNATIVE_FEATURE_PROPOSAL_FEEDBACK);
+        featureProposal = featureProposalRepo.save(featureProposal);
+        assertEquals("FeatureProposal feedback not updated", TEST_ALTERNATIVE_FEATURE_PROPOSAL_FEEDBACK, featureProposal.getFeedback());
     }
 
     @Test

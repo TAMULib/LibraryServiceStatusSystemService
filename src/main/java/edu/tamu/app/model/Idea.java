@@ -26,9 +26,6 @@ public class Idea extends AbstractIdea {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private IdeaState state;
-    
-    @Column(nullable = true)
-    private String feedback;
 
     @Column(nullable = true)
     private String email;
@@ -67,7 +64,7 @@ public class Idea extends AbstractIdea {
         super(title, description, author, service);
         this.state = IdeaState.WAITING_ON_REVIEW;
     }
-    
+
     public Idea(String title, String description, User author, Service service, String email) {
         this(title, description, author, service);
         this.email = email;
@@ -79,14 +76,6 @@ public class Idea extends AbstractIdea {
 
     public void setState(IdeaState state) {
         this.state = state;
-    }
-
-    public String getFeedback() {
-        return feedback;
-    }
-
-    public void setFeedback(String feedback) {
-        this.feedback = feedback;
     }
 
     public String getEmail() {

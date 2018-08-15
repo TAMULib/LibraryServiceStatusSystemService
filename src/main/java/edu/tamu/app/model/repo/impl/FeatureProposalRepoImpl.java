@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
+import edu.tamu.app.enums.FeatureProposalState;
 import edu.tamu.app.enums.IdeaState;
 import edu.tamu.app.exception.UserNotFoundException;
 import edu.tamu.app.model.FeatureProposal;
@@ -87,6 +88,11 @@ public class FeatureProposalRepoImpl implements FeatureProposalRepoCustom {
         featureProposal = featureProposalRepo.save(featureProposal);
         featureProposalRepo.delete(featureProposal.getId());
         simpMessagingTemplate.convertAndSend("/channel/feature-proposals/delete", new ApiResponse(SUCCESS, featureProposal.getId()));
+    }
+
+    public FeatureProposal reject(FeatureProposal featureProposal) {
+        featureProposal.setState(FeatureProposalState.REJECTED);
+        return featureProposalRepo.update(featureProposal);
     }
 
 }

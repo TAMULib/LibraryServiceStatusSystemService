@@ -60,7 +60,7 @@ public class IdeaControllerTest {
     private static Idea TEST_IDEA2 = new Idea(TEST_IDEA_TITLE2, TEST_IDEA_DESCRIPTION2, TEST_USER1);
     private static Idea TEST_IDEA3 = new Idea(TEST_IDEA_TITLE3, TEST_IDEA_DESCRIPTION3, TEST_USER1);
     private static Idea TEST_MODIFIED_IDEA = new Idea(TEST_MODIFIED_IDEA_TITLE, TEST_MODIFIED_IDEA_DESCRIPTION, TEST_USER2, TEST_SERVICE);
-    private static Idea ideaWtihFeedback = new Idea(TEST_IDEA_TITLE1, TEST_IDEA_DESCRIPTION1, TEST_USER1);
+    private static Idea ideaWithFeedback = new Idea(TEST_IDEA_TITLE1, TEST_IDEA_DESCRIPTION1, TEST_USER1);
     private Idea rejectedIdea = new Idea(TEST_IDEA_TITLE1, TEST_IDEA_DESCRIPTION1, TEST_USER1);
     private static List<Idea> mockIdeaList = new ArrayList<Idea>(Arrays.asList(new Idea[] { TEST_IDEA1, TEST_IDEA2, TEST_IDEA3 }));
     private static Page<Idea> mockPageableIdeaList = new PageImpl<Idea>(Arrays.asList(new Idea[] { TEST_IDEA1, TEST_IDEA2, TEST_IDEA3 }));
@@ -91,7 +91,7 @@ public class IdeaControllerTest {
     @SuppressWarnings("unchecked")
     public void setup() throws UserNotFoundException {
         rejectedIdea.setState(IdeaState.REJECTED);
-        ideaWtihFeedback.setFeedback(TEST_FEEDBACK);
+        ideaWithFeedback.setFeedback(TEST_FEEDBACK);
         MockitoAnnotations.initMocks(this);
         when(credentials.getUin()).thenReturn("123456789");
         when(userRepo.findByUsername(any(String.class))).thenReturn(Optional.of(user));
@@ -142,7 +142,7 @@ public class IdeaControllerTest {
 
     @Test
     public void testReject() {
-        response = ideaController.reject(ideaWtihFeedback);
+        response = ideaController.reject(ideaWithFeedback);
         assertEquals("Not successful at rejecting idea", SUCCESS, response.getMeta().getStatus());
         Idea idea = (Idea) response.getPayload().get("Idea");
         assertEquals("State was not set to Rejected", rejectedIdea.getState(), idea.getState());

@@ -63,7 +63,7 @@ public class IdeaRepoImpl implements IdeaRepoCustom {
 
     public Idea reject(Idea idea) {
         idea.setState(IdeaState.REJECTED);
-        String body = "Your idea " + idea.getTitle() + ", for " + idea.getService().getName() + ", has been rejected for the following reason:\n" + idea.getFeedback();
+        String body = "Your idea " + idea.getTitle() + ", for " + idea.getService().getName() + ", has been rejected for the following reason:<br />" + idea.getFeedback();
         try {
             if (idea.getEmail() != null && !idea.getEmail().isEmpty()) {
                 emailService.sendEmail(idea.getEmail(), REJECTION_SUBJECT, body);

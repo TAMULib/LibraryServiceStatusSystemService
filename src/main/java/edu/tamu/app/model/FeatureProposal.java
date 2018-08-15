@@ -46,9 +46,6 @@ public class FeatureProposal extends AbstractIdea {
     @Column(nullable = false)
     private FeatureProposalState state;
 
-    @Column(nullable = true)
-    private String feedback;
-
     @Column(nullable = false)
     private Boolean isPublic;
 
@@ -83,7 +80,6 @@ public class FeatureProposal extends AbstractIdea {
         this.ideas = new ArrayList<Idea>();
         this.voters = new ArrayList<User>();
         this.state = FeatureProposalState.IN_PROGRESS;
-        this.feedback = "";
         this.isPublic = true;
     }
 
@@ -144,14 +140,6 @@ public class FeatureProposal extends AbstractIdea {
 
     public void setState(FeatureProposalState state) {
         this.state = state;
-    }
-
-    public String getFeedback() {
-        return feedback;
-    }
-
-    public void setFeedback(String feedback) {
-        this.feedback = feedback;
     }
 
     public Boolean getIsPublic() {

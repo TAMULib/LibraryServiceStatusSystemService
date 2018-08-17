@@ -35,6 +35,8 @@ import edu.tamu.app.model.repo.ServiceRepo;
 import edu.tamu.app.model.repo.UserRepo;
 import edu.tamu.app.model.repo.specification.IdeaSpecification;
 import edu.tamu.app.model.request.FilteredPageRequest;
+import edu.tamu.app.model.request.IssueRequest;
+import edu.tamu.app.service.ProjectService;
 import edu.tamu.weaver.auth.model.Credentials;
 import edu.tamu.weaver.response.ApiResponse;
 
@@ -43,6 +45,15 @@ public class IdeaControllerTest {
 
     private static User TEST_USER1 = new User("123456789");
     private static User TEST_USER2 = new User("987654321");
+
+    private static final Credentials TEST_CREDENTIALS_1 = new Credentials();
+    static {
+        TEST_CREDENTIALS_1.setUin("123456789");
+        TEST_CREDENTIALS_1.setEmail("aggieJack@tamu.edu");
+        TEST_CREDENTIALS_1.setFirstName("Aggie");
+        TEST_CREDENTIALS_1.setLastName("Jack");
+        TEST_CREDENTIALS_1.setRole("ROLE_USER");
+    }
 
     private static final String TEST_IDEA_TITLE1 = "Test Idea Title 1";
     private static final String TEST_IDEA_TITLE2 = "Test Idea Title 2";
@@ -56,7 +67,7 @@ public class IdeaControllerTest {
     private static final String TEST_FEEDBACK = "Test Rejection Feedback";
 
     private static Service TEST_SERVICE = new Service(TEST_SERVICE_NAME, Status.UP, false, true, true, "", "");
-    private static Idea TEST_IDEA1 = new Idea(TEST_IDEA_TITLE1, TEST_IDEA_DESCRIPTION1, TEST_USER1);
+    private static Idea TEST_IDEA1 = new Idea(TEST_IDEA_TITLE1, TEST_IDEA_DESCRIPTION1, TEST_USER1, TEST_SERVICE);
     private static Idea TEST_IDEA2 = new Idea(TEST_IDEA_TITLE2, TEST_IDEA_DESCRIPTION2, TEST_USER1);
     private static Idea TEST_IDEA3 = new Idea(TEST_IDEA_TITLE3, TEST_IDEA_DESCRIPTION3, TEST_USER1);
     private static Idea TEST_MODIFIED_IDEA = new Idea(TEST_MODIFIED_IDEA_TITLE, TEST_MODIFIED_IDEA_DESCRIPTION, TEST_USER2, TEST_SERVICE);
@@ -64,6 +75,7 @@ public class IdeaControllerTest {
     private Idea rejectedIdea = new Idea(TEST_IDEA_TITLE1, TEST_IDEA_DESCRIPTION1, TEST_USER1);
     private static List<Idea> mockIdeaList = new ArrayList<Idea>(Arrays.asList(new Idea[] { TEST_IDEA1, TEST_IDEA2, TEST_IDEA3 }));
     private static Page<Idea> mockPageableIdeaList = new PageImpl<Idea>(Arrays.asList(new Idea[] { TEST_IDEA1, TEST_IDEA2, TEST_IDEA3 }));
+    private static IssueRequest TEST_ISSUE_REQUEST = new IssueRequest(TEST_IDEA1, TEST_CREDENTIALS_1);
 
     private static User user = new User("123456789");
 
@@ -77,6 +89,9 @@ public class IdeaControllerTest {
 
     @Mock
     private ServiceRepo serviceRepo;
+
+    @Mock
+    private ProjectService projectService;
 
     @Mock
     private SimpMessagingTemplate simpMessagingTemplate;
@@ -102,6 +117,7 @@ public class IdeaControllerTest {
         when(ideaRepo.update(any(Idea.class))).thenReturn(TEST_MODIFIED_IDEA);
         when(ideaRepo.reject(TEST_IDEA1)).thenReturn(rejectedIdea);
         when(serviceRepo.findOne(any(Long.class))).thenReturn(TEST_SERVICE);
+        when(projectService.submitIssueRequest(any(IssueRequest.class))).thenReturn(new ApiResponse(SUCCESS, TEST_ISSUE_REQUEST));
         doNothing().when(ideaRepo).delete(any(Idea.class));
         doNothing().when(ideaRepo).delete(any(Idea.class));
     }
@@ -153,7 +169,14 @@ public class IdeaControllerTest {
         response = ideaController.reject(TEST_IDEA1);
         assertEquals("Idea without feedback was successfull", INVALID, response.getMeta().getStatus());
     }
-    
+
+    @Test
+    public void testHelpdesk() {
+        when(ideaRepo.update(any(Idea.class))).thenReturn(TEST_IDEA1);
+        response = ideaController.helpdesk(TEST_IDEA1, credentials);
+        assertEquals("Request was not successfull", SUCCESS, response.getMeta().getStatus());
+    }
+
     @Test
     public void testRemove() {
         response = ideaController.remove(TEST_MODIFIED_IDEA);

@@ -27,6 +27,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import edu.tamu.app.exception.UserNotFoundException;
+import edu.tamu.app.model.FeatureProposal;
 import edu.tamu.app.model.response.Project;
 import edu.tamu.app.service.ProjectService;
 import edu.tamu.weaver.response.ApiResponse;
@@ -35,6 +37,9 @@ import edu.tamu.weaver.response.ApiStatus;
 @RunWith(SpringRunner.class)
 public class ProjectControllerTest {
 
+    private static String TEST_FEATURE_PROPOSAL_NAME = "Test FP name";
+    private static String TEST_FEATURE_PROPOSAL_DESCRIPTION = "Test FP name";
+    private static FeatureProposal TEST_FEATURE_PROPOSAL = new FeatureProposal(TEST_FEATURE_PROPOSAL_NAME, TEST_FEATURE_PROPOSAL_DESCRIPTION);
     private static List<Project> projects = new ArrayList<Project>();
 
     @Value("classpath:mock/projects.json")
@@ -52,9 +57,11 @@ public class ProjectControllerTest {
     @Before
     public void setup() throws JsonParseException, JsonMappingException, IOException {
         MockitoAnnotations.initMocks(this);
-        projects = objectMapper.readValue(resource.getFile(), new TypeReference<List<Project>>() {});
+        projects = objectMapper.readValue(resource.getFile(), new TypeReference<List<Project>>() {
+        });
         when(projectService.getAll()).thenReturn(new ApiResponse(SUCCESS, projects));
         when(projectService.getById(any(Long.class))).thenReturn(new ApiResponse(SUCCESS, projects.get(0)));
+        when(projectService.submitFeatureRequest(any(FeatureProposal.class))).thenReturn(new ApiResponse(SUCCESS, TEST_FEATURE_PROPOSAL));
     }
 
     @Test
@@ -79,6 +86,12 @@ public class ProjectControllerTest {
         assertNotNull("Project is null!", project);
         assertEquals("Project did not have the correct id!", projects.get(0).getId(), project.getId());
         assertEquals("Project did not have the correct name!", projects.get(0).getName(), project.getName());
+    }
+
+    @Test
+    public void testSubmitFeatureRequest() throws UserNotFoundException {
+        ApiResponse response = projectController.submitFeatureRequest(TEST_FEATURE_PROPOSAL);
+        assertEquals("Request was not successfull", SUCCESS, response.getMeta().getStatus());
     }
 
 }

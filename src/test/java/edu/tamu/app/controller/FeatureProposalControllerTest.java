@@ -1,7 +1,9 @@
 package edu.tamu.app.controller;
 
+import static edu.tamu.weaver.response.ApiStatus.INVALID;
 import static edu.tamu.weaver.response.ApiStatus.SUCCESS;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -102,7 +104,7 @@ public class FeatureProposalControllerTest {
         when(featureProposalRepo.create(any(FeatureProposal.class), any(Credentials.class))).thenReturn(TEST_FEATURE_PROPOSAL1);
         when(featureProposalRepo.create(any(Idea.class))).thenReturn(TEST_FEATURE_PROPOSAL1);
         when(featureProposalRepo.update(any(FeatureProposal.class))).thenReturn(TEST_MODIFIED_FEATURE_PROPOSAL);
-        when(featureProposalRepo.reject(TEST_FEATURE_PROPOSAL1)).thenReturn(rejectedFeatureProposal);
+        when(featureProposalRepo.reject(featureProposalWithFeedback)).thenReturn(rejectedFeatureProposal);
         when(serviceRepo.findOne(any(Long.class))).thenReturn(TEST_SERVICE);
         doNothing().when(featureProposalRepo).delete(any(FeatureProposal.class));
         doNothing().when(featureProposalRepo).delete(any(FeatureProposal.class));
@@ -155,6 +157,12 @@ public class FeatureProposalControllerTest {
         assertEquals("Not successful at rejecting feature proposal", SUCCESS, response.getMeta().getStatus());
         FeatureProposal featureProposal = (FeatureProposal) response.getPayload().get("FeatureProposal");
         assertEquals("State was not set to Rejected", rejectedFeatureProposal.getState(), featureProposal.getState());
+    }
+    
+    @Test
+    public void testInvalidReject() {
+        response = featureProposalController.reject(TEST_FEATURE_PROPOSAL1);
+        assertEquals("Ffeature proposal without feedback was not rejected", INVALID, response.getMeta().getStatus());
     }
 
     @Test

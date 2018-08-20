@@ -54,12 +54,12 @@ app:
   # Framework app properties #
   ############################
   # edu.tamu.weaver.auth.service.UserCredentialsService
-  authority.admins: 402001311,613001223,102001721,222004429,709005486,523008230,724001395,123456789
+  authority.admins: 402001311,613001223,102001721,222004429,709005486,523008230,724001395,123456789,512004707,427008012
   security:
     # edu.tamu.weaver.auth.service.CryptoService
     secret: verysecretsecret
     # edu.tamu.weaver.filter.CorsFilter
-    allow-access: http://localhost,http://localhost:8080,http://machuff.tamu.edu,http://janus.evans.tamu.edu,http://savell.evans.tamu.edu,http://jmicah.tamu.edu
+    allow-access: http://localhost,http://localhost:8080,http://machuff.tamu.edu,http://janus.evans.tamu.edu,http://savell.evans.tamu.edu,http://jmicah.tamu.edu,http://laddusaw.tamu.edu,http://muninn.evans.tamu.edu:8080
   # edu.tamu.weaver.email.config.WeaverEmailConfig
   email:
     host: relay.tamu.edu

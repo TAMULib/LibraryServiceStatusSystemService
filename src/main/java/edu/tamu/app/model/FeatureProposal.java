@@ -21,14 +21,12 @@ import org.hibernate.annotations.Fetch;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import edu.tamu.app.enums.FeatureProposalState;
 import edu.tamu.app.model.validation.FeatureProposalValidator;
 
 @Entity
-@JsonIgnoreProperties(value = { "voters" }, allowGetters = true)
 public class FeatureProposal extends AbstractIdea {
 
     @OneToMany(fetch = EAGER, cascade = { CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE }, mappedBy = "featureProposal")
@@ -51,7 +49,6 @@ public class FeatureProposal extends AbstractIdea {
 
     public FeatureProposal() {
         super();
-        this.modelValidator = new FeatureProposalValidator();
         setup();
     }
 
@@ -77,6 +74,7 @@ public class FeatureProposal extends AbstractIdea {
     }
 
     private void setup() {
+        this.modelValidator = new FeatureProposalValidator();
         this.ideas = new ArrayList<Idea>();
         this.voters = new ArrayList<User>();
         this.state = FeatureProposalState.IN_PROGRESS;

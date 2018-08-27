@@ -1,4 +1,4 @@
-package edu.tamu.app.model.impl;
+package edu.tamu.app.model;
 
 import static org.junit.Assert.assertEquals;
 

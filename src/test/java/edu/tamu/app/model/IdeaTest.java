@@ -14,9 +14,11 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import edu.tamu.app.StatusApplication;
+import edu.tamu.app.enums.IdeaState;
 import edu.tamu.app.enums.Role;
 import edu.tamu.app.enums.Status;
 import edu.tamu.app.exception.UserNotFoundException;
+import edu.tamu.app.model.repo.FeatureProposalRepo;
 import edu.tamu.app.model.repo.IdeaRepo;
 import edu.tamu.app.model.repo.ServiceRepo;
 import edu.tamu.app.model.repo.UserRepo;
@@ -27,17 +29,28 @@ import edu.tamu.weaver.auth.model.Credentials;
 public class IdeaTest {
 
     private static final String TEST_IDEA_TITLE = "Idea Title";
-    private static final String TEST_SERVICE_URL = "https://library.tamu.edu";
-    private static final String TEST_DESCRIPTION = "Test Service Description";
-    private static final String TEST_ALTERNATIVE_IDEA_TITLE = "Alternative Idea Title";
-    private static final String TEST_SERVICE_NAME = "Test Service Name";
-    private static final String TEST_ALTERNATIVE_SERVICE_NAME = "Different Service Name";
     private static final String TEST_IDEA_DESCRIPTION = "Test Idea Description";
+    private static final String TEST_IDEA_FEEDBACK = "Idea Feedback";
+    private static final String TEST_IDEA_EMAIL = "aggiejack@mailinator.com";
+
+    private static final String TEST_SERVICE_NAME = "Test Service Name";
+    private static final String TEST_SERVICE_URL = "https://library.tamu.edu";
+    private static final String TEST_SERVICE_DESCRIPTION = "Test Service Description";
+
+    private static final String TEST_ALTERNATIVE_IDEA_TITLE = "Alternative Idea Title";
+    private static final String TEST_ALTERNATIVE_IDEA_FEEDBACK = "Alternative Idea Feedback";
     private static final String TEST_ALTERNATIVE_IDEA_DESCRIPTION = "Alternative Idea Description";
+
+    private static final String TEST_ALTERNATIVE_SERVICE_NAME = "Different Service Name";
+
     private static final Boolean TEST_IS_AUTO = false;
     private static final Boolean TEST_IS_PUBLIC = true;
     private static final Boolean TEST_ON_SHORT_LIST = true;
     private static final Status TEST_SERVICE_STATUS = Status.UP;
+
+    private static final String TEST_FEATURE_PROPOSAL_TITLE = "Feature Proposal Title";
+    private static final String TEST_FEATURE_PROPOSAL_DESCRIPTION = "Test Feature Proposal Description";
+
     private Service service1;
     private Service service2;
 
@@ -54,6 +67,8 @@ public class IdeaTest {
 
     private Idea testIdea;
 
+    private FeatureProposal testFeatureProposal;
+
     @Autowired
     private IdeaRepo ideaRepo;
 
@@ -61,14 +76,18 @@ public class IdeaTest {
     private ServiceRepo serviceRepo;
 
     @Autowired
-    private UserRepo appUserRepo;
+    private UserRepo userRepo;
+
+    @Autowired
+    private FeatureProposalRepo featureProposalRepo;
 
     @Before
     public void setUp() throws UserNotFoundException {
-        testUser = appUserRepo.create(TEST_CREDENTIALS.getUin(), TEST_CREDENTIALS.getEmail(), TEST_CREDENTIALS.getFirstName(), TEST_CREDENTIALS.getLastName(), Role.valueOf(TEST_CREDENTIALS.getRole()));
-        service1 = serviceRepo.create(new Service(TEST_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, TEST_SERVICE_URL, TEST_DESCRIPTION));
-        service2 = serviceRepo.create(new Service(TEST_ALTERNATIVE_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, TEST_SERVICE_URL, TEST_DESCRIPTION));
-        testIdea = ideaRepo.create(new Idea(TEST_IDEA_TITLE, TEST_IDEA_DESCRIPTION, testUser, service1), TEST_CREDENTIALS);
+        testUser = userRepo.create(TEST_CREDENTIALS.getUin(), TEST_CREDENTIALS.getEmail(), TEST_CREDENTIALS.getFirstName(), TEST_CREDENTIALS.getLastName(), Role.valueOf(TEST_CREDENTIALS.getRole()));
+        service1 = serviceRepo.create(new Service(TEST_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, TEST_SERVICE_URL, TEST_SERVICE_DESCRIPTION));
+        service2 = serviceRepo.create(new Service(TEST_ALTERNATIVE_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, TEST_SERVICE_URL, TEST_SERVICE_DESCRIPTION));
+        testIdea = ideaRepo.create(new Idea(TEST_IDEA_TITLE, TEST_IDEA_DESCRIPTION, testUser, service1, TEST_IDEA_EMAIL), TEST_CREDENTIALS);
+        testFeatureProposal = featureProposalRepo.create(new FeatureProposal(TEST_FEATURE_PROPOSAL_TITLE, TEST_FEATURE_PROPOSAL_DESCRIPTION, testUser, service1), TEST_CREDENTIALS);
     }
 
     @Test
@@ -121,6 +140,44 @@ public class IdeaTest {
     }
 
     @Test
+    public void testUpdateFeedback() throws UserNotFoundException {
+        Idea idea = ideaRepo.create(testIdea, TEST_CREDENTIALS);
+        idea.setFeedback(TEST_IDEA_FEEDBACK);
+        idea = ideaRepo.save(idea);
+        assertEquals("Idea feedback not set", TEST_IDEA_FEEDBACK, idea.getFeedback());
+        idea.setFeedback(TEST_ALTERNATIVE_IDEA_FEEDBACK);
+        idea = ideaRepo.save(idea);
+        assertEquals("Idea feedback not updated", TEST_ALTERNATIVE_IDEA_FEEDBACK, idea.getFeedback());
+    }
+
+    @Test
+    public void testUpdateFeatureProposal() throws UserNotFoundException {
+        Idea idea = ideaRepo.create(testIdea, TEST_CREDENTIALS);
+        testFeatureProposal.addIdea(idea);
+        testFeatureProposal = featureProposalRepo.save(testFeatureProposal);
+        idea.setFeatureProposal(testFeatureProposal);
+        idea = ideaRepo.save(idea);
+
+        assertEquals("Idea does not have feature proposal", testFeatureProposal, idea.getFeatureProposal());
+        assertEquals("Feature proposal does not have expedted number of ideas", 1, testFeatureProposal.getIdeas().size());
+        assertEquals("Feature proposal does not have idea", idea, testFeatureProposal.getIdeas().get(0));
+    }
+
+    @Test
+    public void testReject() throws UserNotFoundException {
+        Idea idea = ideaRepo.create(testIdea, TEST_CREDENTIALS);
+        idea = ideaRepo.reject(idea);
+
+        assertEquals("Idea was not rejected", IdeaState.REJECTED, idea.getState());
+    }
+
+    @Test
+    public void testRejectException() {
+        Idea idea = new Idea(TEST_IDEA_TITLE, TEST_IDEA_DESCRIPTION, testUser, service1);
+        ideaRepo.reject(idea);
+    }
+
+    @Test
     public void testTimestampSetOnCreate() throws UserNotFoundException {
         Idea Idea = ideaRepo.create(testIdea, TEST_CREDENTIALS);
         Idea = ideaRepo.findOne(Idea.getId());
@@ -146,9 +203,18 @@ public class IdeaTest {
     @Test
     public void testDelete() throws UserNotFoundException {
         long initalCount = ideaRepo.count();
-        Idea Idea = ideaRepo.create(new Idea(TEST_ALTERNATIVE_IDEA_TITLE, TEST_ALTERNATIVE_IDEA_DESCRIPTION, testUser, service2), TEST_CREDENTIALS);
+        Idea idea = ideaRepo.create(new Idea(TEST_ALTERNATIVE_IDEA_TITLE, TEST_ALTERNATIVE_IDEA_DESCRIPTION, testUser, service2), TEST_CREDENTIALS);
         assertEquals("Idea not created", initalCount + 1, ideaRepo.count());
-        ideaRepo.delete(Idea);
+        testFeatureProposal.addIdea(idea);
+        testFeatureProposal = featureProposalRepo.save(testFeatureProposal);
+        idea.setFeatureProposal(testFeatureProposal);
+        idea = ideaRepo.save(idea);
+
+        assertEquals("Idea does not have feature proposal", testFeatureProposal, idea.getFeatureProposal());
+        assertEquals("Feature proposal does not have expedted number of ideas", 1, testFeatureProposal.getIdeas().size());
+        assertEquals("Feature proposal does not have idea", idea, testFeatureProposal.getIdeas().get(0));
+
+        ideaRepo.delete(idea);
         assertEquals("Idea not deleted", initalCount, ideaRepo.count());
 
     }
@@ -156,7 +222,8 @@ public class IdeaTest {
     @After
     public void cleanUp() {
         ideaRepo.deleteAll();
+        featureProposalRepo.deleteAll();
         serviceRepo.deleteAll();
-        appUserRepo.deleteAll();
+        userRepo.deleteAll();
     }
 }

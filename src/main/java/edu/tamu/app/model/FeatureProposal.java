@@ -10,25 +10,26 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Fetch;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
+import edu.tamu.app.enums.FeatureProposalState;
 import edu.tamu.app.model.validation.FeatureProposalValidator;
 
 @Entity
-@JsonIgnoreProperties(value = { "voters" }, allowGetters = true)
 public class FeatureProposal extends AbstractIdea {
 
-    @ManyToMany(fetch = EAGER, cascade = { CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE })
-    @JoinTable(uniqueConstraints = @UniqueConstraint(columnNames = { "feature_proposal_id", "ideas_id" }))
+    @OneToMany(fetch = EAGER, cascade = { CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE }, mappedBy = "featureProposal")
     @Fetch(value = SELECT)
     private List<Idea> ideas;
 
@@ -39,12 +40,15 @@ public class FeatureProposal extends AbstractIdea {
     @Fetch(value = SELECT)
     private List<User> voters;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private boolean submitted;
+    private FeatureProposalState state;
+
+    @Column(nullable = false)
+    private Boolean isPrivate;
 
     public FeatureProposal() {
         super();
-        this.modelValidator = new FeatureProposalValidator();
         setup();
     }
 
@@ -70,9 +74,11 @@ public class FeatureProposal extends AbstractIdea {
     }
 
     private void setup() {
+        this.modelValidator = new FeatureProposalValidator();
         this.ideas = new ArrayList<Idea>();
         this.voters = new ArrayList<User>();
-        this.submitted = false;
+        this.state = FeatureProposalState.IN_PROGRESS;
+        this.isPrivate = false;
     }
 
     public List<Idea> getIdeas() {
@@ -126,12 +132,20 @@ public class FeatureProposal extends AbstractIdea {
         return this.voters.size();
     }
 
-    public boolean isSubmitted() {
-        return submitted;
+    public FeatureProposalState getState() {
+        return state;
     }
 
-    public void setSubmitted(boolean submitted) {
-        this.submitted = submitted;
+    public void setState(FeatureProposalState state) {
+        this.state = state;
+    }
+
+    public Boolean getIsPrivate() {
+        return isPrivate;
+    }
+
+    public void setIsPrivate(Boolean isPrivate) {
+        this.isPrivate = isPrivate;
     }
 
 }

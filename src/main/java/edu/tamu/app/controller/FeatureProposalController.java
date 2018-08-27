@@ -1,5 +1,6 @@
 package edu.tamu.app.controller;
 
+import static edu.tamu.weaver.response.ApiStatus.INVALID;
 import static edu.tamu.weaver.response.ApiStatus.SUCCESS;
 import static edu.tamu.weaver.validation.model.BusinessValidationType.CREATE;
 
@@ -60,6 +61,18 @@ public class FeatureProposalController {
     @PreAuthorize("hasRole('SERVICE_MANAGER')")
     public ApiResponse update(@WeaverValidatedModel FeatureProposal featureProposal) {
         return new ApiResponse(SUCCESS, featureProposalRepo.update(featureProposal));
+    }
+
+    @RequestMapping("/reject")
+    @PreAuthorize("hasRole('SERVICE_MANAGER')")
+    public ApiResponse reject(@WeaverValidatedModel FeatureProposal featureProposal) {
+        ApiResponse response;
+        if (featureProposal.getFeedback() == null || featureProposal.getFeedback().equals("")) {
+            response = new ApiResponse(INVALID, "You must provide feedback to reject a feature proposal.");
+        } else {
+            response = new ApiResponse(SUCCESS, featureProposalRepo.reject(featureProposal));
+        }
+        return response;
     }
 
     @Transactional

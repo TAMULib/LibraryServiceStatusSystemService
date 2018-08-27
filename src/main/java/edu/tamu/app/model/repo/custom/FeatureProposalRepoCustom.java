@@ -15,4 +15,6 @@ public interface FeatureProposalRepoCustom {
 
     public void delete(FeatureProposal featureProposal);
 
+    public FeatureProposal reject(FeatureProposal featureProposal);
+
 }

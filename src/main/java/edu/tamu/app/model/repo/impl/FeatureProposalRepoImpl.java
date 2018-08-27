@@ -4,9 +4,12 @@ import static edu.tamu.weaver.response.ApiStatus.SUCCESS;
 
 import java.util.Optional;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
+import edu.tamu.app.enums.FeatureProposalState;
+import edu.tamu.app.enums.IdeaState;
 import edu.tamu.app.exception.UserNotFoundException;
 import edu.tamu.app.model.FeatureProposal;
 import edu.tamu.app.model.Idea;
@@ -37,11 +40,13 @@ public class FeatureProposalRepoImpl implements FeatureProposalRepoCustom {
         Optional<User> user = userRepo.findByUsername(credentials.getUin());
         if (user.isPresent()) {
             featureProposal.setAuthor(user.get());
-            featureProposal.getIdeas().forEach(idea -> {
-                idea.setElevated(true);
+            featureProposal = featureProposalRepo.save(featureProposal);
+            for (Idea idea : featureProposal.getIdeas()) {
+                idea.setState(IdeaState.ELEVATED);
+                idea.setFeatureProposal(featureProposal);
                 idea = ideaRepo.save(idea);
                 simpMessagingTemplate.convertAndSend("/channel/ideas/update", new ApiResponse(SUCCESS, idea));
-            });
+            }
             featureProposal = featureProposalRepo.save(featureProposal);
             simpMessagingTemplate.convertAndSend("/channel/feature-proposals/create", new ApiResponse(SUCCESS, featureProposal));
             return featureProposal;
@@ -51,35 +56,47 @@ public class FeatureProposalRepoImpl implements FeatureProposalRepoCustom {
 
     @Override
     public FeatureProposal create(Idea idea) {
-        idea.setElevated(true);
+        FeatureProposal featureProposal = featureProposalRepo.save(new FeatureProposal(idea));
+        idea.setState(IdeaState.ELEVATED);
+        idea.setFeatureProposal(featureProposal);
         idea = ideaRepo.save(idea);
         simpMessagingTemplate.convertAndSend("/channel/ideas/update", new ApiResponse(SUCCESS, idea));
-        FeatureProposal featureProposal = featureProposalRepo.save(new FeatureProposal(idea));
-        simpMessagingTemplate.convertAndSend("/channel/feature-proposals/create", new ApiResponse(SUCCESS, featureProposal));
+        simpMessagingTemplate.convertAndSend("/channel/feature-proposals/create", new ApiResponse(SUCCESS, featureProposalRepo.findOne(featureProposal.getId())));
         return featureProposal;
     }
 
     @Override
-    public FeatureProposal update(FeatureProposal featureProposal) {
-        featureProposal.getIdeas().forEach(idea -> {
-            idea.setElevated(true);
+    public FeatureProposal update(FeatureProposal featureProposalToUpdate) {
+        FeatureProposal persistedFeatureProposal = featureProposalRepo.findOne(featureProposalToUpdate.getId());
+        // NOTE: ignore voters on update to avoid concurrency issue of save after votes occur
+        BeanUtils.copyProperties(featureProposalToUpdate, persistedFeatureProposal, "voters");
+        for (Idea idea : persistedFeatureProposal.getIdeas()) {
+            idea.setState(IdeaState.ELEVATED);
+            idea.setFeatureProposal(persistedFeatureProposal);
             idea = ideaRepo.save(idea);
             simpMessagingTemplate.convertAndSend("/channel/ideas/update", new ApiResponse(SUCCESS, idea));
-        });
-        featureProposal = featureProposalRepo.save(featureProposal);
-        simpMessagingTemplate.convertAndSend("/channel/feature-proposals/update", new ApiResponse(SUCCESS, featureProposal));
-        return featureProposal;
+        }
+        persistedFeatureProposal = featureProposalRepo.save(persistedFeatureProposal);
+        simpMessagingTemplate.convertAndSend("/channel/feature-proposals/update", new ApiResponse(SUCCESS, persistedFeatureProposal));
+        return persistedFeatureProposal;
     }
 
     @Override
     public void delete(FeatureProposal featureProposal) {
-        featureProposal.getIdeas().forEach(idea -> {
-            idea.setElevated(false);
+        for (Idea idea : featureProposal.getIdeas()) {
+            idea.setState(IdeaState.ELEVATED);
+            idea.setFeatureProposal(featureProposal);
             idea = ideaRepo.save(idea);
             simpMessagingTemplate.convertAndSend("/channel/ideas/update", new ApiResponse(SUCCESS, idea));
-        });
+        }
+        featureProposal = featureProposalRepo.save(featureProposal);
         featureProposalRepo.delete(featureProposal.getId());
         simpMessagingTemplate.convertAndSend("/channel/feature-proposals/delete", new ApiResponse(SUCCESS, featureProposal.getId()));
+    }
+
+    public FeatureProposal reject(FeatureProposal featureProposal) {
+        featureProposal.setState(FeatureProposalState.REJECTED);
+        return featureProposalRepo.update(featureProposal);
     }
 
 }

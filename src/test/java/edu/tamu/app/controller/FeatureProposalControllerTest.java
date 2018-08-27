@@ -23,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import edu.tamu.app.enums.FeatureProposalState;
 import edu.tamu.app.enums.Status;
 import edu.tamu.app.exception.UserNotFoundException;
 import edu.tamu.app.model.FeatureProposal;
@@ -52,14 +53,18 @@ public class FeatureProposalControllerTest {
     private static final String TEST_MODIFIED_FEATURE_PROPOSAL_TITLE = "Modified Feature Proposal Title";
     private static final String TEST_MODIFIED_FEATURE_PROPOSAL_DESCRIPTION = "Modified Feature Proposal Description";
     private static final String TEST_SERVICE_NAME = "Test Service";
+    private static final String TEST_FEEDBACK = "Test Rejection Feedback";
 
     private static Service TEST_SERVICE = new Service(TEST_SERVICE_NAME, Status.UP, false, true, true, "", "");
     private static FeatureProposal TEST_FEATURE_PROPOSAL1 = new FeatureProposal(TEST_FEATURE_PROPOSAL_TITLE1, TEST_FEATURE_PROPOSAL_DESCRIPTION1, TEST_USER1);
     private static FeatureProposal TEST_FEATURE_PROPOSAL2 = new FeatureProposal(TEST_FEATURE_PROPOSAL_TITLE2, TEST_FEATURE_PROPOSAL_DESCRIPTION2, TEST_USER1);
     private static FeatureProposal TEST_FEATURE_PROPOSAL3 = new FeatureProposal(TEST_FEATURE_PROPOSAL_TITLE3, TEST_FEATURE_PROPOSAL_DESCRIPTION3, TEST_USER1);
     private static FeatureProposal TEST_MODIFIED_FEATURE_PROPOSAL = new FeatureProposal(TEST_MODIFIED_FEATURE_PROPOSAL_TITLE, TEST_MODIFIED_FEATURE_PROPOSAL_DESCRIPTION, TEST_USER2, TEST_SERVICE);
+    private static FeatureProposal featureProposalWithFeedback = new FeatureProposal(TEST_FEATURE_PROPOSAL_TITLE1, TEST_FEATURE_PROPOSAL_DESCRIPTION1, TEST_USER1);
     private static List<FeatureProposal> mockFeatureProposalList = new ArrayList<FeatureProposal>(Arrays.asList(new FeatureProposal[] { TEST_FEATURE_PROPOSAL1, TEST_FEATURE_PROPOSAL2, TEST_FEATURE_PROPOSAL3 }));
     private static Page<FeatureProposal> mockPageableFeatureProposalList = new PageImpl<FeatureProposal>(Arrays.asList(new FeatureProposal[] { TEST_FEATURE_PROPOSAL1, TEST_FEATURE_PROPOSAL2, TEST_FEATURE_PROPOSAL3 }));
+
+    private FeatureProposal rejectedFeatureProposal = new FeatureProposal(TEST_FEATURE_PROPOSAL_TITLE1, TEST_FEATURE_PROPOSAL_DESCRIPTION1, TEST_USER1);
 
     private static User user = new User("123456789");
 
@@ -86,6 +91,8 @@ public class FeatureProposalControllerTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setup() throws UserNotFoundException {
+        rejectedFeatureProposal.setState(FeatureProposalState.REJECTED);
+        featureProposalWithFeedback.setFeedback(TEST_FEEDBACK);
         MockitoAnnotations.initMocks(this);
         when(credentials.getUin()).thenReturn("123456789");
         when(userRepo.findByUsername(any(String.class))).thenReturn(Optional.of(user));
@@ -95,6 +102,7 @@ public class FeatureProposalControllerTest {
         when(featureProposalRepo.create(any(FeatureProposal.class), any(Credentials.class))).thenReturn(TEST_FEATURE_PROPOSAL1);
         when(featureProposalRepo.create(any(Idea.class))).thenReturn(TEST_FEATURE_PROPOSAL1);
         when(featureProposalRepo.update(any(FeatureProposal.class))).thenReturn(TEST_MODIFIED_FEATURE_PROPOSAL);
+        when(featureProposalRepo.reject(TEST_FEATURE_PROPOSAL1)).thenReturn(rejectedFeatureProposal);
         when(serviceRepo.findOne(any(Long.class))).thenReturn(TEST_SERVICE);
         doNothing().when(featureProposalRepo).delete(any(FeatureProposal.class));
         doNothing().when(featureProposalRepo).delete(any(FeatureProposal.class));
@@ -139,6 +147,14 @@ public class FeatureProposalControllerTest {
         FeatureProposal featureProposal = (FeatureProposal) response.getPayload().get("FeatureProposal");
         assertEquals("Notification Title was not properly updated", TEST_MODIFIED_FEATURE_PROPOSAL.getTitle(), featureProposal.getTitle());
         assertEquals("Notification Author was not properly updated", TEST_MODIFIED_FEATURE_PROPOSAL.getAuthor(), featureProposal.getAuthor());
+    }
+
+    @Test
+    public void testReject() {
+        response = featureProposalController.reject(featureProposalWithFeedback);
+        assertEquals("Not successful at rejecting feature proposal", SUCCESS, response.getMeta().getStatus());
+        FeatureProposal featureProposal = (FeatureProposal) response.getPayload().get("FeatureProposal");
+        assertEquals("State was not set to Rejected", rejectedFeatureProposal.getState(), featureProposal.getState());
     }
 
     @Test

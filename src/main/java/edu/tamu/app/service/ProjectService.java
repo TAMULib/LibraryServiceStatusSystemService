@@ -16,6 +16,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import edu.tamu.app.enums.FeatureProposalState;
 import edu.tamu.app.model.FeatureProposal;
 import edu.tamu.app.model.repo.FeatureProposalRepo;
 import edu.tamu.app.model.request.FeatureRequest;
@@ -52,7 +53,7 @@ public class ProjectService {
     public ApiResponse submitFeatureRequest(FeatureProposal proposal) {
         ApiResponse response = restTemplate.postForObject(projectsUrl + "/feature", new FeatureRequest(proposal), ApiResponse.class);
         if (response.getMeta().getStatus().equals(ApiStatus.SUCCESS)) {
-            proposal.setSubmitted(true);
+            proposal.setState(FeatureProposalState.SUBMITTED);
             proposal = featureProposalRepo.save(proposal);
             simpMessagingTemplate.convertAndSend("/channel/feature-proposals/update", new ApiResponse(SUCCESS, proposal));
         }

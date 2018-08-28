@@ -1,5 +1,6 @@
 package edu.tamu.app.controller;
 
+import static edu.tamu.weaver.response.ApiStatus.ERROR;
 import static edu.tamu.weaver.response.ApiStatus.SUCCESS;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -54,7 +55,7 @@ public class UserControllerTest {
 
     @Mock
     private UserRepo userRepo;
-    
+
     @Mock
     private SimpMessagingTemplate simpMessagingTemplate;
 
@@ -72,6 +73,24 @@ public class UserControllerTest {
     public void testCredentials() {
         apiResponse = userController.credentials(TEST_CREDENTIALS_1);
         assertEquals("Unable to get user credentials", SUCCESS, apiResponse.getMeta().getStatus());
+    }
+
+    @Test
+    public void testNullCredentials() {
+        apiResponse = userController.credentials(null);
+        assertEquals("Unable to get user credentials", ERROR, apiResponse.getMeta().getStatus());
+    }
+
+    @Test
+    public void testGetUser() {
+        apiResponse = userController.getUser(testUser1);
+        assertEquals("Unable to get user", SUCCESS, apiResponse.getMeta().getStatus());
+    }
+
+    @Test
+    public void testGetNullUser() {
+        apiResponse = userController.getUser(null);
+        assertEquals("Unable to get user", ERROR, apiResponse.getMeta().getStatus());
     }
 
     @Test

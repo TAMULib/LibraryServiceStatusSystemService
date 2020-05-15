@@ -46,7 +46,7 @@ spring:
 
 ---
 app:
-  projects.url: http://localhost:9001/projects
+  products.url: http://localhost:9001/products
 
   whitelist: 127.0.0.1
 

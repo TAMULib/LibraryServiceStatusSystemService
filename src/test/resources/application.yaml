@@ -42,7 +42,7 @@ spring:
 
 ---
 app:
-  projects.url: http://localhost:${server.port}/mock/projects
+  products.url: http://localhost:${server.port}/mock/products
 
   whitelist: 127.0.0.1
 

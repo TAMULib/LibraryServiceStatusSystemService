@@ -18,7 +18,7 @@ import edu.tamu.app.model.Idea;
 import edu.tamu.app.model.repo.IdeaRepo;
 import edu.tamu.app.model.request.FilteredPageRequest;
 import edu.tamu.app.model.request.IssueRequest;
-import edu.tamu.app.service.ProjectService;
+import edu.tamu.app.service.ProductService;
 import edu.tamu.weaver.auth.annotation.WeaverCredentials;
 import edu.tamu.weaver.auth.model.Credentials;
 import edu.tamu.weaver.response.ApiResponse;
@@ -33,7 +33,7 @@ public class IdeaController {
     private IdeaRepo ideaRepo;
 
     @Autowired
-    private ProjectService projectService;
+    private ProductService productService;
 
     @RequestMapping("/page")
     @PreAuthorize("hasRole('SERVICE_MANAGER')")
@@ -78,7 +78,7 @@ public class IdeaController {
         idea.setState(IdeaState.SENT_TO_HELPDESK);
         idea = ideaRepo.update(idea);
         IssueRequest request = new IssueRequest(idea, credentials);
-        return projectService.submitIssueRequest(request);
+        return productService.submitIssueRequest(request);
     }
 
     @Transactional

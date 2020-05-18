@@ -51,7 +51,7 @@ public class Service extends AbstractScheduler {
     private String software;
 
     @Column(nullable = true)
-    private Long projectId;
+    private Long productId;
 
     public Service() {
         super();
@@ -150,12 +150,12 @@ public class Service extends AbstractScheduler {
         this.software = software;
     }
 
-    public Long getProjectId() {
-        return projectId;
+    public Long getProductId() {
+        return productId;
     }
 
-    public void setProjectId(Long projectId) {
-        this.projectId = projectId;
+    public void setProductId(Long productId) {
+        this.productId = productId;
     }
 
     @Override

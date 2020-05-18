@@ -20,7 +20,7 @@ import edu.tamu.app.model.repo.ServiceRepo;
 import edu.tamu.app.model.request.FilteredPageRequest;
 import edu.tamu.app.model.request.IssueRequest;
 import edu.tamu.app.model.request.ServiceRequest;
-import edu.tamu.app.service.ProjectService;
+import edu.tamu.app.service.ProductService;
 import edu.tamu.weaver.auth.annotation.WeaverCredentials;
 import edu.tamu.weaver.auth.model.Credentials;
 import edu.tamu.weaver.response.ApiResponse;
@@ -39,7 +39,7 @@ public class ServiceController {
     private IdeaRepo ideaRepo;
 
     @Autowired
-    private ProjectService projectService;
+    private ProductService productService;
 
     @RequestMapping
     @PreAuthorize("hasRole('ANONYMOUS')")
@@ -94,7 +94,7 @@ public class ServiceController {
         Service service = serviceRepo.findOne(request.getService());
         issueRequest.setService(service.getName());
         issueRequest.setCredentials(credentials);
-        return projectService.submitIssueRequest(issueRequest);
+        return productService.submitIssueRequest(issueRequest);
     }
 
     @RequestMapping("/feature")

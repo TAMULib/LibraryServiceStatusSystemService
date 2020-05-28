@@ -29,68 +29,68 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.tamu.app.exception.UserNotFoundException;
 import edu.tamu.app.model.FeatureProposal;
-import edu.tamu.app.model.response.Project;
-import edu.tamu.app.service.ProjectService;
+import edu.tamu.app.model.response.Product;
+import edu.tamu.app.service.ProductService;
 import edu.tamu.weaver.response.ApiResponse;
 import edu.tamu.weaver.response.ApiStatus;
 
 @RunWith(SpringRunner.class)
-public class ProjectControllerTest {
+public class ProductControllerTest {
 
     private static String TEST_FEATURE_PROPOSAL_NAME = "Test FP name";
     private static String TEST_FEATURE_PROPOSAL_DESCRIPTION = "Test FP name";
     private static FeatureProposal TEST_FEATURE_PROPOSAL = new FeatureProposal(TEST_FEATURE_PROPOSAL_NAME, TEST_FEATURE_PROPOSAL_DESCRIPTION);
-    private static List<Project> projects = new ArrayList<Project>();
+    private static List<Product> products = new ArrayList<Product>();
 
-    @Value("classpath:mock/projects.json")
+    @Value("classpath:mock/products.json")
     private Resource resource;
 
     @Spy
     private ObjectMapper objectMapper;
 
     @Mock
-    private ProjectService projectService;
+    private ProductService productService;
 
     @InjectMocks
-    private ProjectController projectController;
+    private ProductController productController;
 
     @Before
     public void setup() throws JsonParseException, JsonMappingException, IOException {
         MockitoAnnotations.initMocks(this);
-        projects = objectMapper.readValue(resource.getFile(), new TypeReference<List<Project>>() {
+        products = objectMapper.readValue(resource.getFile(), new TypeReference<List<Product>>() {
         });
-        when(projectService.getAll()).thenReturn(new ApiResponse(SUCCESS, projects));
-        when(projectService.getById(any(Long.class))).thenReturn(new ApiResponse(SUCCESS, projects.get(0)));
-        when(projectService.submitFeatureRequest(any(FeatureProposal.class))).thenReturn(new ApiResponse(SUCCESS, TEST_FEATURE_PROPOSAL));
+        when(productService.getAll()).thenReturn(new ApiResponse(SUCCESS, products));
+        when(productService.getById(any(Long.class))).thenReturn(new ApiResponse(SUCCESS, products.get(0)));
+        when(productService.submitFeatureRequest(any(FeatureProposal.class))).thenReturn(new ApiResponse(SUCCESS, TEST_FEATURE_PROPOSAL));
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void getAll() throws JsonParseException, JsonMappingException, MalformedURLException, IOException {
-        ApiResponse response = projectController.getAll();
+        ApiResponse response = productController.getAll();
         assertEquals("Response was not a success!", ApiStatus.SUCCESS, response.getMeta().getStatus());
-        List<Project> projects = (List<Project>) response.getPayload().get("ArrayList<Project>");
-        assertEquals("Projects response size was not as expected!", projects.size(), projects.size());
-        for (int i = 0; i < projects.size(); i++) {
-            Project project = projects.get(i);
-            assertEquals(i + " project did not have the correct id!", projects.get(i).getId(), project.getId());
-            assertEquals(i + " project did not have the correct name!", projects.get(i).getName(), project.getName());
+        List<Product> products = (List<Product>) response.getPayload().get("ArrayList<Product>");
+        assertEquals("Products response size was not as expected!", products.size(), products.size());
+        for (int i = 0; i < products.size(); i++) {
+            Product product = products.get(i);
+            assertEquals(i + " Product did not have the correct id!", products.get(i).getId(), product.getId());
+            assertEquals(i + " Product did not have the correct name!", products.get(i).getName(), product.getName());
         }
     }
 
     @Test
     public void getById() throws JsonParseException, JsonMappingException, MalformedURLException, IOException {
-        ApiResponse response = projectController.getById(1L);
+        ApiResponse response = productController.getById(1L);
         assertEquals("Response was not a success!", ApiStatus.SUCCESS, response.getMeta().getStatus());
-        Project project = (Project) response.getPayload().get("Project");
-        assertNotNull("Project is null!", project);
-        assertEquals("Project did not have the correct id!", projects.get(0).getId(), project.getId());
-        assertEquals("Project did not have the correct name!", projects.get(0).getName(), project.getName());
+        Product product = (Product) response.getPayload().get("Product");
+        assertNotNull("Product is null!", product);
+        assertEquals("Product did not have the correct id!", products.get(0).getId(), product.getId());
+        assertEquals("Product did not have the correct name!", products.get(0).getName(), product.getName());
     }
 
     @Test
     public void testSubmitFeatureRequest() throws UserNotFoundException {
-        ApiResponse response = projectController.submitFeatureRequest(TEST_FEATURE_PROPOSAL);
+        ApiResponse response = productController.submitFeatureRequest(TEST_FEATURE_PROPOSAL);
         assertEquals("Request was not successfull", SUCCESS, response.getMeta().getStatus());
     }
 

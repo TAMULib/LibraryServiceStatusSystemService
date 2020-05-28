@@ -25,10 +25,10 @@ import edu.tamu.weaver.response.ApiResponse;
 import edu.tamu.weaver.response.ApiStatus;;
 
 @Service
-public class ProjectService {
+public class ProductService {
 
-    @Value("${app.projects.url}")
-    private String projectsUrl;
+    @Value("${app.products.url}")
+    private String productsUrl;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -43,15 +43,15 @@ public class ProjectService {
     private SimpMessagingTemplate simpMessagingTemplate;
 
     public ApiResponse getAll() throws JsonParseException, JsonMappingException, MalformedURLException, IOException {
-        return objectMapper.readValue(new URL(projectsUrl), ApiResponse.class);
+        return objectMapper.readValue(new URL(productsUrl), ApiResponse.class);
     }
 
     public ApiResponse getById(Long id) throws JsonParseException, JsonMappingException, MalformedURLException, IOException {
-        return objectMapper.readValue(new URL(projectsUrl + "/" + id), ApiResponse.class);
+        return objectMapper.readValue(new URL(productsUrl + "/" + id), ApiResponse.class);
     }
 
     public ApiResponse submitFeatureRequest(FeatureProposal proposal) {
-        ApiResponse response = restTemplate.postForObject(projectsUrl + "/feature", new FeatureRequest(proposal), ApiResponse.class);
+        ApiResponse response = restTemplate.postForObject(productsUrl + "/feature", new FeatureRequest(proposal), ApiResponse.class);
         if (response.getMeta().getStatus().equals(ApiStatus.SUCCESS)) {
             proposal.setState(FeatureProposalState.SUBMITTED);
             proposal = featureProposalRepo.save(proposal);
@@ -61,7 +61,7 @@ public class ProjectService {
     }
 
     public ApiResponse submitIssueRequest(IssueRequest request) {
-        return restTemplate.postForObject(projectsUrl + "/issue", request, ApiResponse.class);
+        return restTemplate.postForObject(productsUrl + "/issue", request, ApiResponse.class);
 
     }
 

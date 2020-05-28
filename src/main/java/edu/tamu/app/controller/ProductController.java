@@ -14,33 +14,33 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 
 import edu.tamu.app.exception.UserNotFoundException;
 import edu.tamu.app.model.FeatureProposal;
-import edu.tamu.app.service.ProjectService;
+import edu.tamu.app.service.ProductService;
 import edu.tamu.weaver.response.ApiResponse;
 import edu.tamu.weaver.validation.aspect.annotation.WeaverValidatedModel;
 
 @RestController
-@RequestMapping("/projects")
-public class ProjectController {
+@RequestMapping("/products")
+public class ProductController {
 
     @Autowired
-    private ProjectService projectService;
+    private ProductService productService;
 
     @RequestMapping
     @PreAuthorize("hasRole('USER')")
     public ApiResponse getAll() throws JsonParseException, JsonMappingException, MalformedURLException, IOException {
-        return projectService.getAll();
+        return productService.getAll();
     }
 
     @RequestMapping("/{id}")
     @PreAuthorize("hasRole('ANONYMOUS')")
     public ApiResponse getById(@PathVariable Long id) throws JsonParseException, JsonMappingException, MalformedURLException, IOException {
-        return projectService.getById(id);
+        return productService.getById(id);
     }
 
     @RequestMapping("/feature")
     @PreAuthorize("hasRole('SERVICE_MANAGER')")
     public ApiResponse submitFeatureRequest(@WeaverValidatedModel FeatureProposal proposal) throws UserNotFoundException {
-        return projectService.submitFeatureRequest(proposal);
+        return productService.submitFeatureRequest(proposal);
     }
 
 }

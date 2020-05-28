@@ -6,7 +6,7 @@ public class FeatureRequest extends AbstractRequest {
 
     private static final long serialVersionUID = -6953745180846929244L;
 
-    private Long projectId;
+    private Long productId;
 
     public FeatureRequest() {
         super();
@@ -20,21 +20,21 @@ public class FeatureRequest extends AbstractRequest {
         super(type, title, description);
     }
 
-    public FeatureRequest(RequestType type, String title, String description, Long projectId) {
+    public FeatureRequest(RequestType type, String title, String description, Long productId) {
         this(type, title, description);
-        this.projectId = projectId;
+        this.productId = productId;
     }
 
     public FeatureRequest(FeatureProposal proposal) {
-        this(RequestType.FEATURE, proposal.getTitle(), proposal.getDescription(), proposal.getService().getProjectId());
+        this(RequestType.FEATURE, proposal.getTitle(), proposal.getDescription(), proposal.getService().getProductId());
     }
 
-    public Long getProjectId() {
-        return projectId;
+    public Long getProductId() {
+        return productId;
     }
 
-    public void setProjectId(Long projectId) {
-        this.projectId = projectId;
+    public void setProductId(Long productId) {
+        this.productId = productId;
     }
 
 }

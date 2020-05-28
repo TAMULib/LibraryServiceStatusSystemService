@@ -24,7 +24,7 @@ import edu.tamu.app.StatusApplication;
 import edu.tamu.app.enums.Role;
 import edu.tamu.app.enums.Status;
 import edu.tamu.app.exception.UserNotFoundException;
-import edu.tamu.app.mock.projects.MockProjects;
+import edu.tamu.app.mock.products.MockProducts;
 import edu.tamu.app.model.FeatureProposal;
 import edu.tamu.app.model.Service;
 import edu.tamu.app.model.User;
@@ -34,14 +34,14 @@ import edu.tamu.app.model.repo.UserRepo;
 import edu.tamu.app.model.request.AbstractRequest;
 import edu.tamu.app.model.request.AbstractRequest.RequestType;
 import edu.tamu.app.model.request.IssueRequest;
-import edu.tamu.app.model.response.Project;
+import edu.tamu.app.model.response.Product;
 import edu.tamu.weaver.auth.model.Credentials;
 import edu.tamu.weaver.response.ApiResponse;
 import edu.tamu.weaver.response.ApiStatus;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { StatusApplication.class }, webEnvironment = WebEnvironment.DEFINED_PORT)
-public class ProjectServiceTest {
+public class ProductServiceTest {
 
     private static final String TEST_SERVICE_NAME = "Test Service Name";
     private static final String TEST_SERVICE_URL = "https://library.tamu.edu";
@@ -64,10 +64,10 @@ public class ProjectServiceTest {
     }
 
     @Autowired
-    private MockProjects mockReader;
+    private MockProducts mockReader;
 
     @Autowired
-    private ProjectService projectService;
+    private ProductService productService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -83,29 +83,29 @@ public class ProjectServiceTest {
 
     @Test
     public void getAll() throws JsonParseException, JsonMappingException, MalformedURLException, IOException {
-        ApiResponse response = projectService.getAll();
+        ApiResponse response = productService.getAll();
         assertEquals("Response was not a success!", ApiStatus.SUCCESS, response.getMeta().getStatus());
-        List<Project> projects = objectMapper.convertValue(response.getPayload().get("ArrayList<Project>"), new TypeReference<List<Project>>() {
+        List<Product> products = objectMapper.convertValue(response.getPayload().get("ArrayList<Product>"), new TypeReference<List<Product>>() {
         });
-        List<Project> mockProjects = mockReader.getAllProjects();
-        assertEquals("Projects response size was not as expected!", mockProjects.size(), projects.size());
-        for (int i = 0; i < projects.size(); i++) {
-            Project project = projects.get(i);
-            assertEquals(i + " project did not have the correct id!", mockProjects.get(i).getId(), project.getId());
-            assertEquals(i + " project did not have the correct name!", mockProjects.get(i).getName(), project.getName());
+        List<Product> mockProducts = mockReader.getAllProducts();
+        assertEquals("Products response size was not as expected!", mockProducts.size(), products.size());
+        for (int i = 0; i < products.size(); i++) {
+            Product product = products.get(i);
+            assertEquals(i + " Product did not have the correct id!", mockProducts.get(i).getId(), product.getId());
+            assertEquals(i + " Product did not have the correct name!", mockProducts.get(i).getName(), product.getName());
         }
     }
 
     @Test
     public void getById() throws JsonParseException, JsonMappingException, MalformedURLException, IOException {
         Long id = 1L;
-        ApiResponse response = projectService.getById(id);
+        ApiResponse response = productService.getById(id);
         assertEquals("Response was not a success!", ApiStatus.SUCCESS, response.getMeta().getStatus());
-        Project project = objectMapper.convertValue(response.getPayload().get("Project"), Project.class);
-        assertNotNull("Project is null!", project);
-        Project mockProject = mockReader.getProjectById(id);
-        assertEquals("Project did not have the correct id!", mockProject.getId(), project.getId());
-        assertEquals("Project did not have the correct name!", mockProject.getName(), project.getName());
+        Product product = objectMapper.convertValue(response.getPayload().get("Product"), Product.class);
+        assertNotNull("Product is null!", product);
+        Product mockProduct = mockReader.getProductById(id);
+        assertEquals("Product did not have the correct id!", mockProduct.getId(), product.getId());
+        assertEquals("Product did not have the correct name!", mockProduct.getName(), product.getName());
     }
 
     @Test
@@ -113,7 +113,7 @@ public class ProjectServiceTest {
         User testUser = userRepo.create(TEST_CREDENTIALS.getUin(), TEST_CREDENTIALS.getEmail(), TEST_CREDENTIALS.getFirstName(), TEST_CREDENTIALS.getLastName(), Role.valueOf(TEST_CREDENTIALS.getRole()));
         Service service = serviceRepo.create(new Service(TEST_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, TEST_SERVICE_URL, TEST_SERVICE_DESCRIPTION));
         FeatureProposal newFeatureProposal = featureProposalRepo.create(new FeatureProposal(TEST_FEATURE_PROPOSAL_TITLE, TEST_FEATURE_PROPOSAL_DESCRIPTION, testUser, service), TEST_CREDENTIALS);
-        ApiResponse response = projectService.submitFeatureRequest(newFeatureProposal);
+        ApiResponse response = productService.submitFeatureRequest(newFeatureProposal);
         assertEquals("Response was not a success!", ApiStatus.SUCCESS, response.getMeta().getStatus());
         assertEquals("Response message was not correct!", "Successfully submitted " + RequestType.FEATURE.getName() + " request!", response.getMeta().getMessage());
     }
@@ -121,7 +121,7 @@ public class ProjectServiceTest {
     @Test
     public void submitIssueRequest() {
         IssueRequest request = new IssueRequest(AbstractRequest.RequestType.ISSUE, "Test issue request", "This is a test issue request on service Cap!", "Cap", new Credentials());
-        ApiResponse response = projectService.submitIssueRequest(request);
+        ApiResponse response = productService.submitIssueRequest(request);
         assertEquals("Response was not a success!", ApiStatus.SUCCESS, response.getMeta().getStatus());
         assertEquals("Response message was not correct!", "Successfully submitted " + request.getType().getName() + " request!", response.getMeta().getMessage());
     }

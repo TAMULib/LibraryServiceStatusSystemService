@@ -1,4 +1,4 @@
-package edu.tamu.app.mock.projects;
+package edu.tamu.app.mock.products;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,41 +19,41 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.tamu.app.model.request.FeatureRequest;
-import edu.tamu.app.model.response.Project;
+import edu.tamu.app.model.response.Product;
 
 @Service
 @Profile("test")
-public class MockProjects {
+public class MockProducts {
 
-    private static List<Project> projects = new ArrayList<Project>();
+    private static List<Product> products = new ArrayList<Product>();
 
-    @Value("classpath:mock/projects.json")
+    @Value("classpath:mock/products.json")
     private Resource resource;
 
     @Autowired
     private ObjectMapper objectMapper;
 
     @PostConstruct
-    private void loadProjects() throws JsonParseException, JsonMappingException, IOException {
-        projects = objectMapper.readValue(resource.getFile(), new TypeReference<List<Project>>() {});
+    private void loadProducts() throws JsonParseException, JsonMappingException, IOException {
+        products = objectMapper.readValue(resource.getFile(), new TypeReference<List<Product>>() {});
     }
 
-    public List<Project> getAllProjects() {
-        return projects;
+    public List<Product> getAllProducts() {
+        return products;
     }
 
-    public Project getProjectById(Long id) {
-        Project project = null;
-        for (Project currentProject : projects) {
-            Optional<Long> currentId = Optional.ofNullable(Long.valueOf(currentProject.getId()));
+    public Product getProductById(Long id) {
+        Product product = null;
+        for (Product currentProduct : products) {
+            Optional<Long> currentId = Optional.ofNullable(Long.valueOf(currentProduct.getId()));
             if (currentId.isPresent()) {
                 if (currentId.get().equals(id)) {
-                    project = currentProject;
+                    product = currentProduct;
                     break;
                 }
             }
         }
-        return project;
+        return product;
     }
 
     public String submitRequest(FeatureRequest request) {

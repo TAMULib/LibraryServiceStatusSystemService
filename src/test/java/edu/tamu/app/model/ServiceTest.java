@@ -122,14 +122,14 @@ public class ServiceTest {
     }
 
     @Test
-    public void testAssociateProject() {
+    public void testAssociateProduct() {
         Service newService = serviceRepo.create(new Service(TEST_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, TEST_SERVICE_URL, TEST_DESCRIPTION));
         Long serviceId = newService.getId();
-        Long projectId = 1L;
-        newService.setProjectId(projectId);
+        Long productId = 1L;
+        newService.setProductId(productId);
         serviceRepo.save(newService);
-        Service serviceWithProjectId = serviceRepo.findOne(serviceId);
-        assertEquals("The service had the incorrect project id!", projectId, serviceWithProjectId.getProjectId());
+        Service serviceWithProductId = serviceRepo.findOne(serviceId);
+        assertEquals("The service had the incorrect product id!", productId, serviceWithProductId.getProductId());
     }
 
     @After

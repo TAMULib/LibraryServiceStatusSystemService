@@ -36,7 +36,7 @@ import edu.tamu.app.model.repo.UserRepo;
 import edu.tamu.app.model.repo.specification.IdeaSpecification;
 import edu.tamu.app.model.request.FilteredPageRequest;
 import edu.tamu.app.model.request.IssueRequest;
-import edu.tamu.app.service.ProjectService;
+import edu.tamu.app.service.ProductService;
 import edu.tamu.weaver.auth.model.Credentials;
 import edu.tamu.weaver.response.ApiResponse;
 
@@ -91,7 +91,7 @@ public class IdeaControllerTest {
     private ServiceRepo serviceRepo;
 
     @Mock
-    private ProjectService projectService;
+    private ProductService productService;
 
     @Mock
     private SimpMessagingTemplate simpMessagingTemplate;
@@ -117,7 +117,7 @@ public class IdeaControllerTest {
         when(ideaRepo.update(any(Idea.class))).thenReturn(TEST_MODIFIED_IDEA);
         when(ideaRepo.reject(TEST_IDEA1)).thenReturn(rejectedIdea);
         when(serviceRepo.findOne(any(Long.class))).thenReturn(TEST_SERVICE);
-        when(projectService.submitIssueRequest(any(IssueRequest.class))).thenReturn(new ApiResponse(SUCCESS, TEST_ISSUE_REQUEST));
+        when(productService.submitIssueRequest(any(IssueRequest.class))).thenReturn(new ApiResponse(SUCCESS, TEST_ISSUE_REQUEST));
         doNothing().when(ideaRepo).delete(any(Idea.class));
         doNothing().when(ideaRepo).delete(any(Idea.class));
     }

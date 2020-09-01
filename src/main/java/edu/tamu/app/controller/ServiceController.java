@@ -94,7 +94,11 @@ public class ServiceController {
         Service service = serviceRepo.findOne(request.getService());
         issueRequest.setService(service.getName());
         issueRequest.setCredentials(credentials);
-        return productService.submitIssueRequest(issueRequest);
+        ApiResponse response = productService.submitIssueRequest(issueRequest);
+        if (response.getMeta().getStatus().equals(ApiStatus.SUCCESS)) {
+            return new ApiResponse(SUCCESS, String.format("Your issue for %s has been submitted!", service.getName()), response.getPayload());
+        }
+        return response;
     }
 
     @RequestMapping("/feature")
@@ -104,7 +108,7 @@ public class ServiceController {
         Idea idea = new Idea(request);
         idea.setService(service);
         ideaRepo.create(idea, credentials);
-        return new ApiResponse(ApiStatus.SUCCESS, "Your feature request for " + service.getName() + " has been submitted as an idea!");
+        return new ApiResponse(ApiStatus.SUCCESS, String.format("Your feature request for %s has been submitted as an idea!", service.getName()));
     }
 
 }

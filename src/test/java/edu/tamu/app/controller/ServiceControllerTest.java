@@ -192,7 +192,7 @@ public class ServiceControllerTest {
         ServiceRequest request = new ServiceRequest(AbstractRequest.RequestType.ISSUE, "Test feature request", "This is a test issue request on product 1", 1L);
         ApiResponse response = serviceController.submitIssueRequest(request, credentials);
         assertEquals("Response was not a success!", ApiStatus.SUCCESS, response.getMeta().getStatus());
-        assertEquals("Response message was not correct!", "Successfully submitted " + request.getType().getName() + " request!", response.getMeta().getMessage());
+        assertEquals("Response message was not correct!", String.format("Your issue for %s has been submitted!", TEST_SERVICE1_NAME), response.getMeta().getMessage());
     }
 
     @Test
@@ -200,7 +200,7 @@ public class ServiceControllerTest {
         ServiceRequest request = new ServiceRequest(AbstractRequest.RequestType.FEATURE, "Test issue request", "This is a test issue request on product 1", 1L);
         ApiResponse response = serviceController.submitFeatureRequest(request, credentials);
         assertEquals("Response was not a success!", ApiStatus.SUCCESS, response.getMeta().getStatus());
-        assertEquals("Response message was not correct!", "Your feature request for " + TEST_SERVICE1_NAME + " has been submitted as an idea!", response.getMeta().getMessage());
+        assertEquals("Response message was not correct!", String.format("Your feature request for %s has been submitted as an idea!", TEST_SERVICE1_NAME), response.getMeta().getMessage());
     }
 
     @After

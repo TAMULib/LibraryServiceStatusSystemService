@@ -11,13 +11,6 @@ on:
   workflow_dispatch:
 
 jobs:
-
-  node:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-
   java:
     runs-on: ubuntu-latest
 
@@ -46,6 +39,6 @@ jobs:
         with:
           github-token: ${{ secrets.github_token }}
           flag-name: lssss-${{ github.run_number }}-java
-          parallel: true
+          parallel: false
           path-to-file: './target/coveralls.json'
           coverage-format: raw

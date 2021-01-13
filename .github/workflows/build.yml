@@ -20,7 +20,7 @@ jobs:
       - name: "Cache Maven Dependencies"
         uses: actions/cache@v2
         env:
-          cache-name: sage-cache-maven-dependencies
+          cache-name: lssss-cache-maven-dependencies
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-lssss-cache-maven-${{ hashFiles('**/pom.xml') }}

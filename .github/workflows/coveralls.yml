@@ -1,0 +1,51 @@
+name: Coveralls
+
+on:
+  push:
+    branches:
+      - $default_branch
+      - sprint*-staging
+
+  pull_request:
+
+  workflow_dispatch:
+
+jobs:
+
+  node:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+  java:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: "Cache Maven Dependencies"
+        uses: actions/cache@v2
+        env:
+          cache-name: lssss-cache-maven-dependencies
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-lssss-cache-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-lssss-cache-maven-${{ hashFiles('**/pom.xml') }}
+
+      - name: "Setup Java"
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      - name: "Running Tests"
+        run: mvn clean test cobertura:cobertura jacoco:report coveralls:report -DdryRun=true
+
+      - name: "To Coveralls (build lssss-${{ github.run_number }}-java)"
+        uses: MikeEdgar/github-action@raw_coverage_file
+        with:
+          github-token: ${{ secrets.github_token }}
+          flag-name: lssss-${{ github.run_number }}-java
+          parallel: true
+          path-to-file: './target/coveralls.json'
+          coverage-format: raw

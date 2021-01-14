@@ -28,11 +28,11 @@ jobs:
       - name: "Maven Test"
         run: mvn clean test cobertura:cobertura jacoco:report coveralls:report -DdryRun=true
 
-      - name: "Send to Coveralls (build ${{ github.run_number }}-java)"
+      - name: "Send to Coveralls (build java-${{ github.run_number }})"
         uses: MikeEdgar/github-action@raw_coverage_file
         with:
           github-token: ${{ secrets.github_token }}
-          flag-name: ${{ github.run_number }}-java
+          flag-name: java-${{ github.run_number }}
           parallel: false
           path-to-file: './target/coveralls.json'
           coverage-format: raw

@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/TAMULib/LibraryServiceStatusSystemService.svg?branch=master)](https://travis-ci.org/TAMULib/LibraryServiceStatusSystemService) 
-[![Coverage Status](https://coveralls.io/repos/github/TAMULib/LibraryServiceStatusSystemService/badge.svg?branch=master)](https://coveralls.io/github/TAMULib/LibraryServiceStatusSystemService?branch=master)
+[![Build Status](https://github.com/TAMULib/LibraryServiceStatusSystemService/workflows/Build/badge.svg)](https://github.com/TAMULib/LibraryServiceStatusSystemService/actions?query=workflow%3ABuild)
+[![Coverage Status](https://coveralls.io/repos/github/TAMULib/LibraryServiceStatusSystemService/badge.svg)](https://coveralls.io/github/TAMULib/LibraryServiceStatusSystemService)
 
 # Library Service Status System
 

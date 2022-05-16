@@ -2,7 +2,7 @@ package edu.tamu.app.controller;
 
 import static edu.tamu.weaver.response.ApiStatus.INVALID;
 import static edu.tamu.weaver.response.ApiStatus.SUCCESS;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -12,9 +12,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -22,7 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import edu.tamu.app.enums.IdeaState;
 import edu.tamu.app.enums.Status;
@@ -40,7 +40,7 @@ import edu.tamu.app.service.ProductService;
 import edu.tamu.weaver.auth.model.Credentials;
 import edu.tamu.weaver.response.ApiResponse;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 public class IdeaControllerTest {
 
     private static User TEST_USER1 = new User("123456789");
@@ -102,21 +102,21 @@ public class IdeaControllerTest {
     @InjectMocks
     private IdeaController ideaController;
 
-    @Before
+    @BeforeEach
     @SuppressWarnings("unchecked")
     public void setup() throws UserNotFoundException {
         rejectedIdea.setState(IdeaState.REJECTED);
         ideaWithFeedback.setFeedback(TEST_FEEDBACK);
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
         when(credentials.getUin()).thenReturn("123456789");
         when(userRepo.findByUsername(any(String.class))).thenReturn(Optional.of(user));
         when(ideaRepo.findAll()).thenReturn(mockIdeaList);
         when(ideaRepo.findAll(any(IdeaSpecification.class), any(Pageable.class))).thenReturn(mockPageableIdeaList);
-        when(ideaRepo.findOne(any(Long.class))).thenReturn(TEST_IDEA1);
+        when(ideaRepo.getById(any(Long.class))).thenReturn(TEST_IDEA1);
         when(ideaRepo.create(any(Idea.class), any(Credentials.class))).thenReturn(TEST_IDEA1);
         when(ideaRepo.update(any(Idea.class))).thenReturn(TEST_MODIFIED_IDEA);
         when(ideaRepo.reject(TEST_IDEA1)).thenReturn(rejectedIdea);
-        when(serviceRepo.findOne(any(Long.class))).thenReturn(TEST_SERVICE);
+        when(serviceRepo.getById(any(Long.class))).thenReturn(TEST_SERVICE);
         when(productService.submitIssueRequest(any(IssueRequest.class))).thenReturn(new ApiResponse(SUCCESS, TEST_ISSUE_REQUEST));
         doNothing().when(ideaRepo).delete(any(Idea.class));
         doNothing().when(ideaRepo).delete(any(Idea.class));
@@ -127,60 +127,60 @@ public class IdeaControllerTest {
     public void testPage() {
         FilteredPageRequest mockFilter = new FilteredPageRequest();
         response = ideaController.page(mockFilter);
-        assertEquals("Not successful at getting paged Ideas", SUCCESS, response.getMeta().getStatus());
+        assertEquals(SUCCESS, response.getMeta().getStatus(), "Not successful at getting paged Ideas");
 
         Page<Idea> page = (Page<Idea>) response.getPayload().get("PageImpl");
-        assertEquals("The paged list of Ideas is the wrong length", mockPageableIdeaList.getSize(), page.getSize());
+        assertEquals(mockPageableIdeaList.getSize(), page.getSize(), "The paged list of Ideas is the wrong length");
     }
 
     @Test
     public void testIdea() {
         response = ideaController.getById(TEST_IDEA1.getId());
-        assertEquals("Not successful at getting requested Idea", SUCCESS, response.getMeta().getStatus());
+        assertEquals(SUCCESS, response.getMeta().getStatus(), "Not successful at getting requested Idea");
         Idea idea = (Idea) response.getPayload().get("Idea");
-        assertEquals("Did not get the expected service", TEST_IDEA1.getId(), idea.getId());
+        assertEquals(TEST_IDEA1.getId(), idea.getId(), "Did not get the expected service");
     }
 
     @Test
     public void testCreate() throws UserNotFoundException {
         response = ideaController.create(TEST_IDEA1, credentials);
-        assertEquals("Not sucessful at creating Idea", SUCCESS, response.getMeta().getStatus());
+        assertEquals(SUCCESS, response.getMeta().getStatus(), "Not sucessful at creating Idea");
     }
 
     @Test
     public void testUpdate() {
         response = ideaController.update(TEST_MODIFIED_IDEA);
-        assertEquals("Not successful at updating idea", SUCCESS, response.getMeta().getStatus());
+        assertEquals(SUCCESS, response.getMeta().getStatus(), "Not successful at updating idea");
         Idea idea = (Idea) response.getPayload().get("Idea");
-        assertEquals("Notification Title was not properly updated", TEST_MODIFIED_IDEA.getTitle(), idea.getTitle());
-        assertEquals("Notification Author was not properly updated", TEST_MODIFIED_IDEA.getAuthor(), idea.getAuthor());
+        assertEquals(TEST_MODIFIED_IDEA.getTitle(), idea.getTitle(), "Notification Title was not properly updated");
+        assertEquals(TEST_MODIFIED_IDEA.getAuthor(), idea.getAuthor(), "Notification Author was not properly updated");
     }
 
     @Test
     public void testReject() {
         response = ideaController.reject(ideaWithFeedback);
-        assertEquals("Not successful at rejecting idea", SUCCESS, response.getMeta().getStatus());
+        assertEquals(SUCCESS, response.getMeta().getStatus(), "Not successful at rejecting idea");
         Idea idea = (Idea) response.getPayload().get("Idea");
-        assertEquals("State was not set to Rejected", rejectedIdea.getState(), idea.getState());
+        assertEquals(rejectedIdea.getState(), idea.getState(), "State was not set to Rejected");
     }
 
     @Test
     public void testInvalidReject() {
         response = ideaController.reject(TEST_IDEA1);
-        assertEquals("Idea without feedback was successfull", INVALID, response.getMeta().getStatus());
+        assertEquals(INVALID, response.getMeta().getStatus(), "Idea without feedback was successfull");
     }
 
     @Test
     public void testHelpdesk() {
         when(ideaRepo.update(any(Idea.class))).thenReturn(TEST_IDEA1);
         response = ideaController.helpdesk(TEST_IDEA1, credentials);
-        assertEquals("Request was not successfull", SUCCESS, response.getMeta().getStatus());
+        assertEquals(SUCCESS, response.getMeta().getStatus(), "Request was not successfull");
     }
 
     @Test
     public void testRemove() {
         response = ideaController.remove(TEST_MODIFIED_IDEA);
-        assertEquals("Not successful at removing Idea", SUCCESS, response.getMeta().getStatus());
+        assertEquals(SUCCESS, response.getMeta().getStatus(), "Not successful at removing Idea");
     }
 
 }

@@ -61,13 +61,13 @@ public class FeatureProposalRepoImpl implements FeatureProposalRepoCustom {
         idea.setFeatureProposal(featureProposal);
         idea = ideaRepo.save(idea);
         simpMessagingTemplate.convertAndSend("/channel/ideas/update", new ApiResponse(SUCCESS, idea));
-        simpMessagingTemplate.convertAndSend("/channel/feature-proposals/create", new ApiResponse(SUCCESS, featureProposalRepo.findOne(featureProposal.getId())));
+        simpMessagingTemplate.convertAndSend("/channel/feature-proposals/create", new ApiResponse(SUCCESS, featureProposalRepo.getById(featureProposal.getId())));
         return featureProposal;
     }
 
     @Override
     public FeatureProposal update(FeatureProposal featureProposalToUpdate) {
-        FeatureProposal persistedFeatureProposal = featureProposalRepo.findOne(featureProposalToUpdate.getId());
+        FeatureProposal persistedFeatureProposal = featureProposalRepo.getById(featureProposalToUpdate.getId());
         // NOTE: ignore voters on update to avoid concurrency issue of save after votes occur
         BeanUtils.copyProperties(featureProposalToUpdate, persistedFeatureProposal, "voters");
         for (Idea idea : persistedFeatureProposal.getIdeas()) {
@@ -90,7 +90,7 @@ public class FeatureProposalRepoImpl implements FeatureProposalRepoCustom {
             simpMessagingTemplate.convertAndSend("/channel/ideas/update", new ApiResponse(SUCCESS, idea));
         }
         featureProposal = featureProposalRepo.save(featureProposal);
-        featureProposalRepo.delete(featureProposal.getId());
+        featureProposalRepo.deleteById(featureProposal.getId());
         simpMessagingTemplate.convertAndSend("/channel/feature-proposals/delete", new ApiResponse(SUCCESS, featureProposal.getId()));
     }
 

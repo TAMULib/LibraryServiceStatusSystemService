@@ -1,16 +1,16 @@
 package edu.tamu.app.auth.model;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import edu.tamu.app.enums.Role;
 import edu.tamu.app.model.User;
 import edu.tamu.weaver.auth.model.Credentials;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 public class AppUserDetailsTest {
 
     private static final Credentials TEST_CREDENTIALS = new Credentials();
@@ -27,6 +27,6 @@ public class AppUserDetailsTest {
     @Test
     public void testConstructor() {
         AppUserDetails appUser = new AppUserDetails(testUser);
-        assertEquals("The parent constructor was not called correctly", testUser.getId(), appUser.getId());
+        assertEquals(testUser.getId(), appUser.getId(), "The parent constructor was not called correctly");
     }
 }

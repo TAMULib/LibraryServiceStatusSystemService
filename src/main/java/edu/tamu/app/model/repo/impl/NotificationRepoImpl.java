@@ -42,7 +42,7 @@ public class NotificationRepoImpl implements NotificationRepoCustom {
 
     @Override
     public void delete(Notification notification) {
-        notificationRepo.delete(notification.getId());
+        notificationRepo.deleteById(notification.getId());
         simpMessagingTemplate.convertAndSend("/channel/notifications/delete", new ApiResponse(SUCCESS, notification.getId()));
     }
 

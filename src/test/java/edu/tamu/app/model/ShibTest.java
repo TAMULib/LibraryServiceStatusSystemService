@@ -1,22 +1,22 @@
 package edu.tamu.app.model;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import edu.tamu.app.StatusApplication;
 import edu.tamu.weaver.auth.model.Credentials;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = { StatusApplication.class }, webEnvironment = WebEnvironment.DEFINED_PORT)
 public class ShibTest {
 
@@ -24,7 +24,7 @@ public class ShibTest {
 
     private long timestamp = new Date().getTime() + (5 * 60 * 1000);
 
-    @Before
+    @BeforeEach
     public void setup() {
         aggieJackToken = new HashMap<String, Object>();
         aggieJackToken.put("lastName", "Daniels");
@@ -39,12 +39,12 @@ public class ShibTest {
     public void testCreateShib() {
         Credentials shib = new Credentials(aggieJackToken);
 
-        assertEquals("Last name did not match.", "Daniels", shib.getLastName());
-        assertEquals("First name did not match.", "Jack", shib.getFirstName());
-        assertEquals("Netid did not match.", "aggiejack", shib.getNetid());
-        assertEquals("UIN did not match.", "123456789", shib.getUin());
-        assertEquals("Expiration did not match.", String.valueOf(timestamp), shib.getExp());
-        assertEquals("Email did not match.", "aggiejack@tamu.edu", shib.getEmail());
+        assertEquals("Daniels", shib.getLastName(), "Last name did not match.");
+        assertEquals("Jack", shib.getFirstName(), "First name did not match.");
+        assertEquals("aggiejack", shib.getNetid(), "Netid did not match.");
+        assertEquals("123456789", shib.getUin(), "UIN did not match.");
+        assertEquals(String.valueOf(timestamp), shib.getExp(), "Expiration did not match.");
+        assertEquals("aggiejack@tamu.edu", shib.getEmail(), "Email did not match.");
     }
 
     private Map<String, String> createToken(String uin, String firstName, String lastName, String email, String netid, Long time) {

@@ -1,7 +1,7 @@
 package edu.tamu.app.controller;
 
 import static edu.tamu.weaver.response.ApiStatus.SUCCESS;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -11,9 +11,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -21,7 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import edu.tamu.app.enums.NoteType;
 import edu.tamu.app.enums.Status;
@@ -38,7 +38,7 @@ import edu.tamu.weaver.auth.model.Credentials;
 import edu.tamu.weaver.response.ApiResponse;
 
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 public class NoteControllerTest {
 
     private static User TEST_USER1 = new User("123456789");
@@ -80,18 +80,18 @@ public class NoteControllerTest {
     @InjectMocks
     private NoteController noteController;
 
-    @Before
+    @BeforeEach
     @SuppressWarnings("unchecked")
     public void setup() throws UserNotFoundException {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
         when(credentials.getUin()).thenReturn("123456789");
         when(userRepo.findByUsername(any(String.class))).thenReturn(Optional.of(user));
         when(noteRepo.findAll()).thenReturn(mockNoteList);
         when(noteRepo.findAll(any(NoteSpecification.class), any(Pageable.class))).thenReturn(mockPageableNoteList);
-        when(noteRepo.findOne(any(Long.class))).thenReturn(TEST_NOTE1);
+        when(noteRepo.getById(any(Long.class))).thenReturn(TEST_NOTE1);
         when(noteRepo.create(any(Note.class), any(Credentials.class))).thenReturn(TEST_NOTE1);
         when(noteRepo.update(any(Note.class))).thenReturn(TEST_MODIFIED_NOTE);
-        when(serviceRepo.findOne(any(Long.class))).thenReturn(TEST_SERVICE);
+        when(serviceRepo.getById(any(Long.class))).thenReturn(TEST_SERVICE);
         doNothing().when(noteRepo).delete(any(Note.class));
         doNothing().when(noteRepo).delete(any(Note.class));
     }
@@ -101,39 +101,39 @@ public class NoteControllerTest {
     public void testPage() {
         FilteredPageRequest mockFilter = new FilteredPageRequest();
         response = noteController.page(mockFilter);
-        assertEquals("Not successful at getting paged Notes", SUCCESS, response.getMeta().getStatus());
+        assertEquals(SUCCESS, response.getMeta().getStatus(), "Not successful at getting paged Notes");
 
         Page<Note> page = (Page<Note>) response.getPayload().get("PageImpl");
-        assertEquals("The paged list of Notes is the wrong length", mockPageableNoteList.getSize(), page.getSize());
+        assertEquals(mockPageableNoteList.getSize(), page.getSize(), "The paged list of Notes is the wrong length");
     }
 
     @Test
     public void testNote() {
         response = noteController.getById(TEST_NOTE1.getId());
-        assertEquals("Not successful at getting requested Note", SUCCESS, response.getMeta().getStatus());
+        assertEquals(SUCCESS, response.getMeta().getStatus(), "Not successful at getting requested Note");
         Note note = (Note) response.getPayload().get("Note");
-        assertEquals("Did not get the expected service", TEST_NOTE1.getId(), note.getId());
+        assertEquals(TEST_NOTE1.getId(), note.getId(), "Did not get the expected service");
     }
 
     @Test
     public void testCreate() throws UserNotFoundException {
         response = noteController.create(TEST_NOTE1, credentials);
-        assertEquals("Not sucessful at creating Note", SUCCESS, response.getMeta().getStatus());
+        assertEquals(SUCCESS, response.getMeta().getStatus(), "Not sucessful at creating Note");
     }
 
     @Test
     public void testUpdate() {
         response = noteController.update(TEST_MODIFIED_NOTE);
-        assertEquals("Not successful at updating note", SUCCESS, response.getMeta().getStatus());
+        assertEquals(SUCCESS, response.getMeta().getStatus(), "Not successful at updating note");
         Note note = (Note) response.getPayload().get("Note");
-        assertEquals("Notification Title was not properly updated", TEST_MODIFIED_NOTE.getTitle(), note.getTitle());
-        assertEquals("Notification Author was not properly updated", TEST_MODIFIED_NOTE.getAuthor(), note.getAuthor());
+        assertEquals(TEST_MODIFIED_NOTE.getTitle(), note.getTitle(), "Notification Title was not properly updated");
+        assertEquals(TEST_MODIFIED_NOTE.getAuthor(), note.getAuthor(), "Notification Author was not properly updated");
     }
 
     @Test
     public void testRemove() {
         response = noteController.remove(TEST_MODIFIED_NOTE);
-        assertEquals("Not successful at removing Note", SUCCESS, response.getMeta().getStatus());
+        assertEquals(SUCCESS, response.getMeta().getStatus(), "Not successful at removing Note");
     }
 
 }

@@ -37,7 +37,7 @@ public class NoteController {
     @RequestMapping("/{id}")
     @PreAuthorize("hasRole('ANONYMOUS')")
     public ApiResponse getById(@PathVariable Long id) {
-        return new ApiResponse(SUCCESS, noteRepo.findOne(id));
+        return new ApiResponse(SUCCESS, noteRepo.getById(id));
     }
 
     @RequestMapping("/create")

@@ -2,7 +2,7 @@ package edu.tamu.app.controller;
 
 import static edu.tamu.weaver.response.ApiStatus.INVALID;
 import static edu.tamu.weaver.response.ApiStatus.SUCCESS;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -12,9 +12,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -22,7 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import edu.tamu.app.enums.FeatureProposalState;
 import edu.tamu.app.enums.Status;
@@ -39,7 +39,7 @@ import edu.tamu.app.model.request.FilteredPageRequest;
 import edu.tamu.weaver.auth.model.Credentials;
 import edu.tamu.weaver.response.ApiResponse;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 public class FeatureProposalControllerTest {
 
     private static User TEST_USER1 = new User("123456789");
@@ -89,22 +89,22 @@ public class FeatureProposalControllerTest {
     @InjectMocks
     private FeatureProposalController featureProposalController;
 
-    @Before
+    @BeforeEach
     @SuppressWarnings("unchecked")
     public void setup() throws UserNotFoundException {
         rejectedFeatureProposal.setState(FeatureProposalState.REJECTED);
         featureProposalWithFeedback.setFeedback(TEST_FEEDBACK);
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
         when(credentials.getUin()).thenReturn("123456789");
         when(userRepo.findByUsername(any(String.class))).thenReturn(Optional.of(user));
         when(featureProposalRepo.findAll()).thenReturn(mockFeatureProposalList);
         when(featureProposalRepo.findAll(any(FeatureProposalSpecification.class), any(Pageable.class))).thenReturn(mockPageableFeatureProposalList);
-        when(featureProposalRepo.findOne(any(Long.class))).thenReturn(TEST_FEATURE_PROPOSAL1);
+        when(featureProposalRepo.getById(any(Long.class))).thenReturn(TEST_FEATURE_PROPOSAL1);
         when(featureProposalRepo.create(any(FeatureProposal.class), any(Credentials.class))).thenReturn(TEST_FEATURE_PROPOSAL1);
         when(featureProposalRepo.create(any(Idea.class))).thenReturn(TEST_FEATURE_PROPOSAL1);
         when(featureProposalRepo.update(any(FeatureProposal.class))).thenReturn(TEST_MODIFIED_FEATURE_PROPOSAL);
         when(featureProposalRepo.reject(featureProposalWithFeedback)).thenReturn(rejectedFeatureProposal);
-        when(serviceRepo.findOne(any(Long.class))).thenReturn(TEST_SERVICE);
+        when(serviceRepo.getById(any(Long.class))).thenReturn(TEST_SERVICE);
         doNothing().when(featureProposalRepo).delete(any(FeatureProposal.class));
         doNothing().when(featureProposalRepo).delete(any(FeatureProposal.class));
     }
@@ -114,66 +114,66 @@ public class FeatureProposalControllerTest {
     public void testPage() {
         FilteredPageRequest mockFilter = new FilteredPageRequest();
         response = featureProposalController.getAllFeatureProposalsByService(mockFilter);
-        assertEquals("Not successful at getting paged FeatureProposals", SUCCESS, response.getMeta().getStatus());
+        assertEquals(SUCCESS, response.getMeta().getStatus(), "Not successful at getting paged FeatureProposals");
 
         Page<FeatureProposal> page = (Page<FeatureProposal>) response.getPayload().get("PageImpl");
-        assertEquals("The paged list of FeatureProposals is the wrong length", mockPageableFeatureProposalList.getSize(), page.getSize());
+        assertEquals(mockPageableFeatureProposalList.getSize(), page.getSize(), "The paged list of FeatureProposals is the wrong length");
     }
 
     @Test
     public void testFeatureProposal() {
         response = featureProposalController.getFeatureProposal(TEST_FEATURE_PROPOSAL1.getId());
-        assertEquals("Not successful at getting requested FeatureProposal", SUCCESS, response.getMeta().getStatus());
+        assertEquals(SUCCESS, response.getMeta().getStatus(), "Not successful at getting requested FeatureProposal");
         FeatureProposal featureProposal = (FeatureProposal) response.getPayload().get("FeatureProposal");
-        assertEquals("Did not get the expected service", TEST_FEATURE_PROPOSAL1.getId(), featureProposal.getId());
+        assertEquals(TEST_FEATURE_PROPOSAL1.getId(), featureProposal.getId(), "Did not get the expected service");
     }
 
     @Test
     public void testCreate() throws UserNotFoundException {
         response = featureProposalController.create(TEST_FEATURE_PROPOSAL1, credentials);
-        assertEquals("Not sucessful at creating FeatureProposal", SUCCESS, response.getMeta().getStatus());
+        assertEquals(SUCCESS, response.getMeta().getStatus(), "Not sucessful at creating FeatureProposal");
     }
 
     @Test
     public void testElevate() throws UserNotFoundException {
         Idea idea = new Idea(TEST_FEATURE_PROPOSAL_TITLE1, TEST_FEATURE_PROPOSAL_DESCRIPTION1, TEST_USER1, TEST_SERVICE);
         response = featureProposalController.elevate(idea);
-        assertEquals("Not sucessful at elevating Idea to FeatureProposal", SUCCESS, response.getMeta().getStatus());
+        assertEquals(SUCCESS, response.getMeta().getStatus(), "Not sucessful at elevating Idea to FeatureProposal");
     }
 
     @Test
     public void testUpdate() {
         response = featureProposalController.update(TEST_MODIFIED_FEATURE_PROPOSAL);
-        assertEquals("Not successful at updating featureProposal", SUCCESS, response.getMeta().getStatus());
+        assertEquals(SUCCESS, response.getMeta().getStatus(), "Not successful at updating featureProposal");
         FeatureProposal featureProposal = (FeatureProposal) response.getPayload().get("FeatureProposal");
-        assertEquals("Notification Title was not properly updated", TEST_MODIFIED_FEATURE_PROPOSAL.getTitle(), featureProposal.getTitle());
-        assertEquals("Notification Author was not properly updated", TEST_MODIFIED_FEATURE_PROPOSAL.getAuthor(), featureProposal.getAuthor());
+        assertEquals(TEST_MODIFIED_FEATURE_PROPOSAL.getTitle(), featureProposal.getTitle(), "Notification Title was not properly updated");
+        assertEquals(TEST_MODIFIED_FEATURE_PROPOSAL.getAuthor(), featureProposal.getAuthor(), "Notification Author was not properly updated");
     }
 
     @Test
     public void testReject() {
         response = featureProposalController.reject(featureProposalWithFeedback);
-        assertEquals("Not successful at rejecting feature proposal", SUCCESS, response.getMeta().getStatus());
+        assertEquals(SUCCESS, response.getMeta().getStatus(), "Not successful at rejecting feature proposal");
         FeatureProposal featureProposal = (FeatureProposal) response.getPayload().get("FeatureProposal");
-        assertEquals("State was not set to Rejected", rejectedFeatureProposal.getState(), featureProposal.getState());
+        assertEquals(rejectedFeatureProposal.getState(), featureProposal.getState(), "State was not set to Rejected");
     }
     
     @Test
     public void testInvalidReject() {
         response = featureProposalController.reject(TEST_FEATURE_PROPOSAL1);
-        assertEquals("Ffeature proposal without feedback was not rejected", INVALID, response.getMeta().getStatus());
+        assertEquals(INVALID, response.getMeta().getStatus(), "Feature proposal without feedback was not rejected");
     }
 
     @Test
     public void testRemove() {
         response = featureProposalController.remove(TEST_MODIFIED_FEATURE_PROPOSAL);
-        assertEquals("Not successful at removing FeatureProposal", SUCCESS, response.getMeta().getStatus());
+        assertEquals(SUCCESS, response.getMeta().getStatus(), "Not successful at removing FeatureProposal");
     }
 
     @Test
     public void testVote() {
         response = featureProposalController.vote(1L, TEST_USER1);
-        assertEquals("Not successful at removing FeatureProposal", SUCCESS, response.getMeta().getStatus());
+        assertEquals(SUCCESS, response.getMeta().getStatus(), "Not successful at removing FeatureProposal");
     }
 
 }

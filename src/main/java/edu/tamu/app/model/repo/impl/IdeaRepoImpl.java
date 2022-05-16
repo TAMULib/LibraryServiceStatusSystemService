@@ -57,7 +57,7 @@ public class IdeaRepoImpl implements IdeaRepoCustom {
 
     @Override
     public void delete(Idea idea) {
-        ideaRepo.delete(idea.getId());
+        ideaRepo.deleteById(idea.getId());
         simpMessagingTemplate.convertAndSend("/channel/ideas/delete", new ApiResponse(SUCCESS, idea.getId()));
     }
 

@@ -1,18 +1,18 @@
 package edu.tamu.app.auth.service;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import edu.tamu.app.enums.Role;
 import edu.tamu.app.model.User;
 import edu.tamu.weaver.auth.model.Credentials;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 public class AppUserDetailsServiceTest {
     
     private static final Credentials TEST_CREDENTIALS_1 = new Credentials();
@@ -32,7 +32,7 @@ public class AppUserDetailsServiceTest {
     @Test
     public void testBuildUserDetails() {
         UserDetails details = appUserDetailsService.buildUserDetails(testUser1);
-        assertEquals("User details not built correctly", TEST_CREDENTIALS_1.getUin(), details.getUsername());
+        assertEquals(TEST_CREDENTIALS_1.getUin(), details.getUsername(), "User details not built correctly");
     }
 
 }

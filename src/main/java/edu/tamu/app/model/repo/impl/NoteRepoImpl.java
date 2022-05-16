@@ -52,7 +52,7 @@ public class NoteRepoImpl implements NoteRepoCustom {
 
     @Override
     public void delete(Note note) {
-        noteRepo.delete(note.getId());
+        noteRepo.deleteById(note.getId());
         simpMessagingTemplate.convertAndSend("/channel/notes/delete", new ApiResponse(SUCCESS, note.getId()));
     }
 

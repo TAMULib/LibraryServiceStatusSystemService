@@ -1,17 +1,18 @@
 package edu.tamu.app.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import edu.tamu.app.StatusApplication;
 import edu.tamu.app.enums.IdeaState;
@@ -24,7 +25,7 @@ import edu.tamu.app.model.repo.ServiceRepo;
 import edu.tamu.app.model.repo.UserRepo;
 import edu.tamu.weaver.auth.model.Credentials;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = { StatusApplication.class }, webEnvironment = WebEnvironment.DEFINED_PORT)
 public class IdeaTest {
 
@@ -81,7 +82,7 @@ public class IdeaTest {
     @Autowired
     private FeatureProposalRepo featureProposalRepo;
 
-    @Before
+    @BeforeEach
     public void setUp() throws UserNotFoundException {
         testUser = userRepo.create(TEST_CREDENTIALS.getUin(), TEST_CREDENTIALS.getEmail(), TEST_CREDENTIALS.getFirstName(), TEST_CREDENTIALS.getLastName(), Role.valueOf(TEST_CREDENTIALS.getRole()));
         service1 = serviceRepo.create(new Service(TEST_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, TEST_SERVICE_URL, TEST_SERVICE_DESCRIPTION));
@@ -94,19 +95,23 @@ public class IdeaTest {
     public void testCreate() throws UserNotFoundException {
         long initialCount = ideaRepo.count();
         ideaRepo.create(new Idea(TEST_ALTERNATIVE_IDEA_TITLE, TEST_ALTERNATIVE_IDEA_DESCRIPTION, testUser, service2), TEST_CREDENTIALS);
-        assertEquals("The number of Ideas did not increase by one", initialCount + 1, ideaRepo.count());
+        assertEquals(initialCount + 1, ideaRepo.count(), "The number of Ideas did not increase by one");
     }
 
-    @Test(expected = DataIntegrityViolationException.class)
+    @Test
     public void testTitleNotNull() throws UserNotFoundException {
-        testIdea.setTitle(null);
-        ideaRepo.create(new Idea(null, TEST_ALTERNATIVE_IDEA_DESCRIPTION, testUser, service2), TEST_CREDENTIALS);
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            testIdea.setTitle(null);
+            ideaRepo.create(new Idea(null, TEST_ALTERNATIVE_IDEA_DESCRIPTION, testUser, service2), TEST_CREDENTIALS);
+        });
     }
 
-    @Test(expected = UserNotFoundException.class)
+    @Test
     public void testAuthorNotNull() throws UserNotFoundException {
-        TEST_CREDENTIALS.setUin("987654321");
-        ideaRepo.create(new Idea(TEST_ALTERNATIVE_IDEA_TITLE, TEST_ALTERNATIVE_IDEA_DESCRIPTION, null, service2), TEST_CREDENTIALS);
+        assertThrows(UserNotFoundException.class, () -> {
+            TEST_CREDENTIALS.setUin("987654321");
+            ideaRepo.create(new Idea(TEST_ALTERNATIVE_IDEA_TITLE, TEST_ALTERNATIVE_IDEA_DESCRIPTION, null, service2), TEST_CREDENTIALS);
+        });
     }
 
     @Test
@@ -114,7 +119,7 @@ public class IdeaTest {
         Idea idea = ideaRepo.create(testIdea, TEST_CREDENTIALS);
         idea.setTitle(TEST_ALTERNATIVE_IDEA_TITLE);
         idea = ideaRepo.save(idea);
-        assertEquals("Idea title was not updated", TEST_ALTERNATIVE_IDEA_TITLE, idea.getTitle());
+        assertEquals(TEST_ALTERNATIVE_IDEA_TITLE, idea.getTitle(), "Idea title was not updated");
     }
 
     @Test
@@ -122,10 +127,10 @@ public class IdeaTest {
         Idea idea = ideaRepo.create(testIdea, TEST_CREDENTIALS);
         idea.setService(service1);
         idea = ideaRepo.save(idea);
-        assertEquals("Service was not set", service1, idea.getService());
+        assertEquals(service1, idea.getService(), "Service was not set");
         idea.setService(service2);
         idea = ideaRepo.save(idea);
-        assertEquals("Service was not updated correctly", service2, idea.getService());
+        assertEquals(service2, idea.getService(), "Service was not updated correctly");
     }
 
     @Test
@@ -133,10 +138,10 @@ public class IdeaTest {
         Idea idea = ideaRepo.create(testIdea, TEST_CREDENTIALS);
         idea.setDescription(TEST_IDEA_DESCRIPTION);
         idea = ideaRepo.save(idea);
-        assertEquals("Idea body not set", TEST_IDEA_DESCRIPTION, idea.getDescription());
+        assertEquals(TEST_IDEA_DESCRIPTION, idea.getDescription(), "Idea body not set");
         idea.setDescription(TEST_ALTERNATIVE_IDEA_DESCRIPTION);
         idea = ideaRepo.save(idea);
-        assertEquals("Idea body not updated", TEST_ALTERNATIVE_IDEA_DESCRIPTION, idea.getDescription());
+        assertEquals(TEST_ALTERNATIVE_IDEA_DESCRIPTION, idea.getDescription(), "Idea body not updated");
     }
 
     @Test
@@ -144,10 +149,10 @@ public class IdeaTest {
         Idea idea = ideaRepo.create(testIdea, TEST_CREDENTIALS);
         idea.setFeedback(TEST_IDEA_FEEDBACK);
         idea = ideaRepo.save(idea);
-        assertEquals("Idea feedback not set", TEST_IDEA_FEEDBACK, idea.getFeedback());
+        assertEquals(TEST_IDEA_FEEDBACK, idea.getFeedback(), "Idea feedback not set");
         idea.setFeedback(TEST_ALTERNATIVE_IDEA_FEEDBACK);
         idea = ideaRepo.save(idea);
-        assertEquals("Idea feedback not updated", TEST_ALTERNATIVE_IDEA_FEEDBACK, idea.getFeedback());
+        assertEquals(TEST_ALTERNATIVE_IDEA_FEEDBACK, idea.getFeedback(), "Idea feedback not updated");
     }
 
     @Test
@@ -158,9 +163,9 @@ public class IdeaTest {
         idea.setFeatureProposal(testFeatureProposal);
         idea = ideaRepo.save(idea);
 
-        assertEquals("Idea does not have feature proposal", testFeatureProposal, idea.getFeatureProposal());
-        assertEquals("Feature proposal does not have expedted number of ideas", 1, testFeatureProposal.getIdeas().size());
-        assertEquals("Feature proposal does not have idea", idea, testFeatureProposal.getIdeas().get(0));
+        assertEquals(testFeatureProposal, idea.getFeatureProposal(), "Idea does not have feature proposal");
+        assertEquals(1, testFeatureProposal.getIdeas().size(), "Feature proposal does not have expedted number of ideas");
+        assertEquals(idea, testFeatureProposal.getIdeas().get(0), "Feature proposal does not have idea");
     }
 
     @Test
@@ -168,7 +173,7 @@ public class IdeaTest {
         Idea idea = ideaRepo.create(testIdea, TEST_CREDENTIALS);
         idea = ideaRepo.reject(idea);
 
-        assertEquals("Idea was not rejected", IdeaState.REJECTED, idea.getState());
+        assertEquals(IdeaState.REJECTED, idea.getState(), "Idea was not rejected");
     }
 
     @Test
@@ -180,14 +185,14 @@ public class IdeaTest {
     @Test
     public void testTimestampSetOnCreate() throws UserNotFoundException {
         Idea Idea = ideaRepo.create(testIdea, TEST_CREDENTIALS);
-        Idea = ideaRepo.findOne(Idea.getId());
-        assertNotEquals("Timestamp not set on creation", null, Idea.getLastModified());
+        Idea = ideaRepo.getById(Idea.getId());
+        assertNotEquals(null, Idea.getLastModified(), "Timestamp not set on creation");
     }
 
     @Test
     public void testTimestampSetOnUpdate() throws InterruptedException, UserNotFoundException {
         Idea idea = ideaRepo.create(testIdea, TEST_CREDENTIALS);
-        idea = ideaRepo.findOne(idea.getId());
+        idea = ideaRepo.getById(idea.getId());
         // Calendar createTime = Idea.getLastModified();
         idea.setDescription(TEST_IDEA_DESCRIPTION);
 
@@ -204,22 +209,22 @@ public class IdeaTest {
     public void testDelete() throws UserNotFoundException {
         long initalCount = ideaRepo.count();
         Idea idea = ideaRepo.create(new Idea(TEST_ALTERNATIVE_IDEA_TITLE, TEST_ALTERNATIVE_IDEA_DESCRIPTION, testUser, service2), TEST_CREDENTIALS);
-        assertEquals("Idea not created", initalCount + 1, ideaRepo.count());
+        assertEquals(initalCount + 1, ideaRepo.count(), "Idea not created");
         testFeatureProposal.addIdea(idea);
         testFeatureProposal = featureProposalRepo.save(testFeatureProposal);
         idea.setFeatureProposal(testFeatureProposal);
         idea = ideaRepo.save(idea);
 
-        assertEquals("Idea does not have feature proposal", testFeatureProposal, idea.getFeatureProposal());
-        assertEquals("Feature proposal does not have expedted number of ideas", 1, testFeatureProposal.getIdeas().size());
-        assertEquals("Feature proposal does not have idea", idea, testFeatureProposal.getIdeas().get(0));
+        assertEquals(testFeatureProposal, idea.getFeatureProposal(), "Idea does not have feature proposal");
+        assertEquals(1, testFeatureProposal.getIdeas().size(), "Feature proposal does not have expedted number of ideas");
+        assertEquals(idea, testFeatureProposal.getIdeas().get(0), "Feature proposal does not have idea");
 
         ideaRepo.delete(idea);
-        assertEquals("Idea not deleted", initalCount, ideaRepo.count());
+        assertEquals(initalCount, ideaRepo.count(), "Idea not deleted");
 
     }
 
-    @After
+    @AfterEach
     public void cleanUp() {
         ideaRepo.deleteAll();
         featureProposalRepo.deleteAll();

@@ -8,19 +8,15 @@ import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-
 import edu.tamu.app.StatusApplication;
 import edu.tamu.app.enums.NotificationLocation;
 import edu.tamu.app.model.repo.NotificationRepo;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = { StatusApplication.class }, webEnvironment = WebEnvironment.DEFINED_PORT)
+@SpringBootTest(classes = { StatusApplication.class }, webEnvironment = WebEnvironment.RANDOM_PORT)
 public class NotificationTest {
 
     private static final String TEST_NOTIFICATION_NAME = "Test Notification Name";
@@ -58,7 +54,7 @@ public class NotificationTest {
         Notification notification = notificationRepo.create(new Notification(TEST_NOTIFICATION_NAME, TEST_NOTIFICATION_BODY, TEST_LOCATIONS));
         notification.setName(TEST_ALTERNATE_NOTIFICATION_NAME);
         notificationRepo.save(notification);
-        notification = notificationRepo.getById(notification.getId());
+        notification = notificationRepo.findById(notification.getId()).get();
         assertEquals(TEST_ALTERNATE_NOTIFICATION_NAME, notification.getName(), "Notification name was not changed");
     }
 
@@ -67,7 +63,7 @@ public class NotificationTest {
         Notification notification = notificationRepo.create(new Notification(TEST_NOTIFICATION_NAME, TEST_NOTIFICATION_BODY, TEST_LOCATIONS));
         notification.setBody(TEST_ALTERNATE_NOTIFICATION_BODY);
         notificationRepo.update(notification);
-        notification = notificationRepo.getById(notification.getId());
+        notification = notificationRepo.findById(notification.getId()).get();
         assertEquals(TEST_ALTERNATE_NOTIFICATION_BODY, notification.getBody(), "Notification body was not changed");
     }
 

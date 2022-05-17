@@ -2,7 +2,7 @@ package edu.tamu.app.controller;
 
 import static edu.tamu.weaver.response.ApiStatus.SUCCESS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
@@ -109,6 +109,7 @@ public class NoteControllerTest {
 
     @Test
     public void testNote() {
+        TEST_NOTE1.setId(1L);
         response = noteController.getById(TEST_NOTE1.getId());
         assertEquals(SUCCESS, response.getMeta().getStatus(), "Not successful at getting requested Note");
         Note note = (Note) response.getPayload().get("Note");

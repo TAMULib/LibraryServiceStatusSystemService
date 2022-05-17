@@ -7,13 +7,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-
 import edu.tamu.app.StatusApplication;
 import edu.tamu.app.enums.IdeaState;
 import edu.tamu.app.enums.Role;
@@ -25,8 +22,7 @@ import edu.tamu.app.model.repo.ServiceRepo;
 import edu.tamu.app.model.repo.UserRepo;
 import edu.tamu.weaver.auth.model.Credentials;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = { StatusApplication.class }, webEnvironment = WebEnvironment.DEFINED_PORT)
+@SpringBootTest(classes = { StatusApplication.class }, webEnvironment = WebEnvironment.RANDOM_PORT)
 public class IdeaTest {
 
     private static final String TEST_IDEA_TITLE = "Idea Title";
@@ -185,14 +181,14 @@ public class IdeaTest {
     @Test
     public void testTimestampSetOnCreate() throws UserNotFoundException {
         Idea Idea = ideaRepo.create(testIdea, TEST_CREDENTIALS);
-        Idea = ideaRepo.getById(Idea.getId());
+        Idea = ideaRepo.findById(Idea.getId()).get();
         assertNotEquals(null, Idea.getLastModified(), "Timestamp not set on creation");
     }
 
     @Test
     public void testTimestampSetOnUpdate() throws InterruptedException, UserNotFoundException {
         Idea idea = ideaRepo.create(testIdea, TEST_CREDENTIALS);
-        idea = ideaRepo.getById(idea.getId());
+        idea = ideaRepo.findById(idea.getId()).get();
         // Calendar createTime = Idea.getLastModified();
         idea.setDescription(TEST_IDEA_DESCRIPTION);
 

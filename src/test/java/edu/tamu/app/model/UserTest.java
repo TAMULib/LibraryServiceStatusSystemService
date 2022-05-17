@@ -10,20 +10,16 @@ import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-
 import edu.tamu.app.StatusApplication;
 import edu.tamu.app.enums.Role;
 import edu.tamu.app.model.repo.UserRepo;
 import edu.tamu.weaver.auth.model.Credentials;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = { StatusApplication.class }, webEnvironment = WebEnvironment.DEFINED_PORT)
+@SpringBootTest(classes = { StatusApplication.class }, webEnvironment = WebEnvironment.RANDOM_PORT)
 public class UserTest {
 
     @Autowired

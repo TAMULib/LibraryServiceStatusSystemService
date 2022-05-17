@@ -9,12 +9,10 @@ import java.util.ArrayList;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import edu.tamu.app.StatusApplication;
 import edu.tamu.app.enums.Role;
@@ -26,8 +24,7 @@ import edu.tamu.app.model.repo.ServiceRepo;
 import edu.tamu.app.model.repo.UserRepo;
 import edu.tamu.weaver.auth.model.Credentials;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = { StatusApplication.class }, webEnvironment = WebEnvironment.DEFINED_PORT)
+@SpringBootTest(classes = { StatusApplication.class }, webEnvironment = WebEnvironment.RANDOM_PORT)
 public class FeatureProposalTest {
 
     private static final String TEST_FEATURE_PROPOSAL_TITLE = "Feature Proposal Title";
@@ -220,14 +217,14 @@ public class FeatureProposalTest {
     @Test
     public void testTimestampSetOnCreate() throws UserNotFoundException {
         FeatureProposal FeatureProposal = featureProposalRepo.create(testFeatureProposal, TEST_CREDENTIALS);
-        FeatureProposal = featureProposalRepo.getById(FeatureProposal.getId());
+        FeatureProposal = featureProposalRepo.findById(FeatureProposal.getId()).get();
         assertNotEquals(null, FeatureProposal.getLastModified(), "Timestamp not set on creation");
     }
 
     @Test
     public void testTimestampSetOnUpdate() throws InterruptedException, UserNotFoundException {
         FeatureProposal featureProposal = featureProposalRepo.create(testFeatureProposal, TEST_CREDENTIALS);
-        featureProposal = featureProposalRepo.getById(featureProposal.getId());
+        featureProposal = featureProposalRepo.findById(featureProposal.getId()).get();
         // Calendar createTime = FeatureProposal.getLastModified();
         featureProposal.setDescription(TEST_FEATURE_PROPOSAL_DESCRIPTION);
 

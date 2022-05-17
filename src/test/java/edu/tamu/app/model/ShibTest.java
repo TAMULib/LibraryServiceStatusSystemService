@@ -8,16 +8,12 @@ import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-
 import edu.tamu.app.StatusApplication;
 import edu.tamu.weaver.auth.model.Credentials;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = { StatusApplication.class }, webEnvironment = WebEnvironment.DEFINED_PORT)
+@SpringBootTest(classes = { StatusApplication.class }, webEnvironment = WebEnvironment.RANDOM_PORT)
 public class ShibTest {
 
     private Map<String, Object> aggieJackToken;

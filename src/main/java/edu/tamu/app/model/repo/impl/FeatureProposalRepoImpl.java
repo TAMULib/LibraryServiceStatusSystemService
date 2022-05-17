@@ -61,7 +61,7 @@ public class FeatureProposalRepoImpl implements FeatureProposalRepoCustom {
         idea.setFeatureProposal(featureProposal);
         idea = ideaRepo.save(idea);
         simpMessagingTemplate.convertAndSend("/channel/ideas/update", new ApiResponse(SUCCESS, idea));
-        simpMessagingTemplate.convertAndSend("/channel/feature-proposals/create", new ApiResponse(SUCCESS, featureProposalRepo.getById(featureProposal.getId())));
+        simpMessagingTemplate.convertAndSend("/channel/feature-proposals/create", new ApiResponse(SUCCESS, featureProposalRepo.findById(featureProposal.getId())));
         return featureProposal;
     }
 

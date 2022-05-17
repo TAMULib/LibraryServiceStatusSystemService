@@ -3,7 +3,7 @@ package edu.tamu.app.controller;
 import static edu.tamu.weaver.response.ApiStatus.INVALID;
 import static edu.tamu.weaver.response.ApiStatus.SUCCESS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
@@ -122,6 +122,7 @@ public class FeatureProposalControllerTest {
 
     @Test
     public void testFeatureProposal() {
+        TEST_FEATURE_PROPOSAL1.setId(1L);
         response = featureProposalController.getFeatureProposal(TEST_FEATURE_PROPOSAL1.getId());
         assertEquals(SUCCESS, response.getMeta().getStatus(), "Not successful at getting requested FeatureProposal");
         FeatureProposal featureProposal = (FeatureProposal) response.getPayload().get("FeatureProposal");

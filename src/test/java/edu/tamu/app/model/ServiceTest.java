@@ -8,13 +8,10 @@ import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-
 import edu.tamu.app.StatusApplication;
 import edu.tamu.app.enums.Status;
 import edu.tamu.app.model.repo.NoteRepo;
@@ -22,8 +19,7 @@ import edu.tamu.app.model.repo.ServiceRepo;
 import edu.tamu.app.model.repo.UserRepo;
 import edu.tamu.weaver.auth.model.Credentials;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = { StatusApplication.class }, webEnvironment = WebEnvironment.DEFINED_PORT)
+@SpringBootTest(classes = { StatusApplication.class }, webEnvironment = WebEnvironment.RANDOM_PORT)
 public class ServiceTest {
 
     private static final String TEST_SERVICE_NAME = "Test Service Name";
@@ -87,7 +83,7 @@ public class ServiceTest {
 
     private Service refreshService(Service service) {
         serviceRepo.save(service);
-        return serviceRepo.getById(service.getId());
+        return serviceRepo.findById(service.getId()).get();
     }
 
     @Test
@@ -133,7 +129,7 @@ public class ServiceTest {
         Long productId = 1L;
         newService.setProductId(productId);
         serviceRepo.save(newService);
-        Service serviceWithProductId = serviceRepo.getById(serviceId);
+        Service serviceWithProductId = serviceRepo.findById(serviceId).get();
         assertEquals(productId, serviceWithProductId.getProductId(), "The service had the incorrect product id!");
     }
 

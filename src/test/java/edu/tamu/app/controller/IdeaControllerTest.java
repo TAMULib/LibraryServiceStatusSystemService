@@ -3,7 +3,7 @@ package edu.tamu.app.controller;
 import static edu.tamu.weaver.response.ApiStatus.INVALID;
 import static edu.tamu.weaver.response.ApiStatus.SUCCESS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
@@ -115,7 +115,7 @@ public class IdeaControllerTest {
         when(ideaRepo.getById(any(Long.class))).thenReturn(TEST_IDEA1);
         when(ideaRepo.create(any(Idea.class), any(Credentials.class))).thenReturn(TEST_IDEA1);
         when(ideaRepo.update(any(Idea.class))).thenReturn(TEST_MODIFIED_IDEA);
-        when(ideaRepo.reject(TEST_IDEA1)).thenReturn(rejectedIdea);
+        when(ideaRepo.reject(ideaWithFeedback)).thenReturn(rejectedIdea);
         when(serviceRepo.getById(any(Long.class))).thenReturn(TEST_SERVICE);
         when(productService.submitIssueRequest(any(IssueRequest.class))).thenReturn(new ApiResponse(SUCCESS, TEST_ISSUE_REQUEST));
         doNothing().when(ideaRepo).delete(any(Idea.class));
@@ -135,6 +135,7 @@ public class IdeaControllerTest {
 
     @Test
     public void testIdea() {
+        TEST_IDEA1.setId(1L);
         response = ideaController.getById(TEST_IDEA1.getId());
         assertEquals(SUCCESS, response.getMeta().getStatus(), "Not successful at getting requested Idea");
         Idea idea = (Idea) response.getPayload().get("Idea");

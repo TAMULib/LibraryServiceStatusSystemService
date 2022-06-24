@@ -1,23 +1,23 @@
 package edu.tamu.app.controller;
 
 import static edu.tamu.weaver.response.ApiStatus.SUCCESS;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import edu.tamu.app.enums.OverallMessageType;
 import edu.tamu.app.model.OverallStatus;
 import edu.tamu.app.service.MonitorService;
 import edu.tamu.weaver.response.ApiResponse;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 public class StatusControllerTest {
 
     private static final String TEST_OVERALL_STATUS_MESSAGE = "Test message";
@@ -33,9 +33,9 @@ public class StatusControllerTest {
     @InjectMocks
     private StatusController statusController;
 
-    @Before
+    @BeforeEach
     public void setup() {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
         when(monitorService.getOverallStatus()).thenReturn(TEST_OVERALL_STATUS);
         when(monitorService.getOverallStatusPublic()).thenReturn(TEST_OVERALL_STATUS);
     }
@@ -43,12 +43,12 @@ public class StatusControllerTest {
     @Test
     public void testOverallFull() {
         response = statusController.overallFull();
-        assertEquals("Response was not successfull", SUCCESS, response.getMeta().getStatus());
+        assertEquals(SUCCESS, response.getMeta().getStatus(), "Response was not successfull");
     }
 
     @Test
     public void testOverallPublic() {
         response = statusController.overallPublic();
-        assertEquals("Response was not successfull", SUCCESS, response.getMeta().getStatus());
+        assertEquals(SUCCESS, response.getMeta().getStatus(), "Response was not successfull");
     }
 }

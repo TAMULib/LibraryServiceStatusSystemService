@@ -1,8 +1,8 @@
 package edu.tamu.app.controller;
 
 import static edu.tamu.weaver.response.ApiStatus.SUCCESS;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
@@ -11,10 +11,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -22,7 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import edu.tamu.app.enums.Status;
 import edu.tamu.app.exception.UserNotFoundException;
@@ -44,7 +44,7 @@ import edu.tamu.weaver.auth.model.Credentials;
 import edu.tamu.weaver.response.ApiResponse;
 import edu.tamu.weaver.response.ApiStatus;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 public class ServiceControllerTest {
 
     private static final String TEST_SERVICE1_NAME = "Test Service 1 Name";
@@ -95,10 +95,10 @@ public class ServiceControllerTest {
     @InjectMocks
     private ServiceController serviceController;
 
-    @Before
+    @BeforeEach
     @SuppressWarnings("unchecked")
     public void setup() throws UserNotFoundException {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
         when(credentials.getUin()).thenReturn("123456789");
         when(userRepo.findByUsername(any(String.class))).thenReturn(Optional.of(TEST_SERVICE));
         when(systemMonitorService.getOverallStatus()).thenReturn(new OverallStatus(edu.tamu.app.enums.OverallMessageType.SUCCESS, "Success"));
@@ -106,7 +106,7 @@ public class ServiceControllerTest {
         when(serviceRepo.findAll(any(ServiceSpecification.class), any(Pageable.class))).thenReturn(mockPageableServiceList);
         when(serviceRepo.findAllByOrderByStatusDescNameAsc()).thenReturn(mockServiceList);
         when(serviceRepo.findByIsPublicOrderByStatusDescNameAsc(true)).thenReturn(mockPublicServiceList);
-        when(serviceRepo.findOne(any(Long.class))).thenReturn(TEST_SERVICE1);
+        when(serviceRepo.getById(any(Long.class))).thenReturn(TEST_SERVICE1);
         when(serviceRepo.create(any(Service.class))).thenReturn(TEST_SERVICE1);
         when(serviceRepo.update(any(Service.class))).thenReturn(TEST_MODIFIED_SERVICE1);
         when(ideaRepo.create(any(Idea.class), any(Credentials.class))).thenReturn(TEST_IDEA);
@@ -117,19 +117,19 @@ public class ServiceControllerTest {
     @SuppressWarnings("unchecked")
     public void testAllServices() {
         response = serviceController.getAllServices();
-        assertEquals("Not successful at getting all services", SUCCESS, response.getMeta().getStatus());
+        assertEquals(SUCCESS, response.getMeta().getStatus(), "Not successful at getting all services");
         List<Service> list = (List<Service>) response.getPayload().get("ArrayList<Service>");
-        assertEquals("The list of Services had none in it", mockServiceList.size(), list.size());
+        assertEquals(mockServiceList.size(), list.size(), "The list of Services had none in it");
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testPublicServices() {
         response = serviceController.getPublicServices();
-        assertEquals("Not successful at getting public services", SUCCESS, response.getMeta().getStatus());
+        assertEquals(SUCCESS, response.getMeta().getStatus(), "Not successful at getting public services");
         List<Service> list = (List<Service>) response.getPayload().get("ArrayList<Service>");
-        assertEquals("The list of Services is the wrong length", mockPublicServiceList.size(), list.size());
-        assertEquals("The list of Services contains services that are not public", list.size(), countPublicServices(list));
+        assertEquals(mockPublicServiceList.size(), list.size(), "The list of Services is the wrong length");
+        assertEquals(list.size(), countPublicServices(list), "The list of Services contains services that are not public");
     }
 
     private int countPublicServices(List<Service> list) {
@@ -147,43 +147,44 @@ public class ServiceControllerTest {
     public void testPage() {
         FilteredPageRequest mockFilter = new FilteredPageRequest();
         response = serviceController.page(mockFilter);
-        assertEquals("Not successful at getting paged Services", SUCCESS, response.getMeta().getStatus());
+        assertEquals(SUCCESS, response.getMeta().getStatus(), "Not successful at getting paged Services");
 
         Page<Service> page = (Page<Service>) response.getPayload().get("PageImpl");
-        assertEquals("The paged list of Services is the wrong length", mockPageableServiceList.getSize(), page.getSize());
+        assertEquals(mockPageableServiceList.getSize(), page.getSize(), "The paged list of Services is the wrong length");
     }
 
     @Test
     public void testService() {
+        TEST_SERVICE1.setId(1L);
         response = serviceController.getService(TEST_SERVICE1.getId());
-        assertEquals("Not successful at getting requested Service", SUCCESS, response.getMeta().getStatus());
+        assertEquals(SUCCESS, response.getMeta().getStatus(), "Not successful at getting requested Service");
         Service service = (Service) response.getPayload().get("Service");
-        assertEquals("Did not get the expected service", TEST_SERVICE1.getId(), service.getId());
+        assertEquals(TEST_SERVICE1.getId(), service.getId(), "Did not get the expected service");
     }
 
     @Test
     public void testCreate() {
         response = serviceController.createService(TEST_SERVICE1, credentials);
-        assertEquals("Not sucessful at creating Service", SUCCESS, response.getMeta().getStatus());
+        assertEquals(SUCCESS, response.getMeta().getStatus(), "Not sucessful at creating Service");
         Service service = (Service) response.getPayload().get("Service");
-        assertEquals("Incorrect service returned", TEST_SERVICE1.getName(), service.getName());
+        assertEquals(TEST_SERVICE1.getName(), service.getName(), "Incorrect service returned");
     }
 
     @Test
     public void testUpdate() {
         response = serviceController.updateService(TEST_MODIFIED_SERVICE1, credentials);
-        assertEquals("Not successful at updating service", SUCCESS, response.getMeta().getStatus());
+        assertEquals(SUCCESS, response.getMeta().getStatus(), "Not successful at updating service");
         Service service = (Service) response.getPayload().get("Service");
-        assertEquals("Service name was not properly updated", TEST_MODIFIED_SERVICE1.getName(), service.getName());
-        assertEquals("Service status was not properly updated", TEST_MODIFIED_SERVICE1.getStatus(), service.getStatus());
-        assertEquals("Service isPublic was not properly updated", TEST_MODIFIED_SERVICE1.getIsPublic(), service.getIsPublic());
-        assertEquals("Service onShortList was not properly updated", TEST_MODIFIED_SERVICE1.getOnShortList(), service.getOnShortList());
+        assertEquals(TEST_MODIFIED_SERVICE1.getName(), service.getName(), "Service name was not properly updated");
+        assertEquals(TEST_MODIFIED_SERVICE1.getStatus(), service.getStatus(), "Service status was not properly updated");
+        assertEquals(TEST_MODIFIED_SERVICE1.getIsPublic(), service.getIsPublic(), "Service isPublic was not properly updated");
+        assertEquals(TEST_MODIFIED_SERVICE1.getOnShortList(), service.getOnShortList(), "Service onShortList was not properly updated");
     }
 
     @Test
     public void testRemove() {
         response = serviceController.removeService(TEST_SERVICE1);
-        assertEquals("Not successful at removing Service", SUCCESS, response.getMeta().getStatus());
+        assertEquals(SUCCESS, response.getMeta().getStatus(), "Not successful at removing Service");
     }
 
     @Test
@@ -191,19 +192,19 @@ public class ServiceControllerTest {
         when(productService.submitIssueRequest(any(IssueRequest.class))).thenReturn(new ApiResponse(SUCCESS, "Successfully submitted issue request!"));
         ServiceRequest request = new ServiceRequest(AbstractRequest.RequestType.ISSUE, "Test feature request", "This is a test issue request on product 1", 1L);
         ApiResponse response = serviceController.submitIssueRequest(request, credentials);
-        assertEquals("Response was not a success!", ApiStatus.SUCCESS, response.getMeta().getStatus());
-        assertEquals("Response message was not correct!", String.format("Your issue for %s has been submitted!", TEST_SERVICE1_NAME), response.getMeta().getMessage());
+        assertEquals(ApiStatus.SUCCESS, response.getMeta().getStatus(), "Response was not a success!");
+        assertEquals(String.format("Your issue for %s has been submitted!", TEST_SERVICE1_NAME), response.getMeta().getMessage(), "Response message was not correct!");
     }
 
     @Test
     public void submitFeatureRequest() throws UserNotFoundException {
         ServiceRequest request = new ServiceRequest(AbstractRequest.RequestType.FEATURE, "Test issue request", "This is a test issue request on product 1", 1L);
         ApiResponse response = serviceController.submitFeatureRequest(request, credentials);
-        assertEquals("Response was not a success!", ApiStatus.SUCCESS, response.getMeta().getStatus());
-        assertEquals("Response message was not correct!", String.format("Your feature request for %s has been submitted as an idea!", TEST_SERVICE1_NAME), response.getMeta().getMessage());
+        assertEquals(ApiStatus.SUCCESS, response.getMeta().getStatus(), "Response was not a success!");
+        assertEquals(String.format("Your feature request for %s has been submitted as an idea!", TEST_SERVICE1_NAME), response.getMeta().getMessage(), "Response message was not correct!");
     }
 
-    @After
+    @AfterEach
     public void cleanUp() {
         response = null;
     }

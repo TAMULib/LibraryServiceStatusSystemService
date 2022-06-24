@@ -1,16 +1,17 @@
 package edu.tamu.app.model;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@RunWith(SpringRunner.class)
+
+@ExtendWith(SpringExtension.class)
 public class ScheduleTest {
 
     @Test
@@ -31,10 +32,10 @@ public class ScheduleTest {
         schedule.setScheduleData(scheduleData);
         schedule.setScheduler(note);
 
-        assertEquals("Schedule posting start was not as expected!", now, schedule.getScheduledPostingStart());
-        assertEquals("Schedule posting end was not as expected!", now + 36000, schedule.getScheduledPostingEnd(), 0);
-        assertEquals("Schedule date was not as expected!", scheduleData, schedule.getScheduleData());
-        assertEquals("Schedule scheduler was not as expected!", note, schedule.getScheduler());
+        assertEquals(now, schedule.getScheduledPostingStart(), "Schedule posting start was not as expected!");
+        assertEquals(now + 36000, schedule.getScheduledPostingEnd(), 0, "Schedule posting end was not as expected!");
+        assertEquals(scheduleData, schedule.getScheduleData(), "Schedule date was not as expected!");
+        assertEquals(note, schedule.getScheduler(), "Schedule scheduler was not as expected!");
 
     }
 

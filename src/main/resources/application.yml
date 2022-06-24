@@ -14,6 +14,9 @@ security.basic.enabled: false
 
 ---
 spring:
+  main:
+    allow-circular-references: true
+    allow-bean-definition-overriding: true
   profiles.active: production
 
   datasource:

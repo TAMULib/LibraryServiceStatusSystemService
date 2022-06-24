@@ -1,19 +1,19 @@
 package edu.tamu.app.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -39,7 +39,7 @@ import edu.tamu.weaver.auth.model.Credentials;
 import edu.tamu.weaver.response.ApiResponse;
 import edu.tamu.weaver.response.ApiStatus;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = { StatusApplication.class }, webEnvironment = WebEnvironment.DEFINED_PORT)
 public class ProductServiceTest {
 
@@ -84,15 +84,15 @@ public class ProductServiceTest {
     @Test
     public void getAll() throws JsonParseException, JsonMappingException, MalformedURLException, IOException {
         ApiResponse response = productService.getAll();
-        assertEquals("Response was not a success!", ApiStatus.SUCCESS, response.getMeta().getStatus());
+        assertEquals(ApiStatus.SUCCESS, response.getMeta().getStatus(), "Response was not a success!");
         List<Product> products = objectMapper.convertValue(response.getPayload().get("ArrayList<Product>"), new TypeReference<List<Product>>() {
         });
         List<Product> mockProducts = mockReader.getAllProducts();
-        assertEquals("Products response size was not as expected!", mockProducts.size(), products.size());
+        assertEquals(mockProducts.size(), products.size(), "Products response size was not as expected!");
         for (int i = 0; i < products.size(); i++) {
             Product product = products.get(i);
-            assertEquals(i + " Product did not have the correct id!", mockProducts.get(i).getId(), product.getId());
-            assertEquals(i + " Product did not have the correct name!", mockProducts.get(i).getName(), product.getName());
+            assertEquals(mockProducts.get(i).getId(), product.getId(), i + " Product did not have the correct id!");
+            assertEquals(mockProducts.get(i).getName(), product.getName(), i + " Product did not have the correct name!");
         }
     }
 
@@ -100,12 +100,12 @@ public class ProductServiceTest {
     public void getById() throws JsonParseException, JsonMappingException, MalformedURLException, IOException {
         Long id = 1L;
         ApiResponse response = productService.getById(id);
-        assertEquals("Response was not a success!", ApiStatus.SUCCESS, response.getMeta().getStatus());
+        assertEquals(ApiStatus.SUCCESS, response.getMeta().getStatus(), "Response was not a success!");
         Product product = objectMapper.convertValue(response.getPayload().get("Product"), Product.class);
-        assertNotNull("Product is null!", product);
+        assertNotNull(product, "Product is null!");
         Product mockProduct = mockReader.getProductById(id);
-        assertEquals("Product did not have the correct id!", mockProduct.getId(), product.getId());
-        assertEquals("Product did not have the correct name!", mockProduct.getName(), product.getName());
+        assertEquals(mockProduct.getId(), product.getId(), "Product did not have the correct id!");
+        assertEquals(mockProduct.getName(), product.getName(), "Product did not have the correct name!");
     }
 
     @Test
@@ -114,19 +114,19 @@ public class ProductServiceTest {
         Service service = serviceRepo.create(new Service(TEST_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, TEST_SERVICE_URL, TEST_SERVICE_DESCRIPTION));
         FeatureProposal newFeatureProposal = featureProposalRepo.create(new FeatureProposal(TEST_FEATURE_PROPOSAL_TITLE, TEST_FEATURE_PROPOSAL_DESCRIPTION, testUser, service), TEST_CREDENTIALS);
         ApiResponse response = productService.submitFeatureRequest(newFeatureProposal);
-        assertEquals("Response was not a success!", ApiStatus.SUCCESS, response.getMeta().getStatus());
-        assertEquals("Response message was not correct!", "Successfully submitted " + RequestType.FEATURE.getName() + " request!", response.getMeta().getMessage());
+        assertEquals(ApiStatus.SUCCESS, response.getMeta().getStatus(), "Response was not a success!");
+        assertEquals("Successfully submitted " + RequestType.FEATURE.getName() + " request!", response.getMeta().getMessage(), "Response message was not correct!");
     }
 
     @Test
     public void submitIssueRequest() {
         IssueRequest request = new IssueRequest(AbstractRequest.RequestType.ISSUE, "Test issue request", "This is a test issue request on service Cap!", "Cap", new Credentials());
         ApiResponse response = productService.submitIssueRequest(request);
-        assertEquals("Response was not a success!", ApiStatus.SUCCESS, response.getMeta().getStatus());
-        assertEquals("Response message was not correct!", "Successfully submitted " + request.getType().getName() + " request!", response.getMeta().getMessage());
+        assertEquals(ApiStatus.SUCCESS, response.getMeta().getStatus(), "Response was not a success!");
+        assertEquals("Successfully submitted " + request.getType().getName() + " request!", response.getMeta().getMessage(), "Response message was not correct!");
     }
 
-    @After
+    @AfterEach
     public void cleanUp() {
         featureProposalRepo.deleteAll();
         serviceRepo.deleteAll();

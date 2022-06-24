@@ -1,14 +1,14 @@
 package edu.tamu.app.model.request;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import edu.tamu.app.model.request.AbstractRequest.RequestType;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 public class ServiceRequestTest {
 
     private static final RequestType TEST_REQUEST_TYPE = RequestType.FEATURE;
@@ -21,17 +21,17 @@ public class ServiceRequestTest {
     public void testConstructors() {
         // Constructor without email
         ServiceRequest serviceRequest = new ServiceRequest(TEST_REQUEST_TYPE, TEST_TITLE, TEST_DESCRIPTION, TEST_SERVICE_ID);
-        assertEquals("Type was not set", RequestType.FEATURE, serviceRequest.getType());
-        assertEquals("Title was not set", TEST_TITLE, serviceRequest.getTitle());
-        assertEquals("Description was not set", TEST_DESCRIPTION, serviceRequest.getDescription());
-        assertEquals("Service ID was not set", TEST_SERVICE_ID, serviceRequest.getService());
+        assertEquals(RequestType.FEATURE, serviceRequest.getType(), "Type was not set");
+        assertEquals(TEST_TITLE, serviceRequest.getTitle(), "Title was not set");
+        assertEquals(TEST_DESCRIPTION, serviceRequest.getDescription(), "Description was not set");
+        assertEquals(TEST_SERVICE_ID, serviceRequest.getService(), "Service ID was not set");
 
         // Constructor with email
         ServiceRequest serviceRequestWithEmail = new ServiceRequest(TEST_REQUEST_TYPE, TEST_TITLE, TEST_DESCRIPTION, TEST_SERVICE_ID, TEST_EMAIL);
-        assertEquals("Type was not set", RequestType.FEATURE, serviceRequestWithEmail.getType());
-        assertEquals("Title was not set", TEST_TITLE, serviceRequestWithEmail.getTitle());
-        assertEquals("Description was not set", TEST_DESCRIPTION, serviceRequestWithEmail.getDescription());
-        assertEquals("Service ID was not set", TEST_SERVICE_ID, serviceRequestWithEmail.getService());
-        assertEquals("Email was not set", TEST_EMAIL, serviceRequestWithEmail.getEmail());
+        assertEquals(RequestType.FEATURE, serviceRequestWithEmail.getType(), "Type was not set");
+        assertEquals(TEST_TITLE, serviceRequestWithEmail.getTitle(), "Title was not set");
+        assertEquals(TEST_DESCRIPTION, serviceRequestWithEmail.getDescription(), "Description was not set");
+        assertEquals(TEST_SERVICE_ID, serviceRequestWithEmail.getService(), "Service ID was not set");
+        assertEquals(TEST_EMAIL, serviceRequestWithEmail.getEmail(), "Email was not set");
     }
 }

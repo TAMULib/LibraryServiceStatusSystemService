@@ -1,9 +1,9 @@
 package edu.tamu.app.controller;
 
 import static edu.tamu.weaver.response.ApiStatus.SUCCESS;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.any;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -11,16 +11,16 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -34,7 +34,7 @@ import edu.tamu.app.service.ProductService;
 import edu.tamu.weaver.response.ApiResponse;
 import edu.tamu.weaver.response.ApiStatus;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 public class ProductControllerTest {
 
     private static String TEST_FEATURE_PROPOSAL_NAME = "Test FP name";
@@ -54,9 +54,9 @@ public class ProductControllerTest {
     @InjectMocks
     private ProductController productController;
 
-    @Before
+    @BeforeEach
     public void setup() throws JsonParseException, JsonMappingException, IOException {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
         products = objectMapper.readValue(resource.getFile(), new TypeReference<List<Product>>() {
         });
         when(productService.getAll()).thenReturn(new ApiResponse(SUCCESS, products));
@@ -68,30 +68,30 @@ public class ProductControllerTest {
     @SuppressWarnings("unchecked")
     public void getAll() throws JsonParseException, JsonMappingException, MalformedURLException, IOException {
         ApiResponse response = productController.getAll();
-        assertEquals("Response was not a success!", ApiStatus.SUCCESS, response.getMeta().getStatus());
+        assertEquals(ApiStatus.SUCCESS, response.getMeta().getStatus(), "Response was not a success!");
         List<Product> products = (List<Product>) response.getPayload().get("ArrayList<Product>");
-        assertEquals("Products response size was not as expected!", products.size(), products.size());
+        assertEquals(products.size(), products.size(), "Products response size was not as expected!");
         for (int i = 0; i < products.size(); i++) {
             Product product = products.get(i);
-            assertEquals(i + " Product did not have the correct id!", products.get(i).getId(), product.getId());
-            assertEquals(i + " Product did not have the correct name!", products.get(i).getName(), product.getName());
+            assertEquals(products.get(i).getId(), product.getId(), i + " Product did not have the correct id!");
+            assertEquals(products.get(i).getName(), product.getName(), i + " Product did not have the correct name!");
         }
     }
 
     @Test
     public void getById() throws JsonParseException, JsonMappingException, MalformedURLException, IOException {
         ApiResponse response = productController.getById(1L);
-        assertEquals("Response was not a success!", ApiStatus.SUCCESS, response.getMeta().getStatus());
+        assertEquals(ApiStatus.SUCCESS, response.getMeta().getStatus(), "Response was not a success!");
         Product product = (Product) response.getPayload().get("Product");
-        assertNotNull("Product is null!", product);
-        assertEquals("Product did not have the correct id!", products.get(0).getId(), product.getId());
-        assertEquals("Product did not have the correct name!", products.get(0).getName(), product.getName());
+        assertNotNull(product, "Product is null!");
+        assertEquals(products.get(0).getId(), product.getId(), "Product did not have the correct id!");
+        assertEquals(products.get(0).getName(), product.getName(), "Product did not have the correct name!");
     }
 
     @Test
     public void testSubmitFeatureRequest() throws UserNotFoundException {
         ApiResponse response = productController.submitFeatureRequest(TEST_FEATURE_PROPOSAL);
-        assertEquals("Request was not successfull", SUCCESS, response.getMeta().getStatus());
+        assertEquals(SUCCESS, response.getMeta().getStatus(), "Request was not successfull");
     }
 
 }

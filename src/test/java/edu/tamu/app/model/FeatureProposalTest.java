@@ -1,19 +1,18 @@
 package edu.tamu.app.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import edu.tamu.app.StatusApplication;
 import edu.tamu.app.enums.Role;
@@ -25,8 +24,7 @@ import edu.tamu.app.model.repo.ServiceRepo;
 import edu.tamu.app.model.repo.UserRepo;
 import edu.tamu.weaver.auth.model.Credentials;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = { StatusApplication.class }, webEnvironment = WebEnvironment.DEFINED_PORT)
+@SpringBootTest(classes = { StatusApplication.class }, webEnvironment = WebEnvironment.RANDOM_PORT)
 public class FeatureProposalTest {
 
     private static final String TEST_FEATURE_PROPOSAL_TITLE = "Feature Proposal Title";
@@ -85,7 +83,7 @@ public class FeatureProposalTest {
     @Autowired
     private UserRepo userRepo;
 
-    @Before
+    @BeforeEach
     public void setUp() throws UserNotFoundException {
         testUser = userRepo.create(TEST_CREDENTIALS.getUin(), TEST_CREDENTIALS.getEmail(), TEST_CREDENTIALS.getFirstName(), TEST_CREDENTIALS.getLastName(), Role.valueOf(TEST_CREDENTIALS.getRole()));
         service1 = serviceRepo.create(new Service(TEST_SERVICE_NAME, TEST_SERVICE_STATUS, TEST_IS_AUTO, TEST_IS_PUBLIC, TEST_ON_SHORT_LIST, TEST_SERVICE_URL, TEST_SERVICE_DESCRIPTION));
@@ -97,7 +95,7 @@ public class FeatureProposalTest {
     public void testCreate() throws UserNotFoundException {
         long initialCount = featureProposalRepo.count();
         featureProposalRepo.create(new FeatureProposal(TEST_ALTERNATIVE_FEATURE_PROPOSAL_TITLE, TEST_ALTERNATIVE_FEATURE_PROPOSAL_DESCRIPTION, testUser, service2), TEST_CREDENTIALS);
-        assertEquals("The number of FeatureProposals did not increase by one", initialCount + 1, featureProposalRepo.count());
+        assertEquals(initialCount + 1, featureProposalRepo.count(), "The number of FeatureProposals did not increase by one");
     }
 
     @Test
@@ -106,21 +104,23 @@ public class FeatureProposalTest {
         User testVoter = userRepo.create(TEST_VOTER_CREDENTIALS.getUin(), TEST_VOTER_CREDENTIALS.getEmail(), TEST_VOTER_CREDENTIALS.getFirstName(), TEST_VOTER_CREDENTIALS.getLastName(), Role.valueOf(TEST_VOTER_CREDENTIALS.getRole()));
         newFeatureProposal.addVoter(testVoter);
         newFeatureProposal = featureProposalRepo.save(newFeatureProposal);
-        assertEquals("The FeatureProposals had incorrect number of voters", 1, newFeatureProposal.getVotes());
+        assertEquals(1, newFeatureProposal.getVotes(), "The FeatureProposals had incorrect number of voters");
     }
 
-    @Test(expected = DataIntegrityViolationException.class)
+    @Test
     public void testVoteDuplicate() throws UserNotFoundException {
-        FeatureProposal newFeatureProposal = featureProposalRepo.create(new FeatureProposal(TEST_ALTERNATIVE_FEATURE_PROPOSAL_TITLE, TEST_ALTERNATIVE_FEATURE_PROPOSAL_DESCRIPTION, testUser, service2), TEST_CREDENTIALS);
-        User testVoter = userRepo.create(TEST_VOTER_CREDENTIALS.getUin(), TEST_VOTER_CREDENTIALS.getEmail(), TEST_VOTER_CREDENTIALS.getFirstName(), TEST_VOTER_CREDENTIALS.getLastName(), Role.valueOf(TEST_VOTER_CREDENTIALS.getRole()));
-        newFeatureProposal.setVoters(new ArrayList<User>() {
-            private static final long serialVersionUID = -7900927790649066585L;
-            {
-                add(testVoter);
-                add(testVoter);
-            }
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            FeatureProposal newFeatureProposal = featureProposalRepo.create(new FeatureProposal(TEST_ALTERNATIVE_FEATURE_PROPOSAL_TITLE, TEST_ALTERNATIVE_FEATURE_PROPOSAL_DESCRIPTION, testUser, service2), TEST_CREDENTIALS);
+            User testVoter = userRepo.create(TEST_VOTER_CREDENTIALS.getUin(), TEST_VOTER_CREDENTIALS.getEmail(), TEST_VOTER_CREDENTIALS.getFirstName(), TEST_VOTER_CREDENTIALS.getLastName(), Role.valueOf(TEST_VOTER_CREDENTIALS.getRole()));
+            newFeatureProposal.setVoters(new ArrayList<User>() {
+                private static final long serialVersionUID = -7900927790649066585L;
+                {
+                    add(testVoter);
+                    add(testVoter);
+                }
+            });
+            newFeatureProposal = featureProposalRepo.save(newFeatureProposal);
         });
-        newFeatureProposal = featureProposalRepo.save(newFeatureProposal);
     }
 
     @Test
@@ -130,11 +130,11 @@ public class FeatureProposalTest {
         User testVoter = userRepo.create(TEST_VOTER_CREDENTIALS.getUin(), TEST_VOTER_CREDENTIALS.getEmail(), TEST_VOTER_CREDENTIALS.getFirstName(), TEST_VOTER_CREDENTIALS.getLastName(), Role.valueOf(TEST_VOTER_CREDENTIALS.getRole()));
         newFeatureProposal.addVoter(testVoter);
         newFeatureProposal = featureProposalRepo.save(newFeatureProposal);
-        assertEquals("The FeatureProposals had incorrect number of voters", 1, newFeatureProposal.getVotes());
+        assertEquals(1, newFeatureProposal.getVotes(), "The FeatureProposals had incorrect number of voters");
 
         anotherFeatureProposal.addVoter(testVoter);
         anotherFeatureProposal = featureProposalRepo.save(newFeatureProposal);
-        assertEquals("The FeatureProposals had incorrect number of voters", 1, anotherFeatureProposal.getVotes());
+        assertEquals(1, anotherFeatureProposal.getVotes(), "The FeatureProposals had incorrect number of voters");
     }
 
     @Test
@@ -142,7 +142,7 @@ public class FeatureProposalTest {
         long initialCount = featureProposalRepo.count();
         Idea testIdea = ideaRepo.create(new Idea(TEST_ALTERNATIVE_FEATURE_PROPOSAL_TITLE, TEST_ALTERNATIVE_FEATURE_PROPOSAL_DESCRIPTION, testUser, service1), TEST_CREDENTIALS);
         featureProposalRepo.create(testIdea);
-        assertEquals("The number of FeatureProposals did not increase by one", initialCount + 1, featureProposalRepo.count());
+        assertEquals(initialCount + 1, featureProposalRepo.count(), "The number of FeatureProposals did not increase by one");
     }
 
     @Test
@@ -150,23 +150,27 @@ public class FeatureProposalTest {
         long initialCount = featureProposalRepo.count();
         Idea testIdea = ideaRepo.create(new Idea(TEST_ALTERNATIVE_FEATURE_PROPOSAL_TITLE, TEST_ALTERNATIVE_FEATURE_PROPOSAL_DESCRIPTION, testUser, service1), TEST_CREDENTIALS);
         FeatureProposal featureProposal = featureProposalRepo.create(testIdea);
-        assertEquals("The number of FeatureProposals did not increase by one", initialCount + 1, featureProposalRepo.count());
+        assertEquals(initialCount + 1, featureProposalRepo.count(), "The number of FeatureProposals did not increase by one");
         long ideaCount = featureProposal.getIdeas().size();
         featureProposal.addIdea(testIdea);
         featureProposalRepo.save(featureProposal);
-        assertEquals("The number of Ideas on the FeatureProposal did not increase", ideaCount, featureProposal.getIdeas().size());
+        assertEquals(ideaCount, featureProposal.getIdeas().size(), "The number of Ideas on the FeatureProposal did not increase");
     }
 
-    @Test(expected = DataIntegrityViolationException.class)
+    @Test
     public void testTitleNotNull() throws UserNotFoundException {
-        testFeatureProposal.setTitle(null);
-        featureProposalRepo.create(new FeatureProposal(null, TEST_ALTERNATIVE_FEATURE_PROPOSAL_DESCRIPTION, testUser, service2), TEST_CREDENTIALS);
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            testFeatureProposal.setTitle(null);
+            featureProposalRepo.create(new FeatureProposal(null, TEST_ALTERNATIVE_FEATURE_PROPOSAL_DESCRIPTION, testUser, service2), TEST_CREDENTIALS);
+        });
     }
 
-    @Test(expected = UserNotFoundException.class)
+    @Test
     public void testAuthorNotNull() throws UserNotFoundException {
-        TEST_CREDENTIALS.setUin("987654321");
-        featureProposalRepo.create(new FeatureProposal(TEST_ALTERNATIVE_FEATURE_PROPOSAL_TITLE, TEST_ALTERNATIVE_FEATURE_PROPOSAL_DESCRIPTION, null, service2), TEST_CREDENTIALS);
+        assertThrows(UserNotFoundException.class, () -> {
+            TEST_CREDENTIALS.setUin("987654321");
+            featureProposalRepo.create(new FeatureProposal(TEST_ALTERNATIVE_FEATURE_PROPOSAL_TITLE, TEST_ALTERNATIVE_FEATURE_PROPOSAL_DESCRIPTION, null, service2), TEST_CREDENTIALS);
+        });
     }
 
     @Test
@@ -174,7 +178,7 @@ public class FeatureProposalTest {
         FeatureProposal featureProposal = featureProposalRepo.create(testFeatureProposal, TEST_CREDENTIALS);
         featureProposal.setTitle(TEST_ALTERNATIVE_FEATURE_PROPOSAL_TITLE);
         featureProposal = featureProposalRepo.save(featureProposal);
-        assertEquals("FeatureProposal title was not updated", TEST_ALTERNATIVE_FEATURE_PROPOSAL_TITLE, featureProposal.getTitle());
+        assertEquals(TEST_ALTERNATIVE_FEATURE_PROPOSAL_TITLE, featureProposal.getTitle(), "FeatureProposal title was not updated");
     }
 
     @Test
@@ -182,10 +186,10 @@ public class FeatureProposalTest {
         FeatureProposal featureProposal = featureProposalRepo.create(testFeatureProposal, TEST_CREDENTIALS);
         featureProposal.setService(service1);
         featureProposal = featureProposalRepo.save(featureProposal);
-        assertEquals("Service was not set", service1, featureProposal.getService());
+        assertEquals(service1, featureProposal.getService(), "Service was not set");
         featureProposal.setService(service2);
         featureProposal = featureProposalRepo.save(featureProposal);
-        assertEquals("Service was not updated correctly", service2, featureProposal.getService());
+        assertEquals(service2, featureProposal.getService(), "Service was not updated correctly");
     }
 
     @Test
@@ -193,10 +197,10 @@ public class FeatureProposalTest {
         FeatureProposal featureProposal = featureProposalRepo.create(testFeatureProposal, TEST_CREDENTIALS);
         featureProposal.setDescription(TEST_FEATURE_PROPOSAL_DESCRIPTION);
         featureProposal = featureProposalRepo.save(featureProposal);
-        assertEquals("FeatureProposal body not set", TEST_FEATURE_PROPOSAL_DESCRIPTION, featureProposal.getDescription());
+        assertEquals(TEST_FEATURE_PROPOSAL_DESCRIPTION, featureProposal.getDescription(), "FeatureProposal body not set");
         featureProposal.setDescription(TEST_ALTERNATIVE_FEATURE_PROPOSAL_DESCRIPTION);
         featureProposal = featureProposalRepo.save(featureProposal);
-        assertEquals("FeatureProposal body not updated", TEST_ALTERNATIVE_FEATURE_PROPOSAL_DESCRIPTION, featureProposal.getDescription());
+        assertEquals(TEST_ALTERNATIVE_FEATURE_PROPOSAL_DESCRIPTION, featureProposal.getDescription(), "FeatureProposal body not updated");
     }
 
     @Test
@@ -204,23 +208,23 @@ public class FeatureProposalTest {
         FeatureProposal featureProposal = featureProposalRepo.create(testFeatureProposal, TEST_CREDENTIALS);
         featureProposal.setFeedback(TEST_FEATURE_PROPOSAL_FEEDBACK);
         featureProposal = featureProposalRepo.save(featureProposal);
-        assertEquals("FeatureProposal feedback not set", TEST_FEATURE_PROPOSAL_FEEDBACK, featureProposal.getFeedback());
+        assertEquals(TEST_FEATURE_PROPOSAL_FEEDBACK, featureProposal.getFeedback(), "FeatureProposal feedback not set");
         featureProposal.setFeedback(TEST_ALTERNATIVE_FEATURE_PROPOSAL_FEEDBACK);
         featureProposal = featureProposalRepo.save(featureProposal);
-        assertEquals("FeatureProposal feedback not updated", TEST_ALTERNATIVE_FEATURE_PROPOSAL_FEEDBACK, featureProposal.getFeedback());
+        assertEquals(TEST_ALTERNATIVE_FEATURE_PROPOSAL_FEEDBACK, featureProposal.getFeedback(), "FeatureProposal feedback not updated");
     }
 
     @Test
     public void testTimestampSetOnCreate() throws UserNotFoundException {
         FeatureProposal FeatureProposal = featureProposalRepo.create(testFeatureProposal, TEST_CREDENTIALS);
-        FeatureProposal = featureProposalRepo.findOne(FeatureProposal.getId());
-        assertNotEquals("Timestamp not set on creation", null, FeatureProposal.getLastModified());
+        FeatureProposal = featureProposalRepo.findById(FeatureProposal.getId()).get();
+        assertNotEquals(null, FeatureProposal.getLastModified(), "Timestamp not set on creation");
     }
 
     @Test
     public void testTimestampSetOnUpdate() throws InterruptedException, UserNotFoundException {
         FeatureProposal featureProposal = featureProposalRepo.create(testFeatureProposal, TEST_CREDENTIALS);
-        featureProposal = featureProposalRepo.findOne(featureProposal.getId());
+        featureProposal = featureProposalRepo.findById(featureProposal.getId()).get();
         // Calendar createTime = FeatureProposal.getLastModified();
         featureProposal.setDescription(TEST_FEATURE_PROPOSAL_DESCRIPTION);
 
@@ -237,13 +241,13 @@ public class FeatureProposalTest {
     public void testDelete() throws UserNotFoundException {
         long initalCount = featureProposalRepo.count();
         FeatureProposal FeatureProposal = featureProposalRepo.create(new FeatureProposal(TEST_ALTERNATIVE_FEATURE_PROPOSAL_TITLE, TEST_ALTERNATIVE_FEATURE_PROPOSAL_DESCRIPTION, testUser, service2), TEST_CREDENTIALS);
-        assertEquals("FeatureProposal not created", initalCount + 1, featureProposalRepo.count());
+        assertEquals(initalCount + 1, featureProposalRepo.count(), "FeatureProposal not created");
         featureProposalRepo.delete(FeatureProposal);
-        assertEquals("FeatureProposal not deleted", initalCount, featureProposalRepo.count());
+        assertEquals(initalCount, featureProposalRepo.count(), "FeatureProposal not deleted");
 
     }
 
-    @After
+    @AfterEach
     public void cleanUp() {
         ideaRepo.deleteAll();
         featureProposalRepo.deleteAll();

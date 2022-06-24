@@ -62,7 +62,7 @@ public class ServiceController {
     @RequestMapping("/{id}")
     @PreAuthorize("hasRole('ANONYMOUS')")
     public ApiResponse getService(@PathVariable Long id) {
-        return new ApiResponse(SUCCESS, serviceRepo.findOne(id));
+        return new ApiResponse(SUCCESS, serviceRepo.getById(id));
     }
 
     @RequestMapping("/create")
@@ -91,7 +91,7 @@ public class ServiceController {
     @PreAuthorize("hasRole('USER')")
     public ApiResponse submitIssueRequest(@RequestBody ServiceRequest request, @WeaverCredentials Credentials credentials) {
         IssueRequest issueRequest = new IssueRequest(request);
-        Service service = serviceRepo.findOne(request.getService());
+        Service service = serviceRepo.getById(request.getService());
         issueRequest.setService(service.getName());
         issueRequest.setCredentials(credentials);
         ApiResponse response = productService.submitIssueRequest(issueRequest);
@@ -104,7 +104,7 @@ public class ServiceController {
     @RequestMapping("/feature")
     @PreAuthorize("hasRole('USER')")
     public ApiResponse submitFeatureRequest(@RequestBody ServiceRequest request, @WeaverCredentials Credentials credentials) throws UserNotFoundException {
-        Service service = serviceRepo.findOne(request.getService());
+        Service service = serviceRepo.getById(request.getService());
         Idea idea = new Idea(request);
         idea.setService(service);
         ideaRepo.create(idea, credentials);

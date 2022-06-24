@@ -15,7 +15,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.resource.ResourceUrlEncodingFilter;
 
 import edu.tamu.app.model.User;
@@ -28,7 +28,7 @@ import edu.tamu.weaver.validation.resolver.WeaverValidatedModelMethodProcessor;
 @Configuration
 @EntityScan(basePackages = { "edu.tamu.app.model" })
 @EnableJpaRepositories(basePackages = { "edu.tamu.app.model.repo" })
-public class AppWebMvcConfig extends WebMvcConfigurerAdapter {
+public class AppWebMvcConfig implements WebMvcConfigurer {
 
     @Value("${app.security.allow-access}")
     private String[] hosts;

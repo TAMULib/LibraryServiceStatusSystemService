@@ -1,25 +1,22 @@
 package edu.tamu.app.model;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.test.context.junit4.SpringRunner;
-
 import edu.tamu.app.StatusApplication;
 import edu.tamu.app.enums.NotificationLocation;
 import edu.tamu.app.model.repo.NotificationRepo;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = { StatusApplication.class }, webEnvironment = WebEnvironment.DEFINED_PORT)
+@SpringBootTest(classes = { StatusApplication.class }, webEnvironment = WebEnvironment.RANDOM_PORT)
 public class NotificationTest {
 
     private static final String TEST_NOTIFICATION_NAME = "Test Notification Name";
@@ -35,17 +32,21 @@ public class NotificationTest {
     public void testCreate() {
         long initialCount = notificationRepo.count();
         notificationRepo.create(new Notification(TEST_NOTIFICATION_NAME, TEST_NOTIFICATION_BODY, TEST_LOCATIONS));
-        assertEquals("The number of Notifications did not increase by one", initialCount + 1, notificationRepo.count());
+        assertEquals(initialCount + 1, notificationRepo.count(), "The number of Notifications did not increase by one");
     }
 
-    @Test(expected = DataIntegrityViolationException.class)
+    @Test
     public void testNameNotNull() {
-        notificationRepo.create(new Notification(null, TEST_NOTIFICATION_BODY, TEST_LOCATIONS));
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            notificationRepo.create(new Notification(null, TEST_NOTIFICATION_BODY, TEST_LOCATIONS));
+        });
     }
 
-    @Test(expected = DataIntegrityViolationException.class)
+    @Test
     public void testBodyNotNull() {
-        notificationRepo.create(new Notification(TEST_NOTIFICATION_NAME, null, TEST_LOCATIONS));
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            notificationRepo.create(new Notification(TEST_NOTIFICATION_NAME, null, TEST_LOCATIONS));
+        });
     }
 
     @Test
@@ -53,8 +54,8 @@ public class NotificationTest {
         Notification notification = notificationRepo.create(new Notification(TEST_NOTIFICATION_NAME, TEST_NOTIFICATION_BODY, TEST_LOCATIONS));
         notification.setName(TEST_ALTERNATE_NOTIFICATION_NAME);
         notificationRepo.save(notification);
-        notification = notificationRepo.findOne(notification.getId());
-        assertEquals("Notification name was not changed", TEST_ALTERNATE_NOTIFICATION_NAME, notification.getName());
+        notification = notificationRepo.findById(notification.getId()).get();
+        assertEquals(TEST_ALTERNATE_NOTIFICATION_NAME, notification.getName(), "Notification name was not changed");
     }
 
     @Test
@@ -62,20 +63,20 @@ public class NotificationTest {
         Notification notification = notificationRepo.create(new Notification(TEST_NOTIFICATION_NAME, TEST_NOTIFICATION_BODY, TEST_LOCATIONS));
         notification.setBody(TEST_ALTERNATE_NOTIFICATION_BODY);
         notificationRepo.update(notification);
-        notification = notificationRepo.findOne(notification.getId());
-        assertEquals("Notification body was not changed", TEST_ALTERNATE_NOTIFICATION_BODY, notification.getBody());
+        notification = notificationRepo.findById(notification.getId()).get();
+        assertEquals(TEST_ALTERNATE_NOTIFICATION_BODY, notification.getBody(), "Notification body was not changed");
     }
 
     @Test
     public void testDelete() {
         long initialCount = notificationRepo.count();
         Notification notification = notificationRepo.create(new Notification(TEST_NOTIFICATION_NAME, TEST_NOTIFICATION_BODY, TEST_LOCATIONS));
-        assertEquals("Notification not created", initialCount + 1, notificationRepo.count());
+        assertEquals(initialCount + 1, notificationRepo.count(), "Notification not created");
         notificationRepo.delete(notification);
-        assertEquals("Notification was not deleted", initialCount, notificationRepo.count());
+        assertEquals(initialCount, notificationRepo.count(), "Notification was not deleted");
     }
 
-    @After
+    @AfterEach
     public void cleanUp() {
         notificationRepo.deleteAll();
     }

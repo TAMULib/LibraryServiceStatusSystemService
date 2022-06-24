@@ -51,7 +51,7 @@ public class ServiceRepoImpl implements ServiceRepoCustom {
         noteRepo.findAllByServiceId(service.getId()).parallelStream().forEach(note -> {
             noteRepo.delete(note);
         });
-        serviceRepo.delete(service.getId());
+        serviceRepo.deleteById(service.getId());
         simpMessagingTemplate.convertAndSend("/channel/services/delete", new ApiResponse(SUCCESS, service.getId()));
         sendStatusUpdate();
     }

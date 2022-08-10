@@ -1,6 +1,44 @@
-[![Build Status](https://github.com/TAMULib/LibraryServiceStatusSystemService/workflows/Build/badge.svg)](https://github.com/TAMULib/LibraryServiceStatusSystemService/actions?query=workflow%3ABuild)
-[![Coverage Status](https://coveralls.io/repos/github/TAMULib/LibraryServiceStatusSystemService/badge.svg)](https://coveralls.io/github/TAMULib/LibraryServiceStatusSystemService)
+[![Build Status][build-badge]][build-status]
+[![Coverage Status][coverage-badge]][coverage-status]
 
 # Library Service Status System
 
-A Spring Boot service that allows management and notification of Library System Status.
+A service for managing Library System Status developed and maintained by [Texas A&M University Libraries][tamu-library].
+
+<details>
+<summary>Table of contents</summary>
+
+  - [Developer Documentation](#developer-documentation)
+  - [Additional Resources](#additional-resources)
+
+</details>
+
+## Developer Documentation
+
+- [Contributors Documentation][contribute-guide]
+- [Deployment Documentation][deployment-guide]
+- [API Documentation][api-documentation]
+
+<div align="right">(<a href="#readme-top">back to top</a>)</div>
+
+## Additional Resources
+
+Please feel free to file any issues concerning Auth Service to the issues section of the repository.
+
+Any questions concerning Auth Service can be directed to helpdesk@library.tamu.edu.
+
+<div align="right">(<a href="#readme-top">back to top</a>)</div>
+
+Copyright © 2022 Texas A&M University Libraries under the [The MIT License][license].
+
+<!-- LINKS -->
+[build-badge]: https://github.com/TAMULib/LibraryServiceStatusSystemService/workflows/Build/badge.svg
+[build-status]: https://github.com/TAMULib/LibraryServiceStatusSystemService/actions?query=workflow%3ABuild
+[coverage-badge]: https://coveralls.io/repos/github/TAMULib/LibraryServiceStatusSystemService/badge.svg
+[coverage-status]: https://coveralls.io/github/TAMULib/LibraryServiceStatusSystemService
+
+[api-documentation]: https://tamulib.github.io/LibraryServiceStatusSystemService
+[tamu-library]: http://library.tamu.edu
+[deployment-guide]: DEPLOYING.md
+[contribute-guide]: CONTRIBUTING.md
+[license]: LICENSE

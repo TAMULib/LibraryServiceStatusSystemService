@@ -3,7 +3,9 @@
 
 # Library Service Status System
 
-A service for managing Library System Status developed and maintained by [Texas A&M University Libraries][tamu-library].
+A *Spring* backend for the *Library Service Status System (LSSS) Service* developed and maintained by [Texas A&M University Libraries][tamu-library].
+
+This is a service for managing *Library Services*.
 
 <details>
 <summary>Table of contents</summary>
@@ -14,6 +16,7 @@ A service for managing Library System Status developed and maintained by [Texas 
 
 </details>
 
+
 ## Deployment
 
 For a quick and easy deployment using `docker-compose` consider using the [Library Service Status System App Repo][app-repo].
@@ -23,6 +26,7 @@ This process is further described in the [Deployment Guide][deployment-guide].
 
 <div align="right">(<a href="#readme-top">back to top</a>)</div>
 
+
 ## Developer Documentation
 
 - [Contributors Documentation][contribute-guide]
@@ -31,15 +35,17 @@ This process is further described in the [Deployment Guide][deployment-guide].
 
 <div align="right">(<a href="#readme-top">back to top</a>)</div>
 
+
 ## Additional Resources
 
 Please feel free to file any issues concerning Library Service Status System Service to the issues section of the repository.
 
 Any questions concerning Library Service Status System Service can be directed to helpdesk@library.tamu.edu.
 
+Copyright © 2022 Texas A&M University Libraries under the [MIT License][license].
+
 <div align="right">(<a href="#readme-top">back to top</a>)</div>
 
-Copyright © 2022 Texas A&M University Libraries under the [The MIT License][license].
 
 <!-- LINKS -->
 [app-repo]: https://github.com/TAMULib/LibraryServiceStatusSystem

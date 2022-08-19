@@ -1,15 +1,15 @@
 <a name="readme-top"></a>
-# Contributing to Library Service Status System UI
+# Contributing to Library Service Status System Service
 
-Though *Library Service Status System UI* is developed and maintained by Texas A&M University Libraries, we welcome community contributions.
-Involvement in *Library Service Status System UI* can take many forms.
+Though *Library Service Status System Service* is developed and maintained by Texas A&M University Libraries, we welcome community contributions.
+Involvement in *Library Service Status System Service* can take many forms.
 
 <div align="right">(<a href="#readme-top">back to top</a>)</div>
 
 
 ## Using
 
-Deploying *Library Service Status System UI* and trying it out at your own institution is itself a way of contributing to the development process.
+Deploying *Library Service Status System Service* and trying it out at your own institution is itself a way of contributing to the development process.
 For more information on deployment strategies please see the [Deployment Guide][deployment-guide].
 
 <div align="right">(<a href="#readme-top">back to top</a>)</div>
@@ -17,7 +17,7 @@ For more information on deployment strategies please see the [Deployment Guide][
 
 ## Filing Issues
 
-Once you are using *Library Service Status System UI* the creation of new issues through GitHub is a major method of contribution towards *Library Service Status System UI* development.
+Once you are using *Library Service Status System Service* the creation of new issues through GitHub is a major method of contribution towards *Library Service Status System Service* development.
 Issues can be motivated by the discovery of a bug in the software, or by the desire to see either new features added or see changes to existing features.
 
 There are two primary types of issues:
@@ -34,7 +34,7 @@ A **Feature** involves new functionality or behavior.
 ## Creating a Pull Request
 
 Community code and documentation contributions are welcome and should take the form of a **GitHub Pull Request** (*PR*).
-Each *PR* will need to be reviewed by a *Library Service Status System UI* developer.
+Each *PR* will need to be reviewed by a *Library Service Status System Service* developer.
 A review will result in the *PR* being accepted and merged, a descriptive request for changes, or the *PR* being closed along with a detailed explanation.
 
 It is our intention to maintain labeling on issues that are deemed to be low difficulty in order to provide a good point of entry for those looking to begin contributing code or documentation.
@@ -55,7 +55,7 @@ In general keep in mind:
 ## Good Luck!
 
 We look forward to seeing your contributions.
-If you have any additional questions please contact the *Library Service Status System UI* developers at helpdesk@library.tamu.edu.
+If you have any additional questions please contact the *Library Service Status System Service* developers at helpdesk@library.tamu.edu.
 
 <div align="right">(<a href="#readme-top">back to top</a>)</div>
 

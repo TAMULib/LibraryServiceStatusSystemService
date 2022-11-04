@@ -1,29 +1,33 @@
 server:
   port: 9000
-  contextPath:
+  servlet:
+    context-path:
 
----
 logging:
   level:
     edu.tamu: INFO
     org.springframework: INFO
-  file: logs/lsss.log
+  file:
+    name: logs/lsss.log
 
----
 security.basic.enabled: false
 
----
 spring:
+
   main:
     allow-circular-references: true
     allow-bean-definition-overriding: true
+
   profiles.active: production
 
+  sql:
+    init:
+      platform: h2
+      # platform: postgresql
+
   datasource:
-    platform: h2
     driverClassName: org.h2.Driver
     url: jdbc:h2:mem:AZ;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-    # platform: postgres
     # driverClassName: org.postgresql.Driver
     # url: jdbc:postgresql://localhost:5432/lsss
 
@@ -42,12 +46,11 @@ spring:
 
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
-    # database-platform: org.hibernate.dialect.PostgreSQLDialect
+    # database-platform: org.hibernate.dialect.PostgreSQL10Dialect
 
     show-sql: false
     hibernate.ddl-auto: create-drop
 
----
 app:
   products.url: http://localhost:9001/products
 
@@ -82,7 +85,6 @@ management:
     health:
       enabled: true
 
----
 #############################
 # Framework auth properties #
 #############################
@@ -96,7 +98,6 @@ auth:
   # edu.tamu.weaver.token.provider.controller.TokenController
   path: /auth
 
----
 #############################
 # Framework shib properties #
 #############################

@@ -40,10 +40,15 @@ USER $USER_NAME
 RUN mvn package -Pjar -DskipTests=true
 
 # Switch to Normal JRE Stage.
-FROM openjdk:11-jre-slim
+FROM eclipse-temurin:11-jre-noble
 ARG USER_ID
 ARG USER_NAME
 ARG SOURCE_DIR
+
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Create the user and group (use a high ID to attempt to avoid conflicts).
 RUN groupadd --non-unique -g $USER_ID $USER_NAME && \

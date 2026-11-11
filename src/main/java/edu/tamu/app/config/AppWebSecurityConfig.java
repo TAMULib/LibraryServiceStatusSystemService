@@ -1,15 +1,13 @@
 package edu.tamu.app.config;
 
-import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -24,31 +22,24 @@ import edu.tamu.weaver.auth.config.AuthWebSecurityConfig;
 @EnableMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class AppWebSecurityConfig extends AuthWebSecurityConfig<User, UserRepo, AppUserDetailsService> {
 
-    @Autowired
     private AuthenticationManager authenticationManager;
 
     @Override
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         // @formatter:off
         http
-            .sessionManagement(sessionManagement ->
-                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            )
-            .authorizeHttpRequests(authorizeRequests ->
-                authorizeRequests
-                    .requestMatchers("/**")
-                    .permitAll()
-            )
-            .headers(headers ->
-                headers.frameOptions(frameOptions ->
-                    frameOptions.disable()
-                )
-            )
-            .cors(Customizer.withDefaults())
-            .csrf(csrf ->
-                csrf.disable()
-            )
-            .addFilter(tokenAuthorizationFilter(authenticationManager));
+        .sessionManagement(sessionManagement ->
+            sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        )
+        .authorizeHttpRequests(authorizeRequests ->
+            authorizeRequests.requestMatchers("/**").permitAll()
+        )
+        .headers(headers ->
+            headers.frameOptions(FrameOptionsConfig::disable)
+        )
+        .cors(Customizer.withDefaults())
+        .csrf(AbstractHttpConfigurer::disable)
+        .addFilter(tokenAuthorizationFilter(authenticationManager));
 
         return http.build();
         // @formatter:on

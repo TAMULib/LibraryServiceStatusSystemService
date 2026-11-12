@@ -41,7 +41,7 @@ public class FeatureProposalController {
     @RequestMapping("/{id}")
     @PreAuthorize("hasRole('SERVICE_MANAGER')")
     public ApiResponse getFeatureProposal(@PathVariable Long id) {
-        return new ApiResponse(SUCCESS, featureProposalRepo.getById(id));
+        return new ApiResponse(SUCCESS, featureProposalRepo.getReferenceById(id));
     }
 
     @RequestMapping("/create")
@@ -86,7 +86,7 @@ public class FeatureProposalController {
     @RequestMapping("/{id}/vote")
     @PreAuthorize("hasRole('USER')")
     public ApiResponse vote(@PathVariable Long id, @WeaverUser User voter) {
-        FeatureProposal featureProposal = featureProposalRepo.getById(id);
+        FeatureProposal featureProposal = featureProposalRepo.getReferenceById(id);
         featureProposal.addVoter(voter);
         return new ApiResponse(SUCCESS, featureProposalRepo.update(featureProposal));
     }

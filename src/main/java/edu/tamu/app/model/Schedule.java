@@ -32,8 +32,8 @@ public class Schedule extends BaseEntity {
     private AbstractScheduler scheduler;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @MapKeyColumn(name = "key")
-    @Column(name = "value")
+    @MapKeyColumn(name = "schedule_key")
+    @Column(name = "schedule_value")
     @CollectionTable(name = "schedule_data", joinColumns = @JoinColumn(name = "schedule_id"))
     private Map<String, String> scheduleData;
 

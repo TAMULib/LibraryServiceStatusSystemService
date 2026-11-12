@@ -3,6 +3,7 @@ package edu.tamu.app.controller;
 import static edu.tamu.weaver.response.ApiStatus.INVALID;
 import static edu.tamu.weaver.response.ApiStatus.SUCCESS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -112,11 +113,11 @@ public class IdeaControllerTest {
         when(userRepo.findByUsername(any(String.class))).thenReturn(Optional.of(user));
         when(ideaRepo.findAll()).thenReturn(mockIdeaList);
         when(ideaRepo.findAll(any(IdeaSpecification.class), any(Pageable.class))).thenReturn(mockPageableIdeaList);
-        when(ideaRepo.getById(any(Long.class))).thenReturn(TEST_IDEA1);
+        when(ideaRepo.getReferenceById(any(Long.class))).thenReturn(TEST_IDEA1);
         when(ideaRepo.create(any(Idea.class), any(Credentials.class))).thenReturn(TEST_IDEA1);
         when(ideaRepo.update(any(Idea.class))).thenReturn(TEST_MODIFIED_IDEA);
         when(ideaRepo.reject(ideaWithFeedback)).thenReturn(rejectedIdea);
-        when(serviceRepo.getById(any(Long.class))).thenReturn(TEST_SERVICE);
+        when(serviceRepo.getReferenceById(any(Long.class))).thenReturn(TEST_SERVICE);
         when(productService.submitIssueRequest(any(IssueRequest.class))).thenReturn(new ApiResponse(SUCCESS, TEST_ISSUE_REQUEST));
         doNothing().when(ideaRepo).delete(any(Idea.class));
         doNothing().when(ideaRepo).delete(any(Idea.class));
@@ -134,9 +135,11 @@ public class IdeaControllerTest {
     }
 
     @Test
-    public void testIdea() {
+    public void testIdea() throws Exception {
         TEST_IDEA1.setId(1L);
+
         response = ideaController.getById(TEST_IDEA1.getId());
+        assertNotNull(response, "The response from getById was null");
         assertEquals(SUCCESS, response.getMeta().getStatus(), "Not successful at getting requested Idea");
         Idea idea = (Idea) response.getPayload().get("Idea");
         assertEquals(TEST_IDEA1.getId(), idea.getId(), "Did not get the expected service");

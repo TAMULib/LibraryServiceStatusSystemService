@@ -106,7 +106,7 @@ public class ServiceControllerTest {
         when(serviceRepo.findAll(any(ServiceSpecification.class), any(Pageable.class))).thenReturn(mockPageableServiceList);
         when(serviceRepo.findAllByOrderByStatusDescNameAsc()).thenReturn(mockServiceList);
         when(serviceRepo.findByIsPublicOrderByStatusDescNameAsc(true)).thenReturn(mockPublicServiceList);
-        when(serviceRepo.getById(any(Long.class))).thenReturn(TEST_SERVICE1);
+        when(serviceRepo.getReferenceById(any(Long.class))).thenReturn(TEST_SERVICE1);
         when(serviceRepo.create(any(Service.class))).thenReturn(TEST_SERVICE1);
         when(serviceRepo.update(any(Service.class))).thenReturn(TEST_MODIFIED_SERVICE1);
         when(ideaRepo.create(any(Idea.class), any(Credentials.class))).thenReturn(TEST_IDEA);

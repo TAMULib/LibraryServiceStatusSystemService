@@ -67,7 +67,7 @@ public class FeatureProposalRepoImpl implements FeatureProposalRepoCustom {
 
     @Override
     public FeatureProposal update(FeatureProposal featureProposalToUpdate) {
-        FeatureProposal persistedFeatureProposal = featureProposalRepo.getById(featureProposalToUpdate.getId());
+        FeatureProposal persistedFeatureProposal = featureProposalRepo.getReferenceById(featureProposalToUpdate.getId());
         // NOTE: ignore voters on update to avoid concurrency issue of save after votes occur
         BeanUtils.copyProperties(featureProposalToUpdate, persistedFeatureProposal, "voters");
         for (Idea idea : persistedFeatureProposal.getIdeas()) {

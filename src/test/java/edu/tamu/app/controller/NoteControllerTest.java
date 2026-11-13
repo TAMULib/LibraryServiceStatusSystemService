@@ -88,10 +88,10 @@ public class NoteControllerTest {
         when(userRepo.findByUsername(any(String.class))).thenReturn(Optional.of(user));
         when(noteRepo.findAll()).thenReturn(mockNoteList);
         when(noteRepo.findAll(any(NoteSpecification.class), any(Pageable.class))).thenReturn(mockPageableNoteList);
-        when(noteRepo.getById(any(Long.class))).thenReturn(TEST_NOTE1);
+        when(noteRepo.getReferenceById(any(Long.class))).thenReturn(TEST_NOTE1);
         when(noteRepo.create(any(Note.class), any(Credentials.class))).thenReturn(TEST_NOTE1);
         when(noteRepo.update(any(Note.class))).thenReturn(TEST_MODIFIED_NOTE);
-        when(serviceRepo.getById(any(Long.class))).thenReturn(TEST_SERVICE);
+        when(serviceRepo.getReferenceById(any(Long.class))).thenReturn(TEST_SERVICE);
         doNothing().when(noteRepo).delete(any(Note.class));
         doNothing().when(noteRepo).delete(any(Note.class));
     }

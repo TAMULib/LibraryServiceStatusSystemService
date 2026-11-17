@@ -1,10 +1,11 @@
 # Settings.
+ARG JAVA_VERSION=17
 ARG USER_ID=3001
 ARG USER_NAME=lsss
 ARG SOURCE_DIR=/$USER_NAME/source
 
 # Maven stage.
-FROM maven:3-openjdk-11-slim as maven
+FROM maven:3-eclipse-temurin-$JAVA_VERSION AS maven
 ARG USER_ID
 ARG USER_NAME
 ARG SOURCE_DIR
@@ -40,7 +41,7 @@ USER $USER_NAME
 RUN mvn package -Pjar -DskipTests=true
 
 # Switch to Normal JRE Stage.
-FROM eclipse-temurin:11-jre-noble
+FROM eclipse-temurin:$JAVA_VERSION
 ARG USER_ID
 ARG USER_NAME
 ARG SOURCE_DIR

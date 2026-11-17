@@ -150,7 +150,7 @@
       </plugin>
 
       <plugin>
-        <groupId>org.eluder.coveralls</groupId>
+        <groupId>com.github.hazendaz.maven</groupId>
         <artifactId>coveralls-maven-plugin</artifactId>
         <configuration>
           <repoToken></repoToken>
@@ -158,8 +158,8 @@
         <dependencies>
           <dependency>
             <groupId>jakarta.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-            <version>2.3.1</version>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>3.0.1</version>
           </dependency>
         </dependencies>
       </plugin>

@@ -27,7 +27,7 @@ public class MockProductManagementController {
     }
 
     @RequestMapping("/{id}")
-    public ApiResponse getById(@PathVariable Long id) {
+    public ApiResponse getById(@PathVariable("id") Long id) {
         return new ApiResponse(SUCCESS, mockProducts.getProductById(id));
     }
 

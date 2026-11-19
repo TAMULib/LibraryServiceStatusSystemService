@@ -1,15 +1,15 @@
 package edu.tamu.app.model;
 
-import static javax.persistence.CascadeType.REFRESH;
-import static javax.persistence.FetchType.EAGER;
+import static jakarta.persistence.CascadeType.REFRESH;
+import static jakarta.persistence.FetchType.EAGER;
 
 import java.util.Calendar;
 
-import javax.persistence.Column;
-import javax.persistence.ManyToOne;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import jakarta.persistence.Column;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 import org.hibernate.annotations.UpdateTimestamp;
 

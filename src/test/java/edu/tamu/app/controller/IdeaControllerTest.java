@@ -112,11 +112,11 @@ public class IdeaControllerTest {
         when(userRepo.findByUsername(any(String.class))).thenReturn(Optional.of(user));
         when(ideaRepo.findAll()).thenReturn(mockIdeaList);
         when(ideaRepo.findAll(any(IdeaSpecification.class), any(Pageable.class))).thenReturn(mockPageableIdeaList);
-        when(ideaRepo.getById(any(Long.class))).thenReturn(TEST_IDEA1);
+        when(ideaRepo.getReferenceById(any(Long.class))).thenReturn(TEST_IDEA1);
         when(ideaRepo.create(any(Idea.class), any(Credentials.class))).thenReturn(TEST_IDEA1);
         when(ideaRepo.update(any(Idea.class))).thenReturn(TEST_MODIFIED_IDEA);
         when(ideaRepo.reject(ideaWithFeedback)).thenReturn(rejectedIdea);
-        when(serviceRepo.getById(any(Long.class))).thenReturn(TEST_SERVICE);
+        when(serviceRepo.getReferenceById(any(Long.class))).thenReturn(TEST_SERVICE);
         when(productService.submitIssueRequest(any(IssueRequest.class))).thenReturn(new ApiResponse(SUCCESS, TEST_ISSUE_REQUEST));
         doNothing().when(ideaRepo).delete(any(Idea.class));
         doNothing().when(ideaRepo).delete(any(Idea.class));

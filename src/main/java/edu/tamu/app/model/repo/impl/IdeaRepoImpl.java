@@ -4,7 +4,7 @@ import static edu.tamu.weaver.response.ApiStatus.SUCCESS;
 
 import java.util.Optional;
 
-import javax.mail.MessagingException;
+import jakarta.mail.MessagingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;

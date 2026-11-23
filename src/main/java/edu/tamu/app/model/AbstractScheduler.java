@@ -1,17 +1,17 @@
 package edu.tamu.app.model;
 
-import static javax.persistence.FetchType.EAGER;
-import static javax.persistence.InheritanceType.JOINED;
+import static jakarta.persistence.FetchType.EAGER;
+import static jakarta.persistence.InheritanceType.JOINED;
 import static org.hibernate.annotations.FetchMode.SELECT;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Inheritance;
-import javax.persistence.OneToMany;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.OneToMany;
 
 import org.hibernate.annotations.Fetch;
 

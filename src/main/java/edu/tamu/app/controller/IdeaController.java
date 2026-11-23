@@ -43,8 +43,8 @@ public class IdeaController {
 
     @RequestMapping("/{id}")
     @PreAuthorize("hasRole('SERVICE_MANAGER')")
-    public ApiResponse getById(@PathVariable Long id) {
-        return new ApiResponse(SUCCESS, ideaRepo.getById(id));
+    public ApiResponse getById(@PathVariable(name = "id") Long id) {
+        return new ApiResponse(SUCCESS, ideaRepo.getReferenceById(id));
     }
 
     @RequestMapping("/create")

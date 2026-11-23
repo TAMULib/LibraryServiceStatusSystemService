@@ -99,12 +99,12 @@ public class FeatureProposalControllerTest {
         when(userRepo.findByUsername(any(String.class))).thenReturn(Optional.of(user));
         when(featureProposalRepo.findAll()).thenReturn(mockFeatureProposalList);
         when(featureProposalRepo.findAll(any(FeatureProposalSpecification.class), any(Pageable.class))).thenReturn(mockPageableFeatureProposalList);
-        when(featureProposalRepo.getById(any(Long.class))).thenReturn(TEST_FEATURE_PROPOSAL1);
+        when(featureProposalRepo.getReferenceById(any(Long.class))).thenReturn(TEST_FEATURE_PROPOSAL1);
         when(featureProposalRepo.create(any(FeatureProposal.class), any(Credentials.class))).thenReturn(TEST_FEATURE_PROPOSAL1);
         when(featureProposalRepo.create(any(Idea.class))).thenReturn(TEST_FEATURE_PROPOSAL1);
         when(featureProposalRepo.update(any(FeatureProposal.class))).thenReturn(TEST_MODIFIED_FEATURE_PROPOSAL);
         when(featureProposalRepo.reject(featureProposalWithFeedback)).thenReturn(rejectedFeatureProposal);
-        when(serviceRepo.getById(any(Long.class))).thenReturn(TEST_SERVICE);
+        when(serviceRepo.getReferenceById(any(Long.class))).thenReturn(TEST_SERVICE);
         doNothing().when(featureProposalRepo).delete(any(FeatureProposal.class));
         doNothing().when(featureProposalRepo).delete(any(FeatureProposal.class));
     }

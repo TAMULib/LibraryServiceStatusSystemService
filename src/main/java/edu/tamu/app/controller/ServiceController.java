@@ -61,7 +61,7 @@ public class ServiceController {
 
     @RequestMapping("/{id}")
     @PreAuthorize("hasRole('ANONYMOUS')")
-    public ApiResponse getService(@PathVariable Long id) {
+    public ApiResponse getService(@PathVariable(name = "id") Long id) {
         return new ApiResponse(SUCCESS, serviceRepo.getReferenceById(id));
     }
 

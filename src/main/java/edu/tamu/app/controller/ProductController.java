@@ -33,7 +33,7 @@ public class ProductController {
 
     @RequestMapping("/{id}")
     @PreAuthorize("hasRole('ANONYMOUS')")
-    public ApiResponse getById(@PathVariable Long id) throws JsonParseException, JsonMappingException, MalformedURLException, IOException {
+    public ApiResponse getById(@PathVariable(name = "id") Long id) throws JsonParseException, JsonMappingException, MalformedURLException, IOException {
         return productService.getById(id);
     }
 

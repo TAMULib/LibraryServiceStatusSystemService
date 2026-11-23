@@ -36,7 +36,7 @@ public class NoteController {
 
     @RequestMapping("/{id}")
     @PreAuthorize("hasRole('ANONYMOUS')")
-    public ApiResponse getById(@PathVariable Long id) {
+    public ApiResponse getById(@PathVariable(name = "id") Long id) {
         return new ApiResponse(SUCCESS, noteRepo.getReferenceById(id));
     }
 
